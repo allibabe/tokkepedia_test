@@ -1,0 +1,9 @@
+﻿@model MySetsViewModel
+
+@if (Model.GameSets != null)
+{
+    foreach (var set in Model.GameSets)
+    {
+        @await Html.PartialAsync("SetView", set)
+    }
+}

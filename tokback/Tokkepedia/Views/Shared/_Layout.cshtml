@@ -1,0 +1,305 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Microsoft.AspNetCore.Identity
+@using Tokkepedia.Models
+
+@inject SignInManager<TokketUser> SignInManager
+@inject UserManager<TokketUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+    string username = "Bren";
+    var userId = UserManager.GetUserId(User);
+
+    TokketUser user = null;
+    if (userId != null)
+    {
+        user = await UserManager.FindByIdAsync(userId);
+    }
+}
+@*@model IndexViewModel*@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="~/favicon.ico">
+
+    <title>Tokkepedia</title>
+    @await Html.PartialAsync("_Favicons")
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="~/css/offcanvas.css" rel="stylesheet" />
+
+
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.1.1/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+    @Html.Raw(JavaScriptSnippet.FullScript)
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" style="background-color:#563d7c!important;">
+        <a class="navbar-brand mr-auto mr-lg-0" asp-controller="Home" asp-action="Index">Tokkepedia</a>
+        <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="AddTok">Add Tok</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="MySets">My Sets</a>
+                    </li>
+                }
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="TokTypes">Tok Types</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+                </li>
+
+                @if (SignInManager.IsSignedIn(User) && user != null)
+                {
+                    <li class="nav-item" style="vertical-align:middle; padding-top:0.3em; padding-left:0.5em;">
+                        <span>
+                            <a asp-controller="Home" asp-action="UserCoins" asp-route-id="@user.Id"><img id="coinicon" src="~/images/gold.gif" style="z-index: 2; position: absolute; height:36px; width:36px" /></a>
+                            <a id="LblCoins" class="nav-link" asp-controller="Home" asp-action="UserCoins" asp-route-id="@user.Id" style="z-index: 1; position: absolute; padding-left:2.8em; padding-top:0.4em; vertical-align:middle!important; font-size:small; filter:brightness(160%);">@user.Coins</a>
+                            @*<img src="~/images/box.png" style="z-index: 1; position: absolute; padding-left:1em; padding-top:0.25em; vertical-align:middle!important;" />*@
+                        </span>
+                    </li>
+                }
+
+
+                @*<li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="AddMultipleToks">About</a>
+        </li>*@
+            </ul>
+
+            @using (Html.BeginForm("Search", "Home", FormMethod.Get, new { @class= "form-inline my-2 my-lg-0" }))
+            {
+                <input id="text" name="text" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                <button id="btnsearch" class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Search" disabled>Search</button>
+            }
+
+            <!--<form asp-action="Search" method="post" class="form-inline my-2 my-lg-0" novalidate>
+        <input id="SearchText" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">@*asp-for="SearchText"*@
+        <button id="btnsearch" class="btn btn-outline-success my-2 my-sm-0" type="submit" disabled>Search</button>
+
+    </form>-->
+            @**@
+            @if (SignInManager.IsSignedIn(User) && user != null && userId != null)
+            {
+                <form asp-area="Identity" asp-page="/Account/Logout" method="post" id="logoutForm" class="navbar-right">
+                    <ul class="navbar-nav my-2 my-lg-0">
+                        <li>
+                            @*<a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@UserManager.GetUserName(User)!</a>*@
+                            <a class="nav-link" asp-controller="Home" asp-action="UserProfile" asp-route-id="@UserManager.GetUserId(User)">@user.DisplayName</a>
+                            @*<a class="nav-link" asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@UserManager.GetUserName(User)</a>*@
+                        </li>
+                        <li>
+                            <button type="submit" class="btn btn-outline-danger my-2 my-sm-0">Log out</button>
+                        </li>
+                    </ul>
+                </form>
+            }
+            else
+            {
+                <ul class="navbar-nav my-2 my-lg-0">
+                    <li><a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Sign Up</a></li>
+                    <li><a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Log In</a></li>
+                </ul>
+            }
+
+            @*<ul class="navbar-nav my-2 my-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Home" asp-action="About">Notifications</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Profile</a>
+            </li>
+        </ul>*@
+        </div>
+
+
+    </nav>
+
+
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">&copy; @DateTime.Now.Year - Tokkepedia</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                <li class="list-inline-item"><a asp-controller="Home" asp-action="Terms">Terms</a></li>
+                <li class="list-inline-item"><a asp-controller="Home" asp-action="Support">Support</a></li>
+            </ul>
+        </footer>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/holder.min.js"></script>
+
+    <script src="~/js/offcanvas.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            @*$("#btnsearch").on("click", function (event) {
+
+
+
+
+                //var getUrl = window.location;
+                //var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+                var url = '@Url.Action("Search", "Home")' + '/' + $("#SearchText").val();
+                alert(url);
+                window.location.href = url;
+
+                //var url = baseUrl + 'Home/Search/' + $("#SearchText").val();
+                //alert(url);
+                //window.location.href = url;
+            });*@
+
+            //Comment text required
+            $("#text").on("input", function (event) {
+                if ($(this).val().length <= 0) {
+                    $("#btnsearch").prop("disabled", true);
+                }
+                else {
+                    $("#btnsearch").prop("disabled", false);
+                }
+            });
+        });
+    </script>
+
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.1.1/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+
+
+</html>
+
+
+
+
+
+
+@*<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - TestWebApplication3</title>
+
+        <environment include="Development">
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+            <link rel="stylesheet" href="~/css/site.css" />
+        </environment>
+        <environment exclude="Development">
+            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.1.1/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        </environment>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">TestWebApplication3</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    </ul>
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
+            </div>
+        </nav>
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2018 - TestWebApplication3</p>
+            </footer>
+        </div>
+
+        <environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+            </script>
+            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.1.1/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>
+
+        @RenderSection("Scripts", required: false)
+    </body>
+    </html>*@

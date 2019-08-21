@@ -1,0 +1,65 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <h2 class="text-white">Manage your account</h2>
+
+                <div>
+                    <h4 class="text-white">Change your account settings</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-3">
+                            <partial name="_ManageNav" />
+                        </div>
+                        <div class="col-md-9">
+                            <h4 class="text-white">@ViewData["Title"]</h4>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="text-white">Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+                                    <p class="text-white">
+                                        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+                                    </p>
+                                    <form asp-action="DownloadPersonalData" asp-controller="Report" method="post" class="form-group">
+                                        <button class="btn btn-default" type="submit">Download as PDF</button>
+                                    </form>
+                                    <form asp-page="DownloadPersonalData" method="post" class="form-group">
+                                        <button class="btn btn-default" type="submit">Download as JSON</button>
+                                    </form>
+                                    <p>
+                                        <a asp-page="DeletePersonalData" class="btn btn-default text-white">Delete</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $("#profile-tab").removeClass("active");
+            $("#pda-tab").addClass("active");
+        });
+    </script>
+}

@@ -1,0 +1,322 @@
+﻿@model SetViewModel
+@{
+    ViewData["Title"] = "Tok Cards";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+
+    int tokCounter = 1;
+    string detailCards = "";               
+    int typeSelected = ViewBag.DataType ?? 0;
+}
+
+
+@section Styles {
+
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+
+                    <div class="row">
+                        <div class="col-md-3 p-3" style="background: #fff; border-radius: 8px;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <progress max="1" value="1" style="width: 100%;" id="cardProgress"></progress>
+                                    <h6 class="text-center"><span id="progCounter">1</span>/<span id="progMax">1</span></h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button class="btn btn-primary" id="btnPlay" onclick="Play(2.0)" style="width: 100%"><i class="fas fa-play"></i> Play</button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-primary" style="width: 100%" onclick="ShuffleCards($('.card-container'))"><i class="fas fa-random"></i> Shuffle</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-primary" style="width: 100%; margin: 4px 0px;" data-toggle="modal" data-target="#optionsModal"><i class="fas fa-cog"></i> Options</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-9 p-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card-container">
+                                        @if (Model.Toks.Count > 0)
+                                        {
+                                            foreach (var tok in Model.Toks)
+                                            {
+                                                <div class="card custom-card" id="playCard_@tokCounter">
+                                                    <div class="front center-content rounded-corner" style="background-color: #fff; width: 512px; height: 512px;">
+                                                        <div style="position: absolute; width: 100%; height: 100%" onclick="FlipCard($('#playCard_@tokCounter'))"></div>
+                                                        <div class="float-right p-2" style="position: absolute; top: 0; right: 0;">
+                                                            <i class="fas fa-star tokkepedia-favorite" onclick="AddToFavorites($('#playCard_@tokCounter'))"></i>
+                                                        </div>
+
+                                                        <div class="text-center">
+                                                            <h2>@tok.PrimaryFieldText</h2>
+                                                        </div>
+
+                                                        <h6 class="card-hint">Click to flip</h6>
+                                                    </div>
+                                                    <div class="back rounded-corner center-content" style="width: 512px; height: 512px; overflow:auto;">
+                                                        <div style="position: absolute; width: 100%; height: 100%" onclick="FlipCard($('#playCard_@tokCounter'))"></div>
+                                                        <div class="float-right p-2" style="position: absolute; top: 0; right: 0;">
+                                                            <i class="fas fa-star tokkepedia-favorite" onclick="AddToFavorites($('#playCard_@tokCounter'))"></i>
+                                                        </div>
+
+                                                        <div class="p-4 col-md-12">
+                                                            <div class="col-md-12 text-center center-content" onclick="FlipCard($('#playCard_@tokCounter'))">
+                                                                @if (tok.IsDetailBased == false && !String.IsNullOrEmpty(tok.SecondaryFieldText))
+                                                                {
+                                                                    <h2>@Html.DisplayFor(modelItem => tok.SecondaryFieldText)</h2>
+                                                                }
+                                                                else if (tok.IsDetailBased == true)
+                                                                {
+                                                                    @for (int i = 0; i < 5; ++i)
+                                                                    {
+                                                                        string iNum = (i + 1).ToString(), baseName = "EnglishDetail" + iNum, inputName = "txt" + baseName, counterName = "lbl" + baseName + "Num";
+
+                                                                        if (!String.IsNullOrEmpty(tok.Details[i]))
+                                                                        {
+                                                                            <input type="hidden" id="detailtext@(i+1)-@tok.Id" value="@tok.Details[i]" />
+                                                                            @Html.Raw("• ") @Html.DisplayFor(modelItem => tok.Details[i])
+                                                                            <br />
+                                                                        }
+                                                                    }
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.DisplayFor(modelItem => tok.Category)
+                                                                }
+
+                                                            </div>
+                                                            @if (tok.Image != null)
+                                                            {
+                                                                if (!String.IsNullOrEmpty(tok.Image))
+                                                                {
+                                                                    <div class="img-container">
+                                                                        <div style="position: absolute; width: 100%; height: 100%" onclick="FlipCard($('#playCard_@tokCounter'))"></div>
+                                                                        <a href="@tok.Image" class="image-popup-no-margins" id="img-@tok.Id">
+                                                                            <img class="cropped" src="@tok.Image" />
+                                                                        </a>
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        </div>
+                                                        <h6 class="card-hint">Click to flip</h6>
+                                                    </div>
+                                                </div>
+
+                                                @if (tok.IsDetailBased)
+                                                {
+                                                    detailCards += tokCounter + ",";
+                                                }
+                                                tokCounter += 1;
+                                            }
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="optionsModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered accuratedialog" role="document">
+                                        <div class="modal-content accuratecontent">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Options</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <!-- Rounded switch -->
+                                                        <label class="toke-switch">
+                                                            <input type="checkbox" id="chkFavoritesOnlyOption" onchange="FavoritesOnly(this, $('.card-container'))">
+                                                            <span class="toke-slider round"></span>
+                                                        </label>
+                                                        <h6>Play Starred Only</h6>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <!-- Rounded switch -->
+                                                        <label class="toke-switch">
+                                                            <input type="checkbox" checked="checked" onchange="ShowImages(this, $('.card-container'))">
+                                                            <span class="toke-slider round"></span>
+                                                        </label>
+                                                        <h6>Show Images</h6>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <i class="fas fa-exchange-alt" style="font-size: 32px; color: #007bff; margin-bottom: .5rem;" data-toggle="tooltip" title="Flip All Cards" onclick="FlipAllCards()"></i>
+                                                        <h6>Flip All Cards</h6>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <button class="btn btn-primary" onclick="RemoveFavorites($('.card-container'))" style="width: 100%"><i class="fas fa-sync-alt"></i> Refresh Cards</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="text-center p-2 playcard-buttons">
+                                        <i class="fas fa-arrow-alt-circle-left tokkepedia-navicon" onclick="NavigateCards()"></i>
+                                        <i class="fas fa-arrow-alt-circle-right tokkepedia-navicon" onclick="NavigateCards(true)"></i>
+                                        <i class="fas fa-exchange-alt tokkepedia-navicon navicon-float-right" data-toggle="tooltip" title="Flip All Cards" onclick="FlipAllCards()"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="introModal" tabindex="-1" role="dialog" aria-labelledby="introModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="introModalLabel">Match the toks!</h4>
+                    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>*@
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>Get Toks from:</h4>
+                        </div>
+                        <div class="col-md-6" style="text-align: center; margin: 4px auto">
+                            <input class="styled-checkbox" id="chkDatabase" type="checkbox" value="1" checked>
+                            <label for="chkDatabase">Database (Default)</label>
+                        </div>
+                        <div class="col-md-6" style="text-align: center; margin: 4px auto">
+                            <input class="styled-checkbox" id="chkScreen" type="checkbox" value="2">
+                            <label for="chkScreen">Screen (Fast)</label>
+                            <span style="font-size: 12px;color:#9C27B0;position:absolute; right: 40%;margin-top: 24px;">@Model.Toks.Count Toks Loaded</span>
+                        </div>
+                        <div class="col-md-12">
+                            <span style="font-size: 12px; font-style: italic;">Drag the purple rectangles up and match them with the correct detail.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12" style="text-align: center;">
+                        <button type="button" class="btn btn-primary" id="btnStartGame" style="font-size: 24px">Start Game!</button>
+                        <button type="button" class="btn btn-secondary btn-danger" id="btnQuit" style="font-size: 24px" data-dismiss="modal">Quit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    @*<script src="~/js/SetFeed.js"></script>*@
+    <script src="~/js/tokkepedia.js"></script>
+    <script src="~/js/jquery.flip.js"></script>
+    <script>
+        var id = "@ViewBag.Id";
+        var dataType = @ViewBag.DataType, loadtype = 1;
+        if (dataType != 7 || dataType != 8 || dataType != 0) $(".card-container").hide();
+        $(window).resize(function () {
+            if ($(window).width() <= 512) {
+                var wh = $(window).width() - (15 * 2);
+                //console.log(wh);
+
+                // Set Card Proportional in Size
+                $(".card-container").css("width", wh);
+                $(".card-container").css("height", wh);
+
+                $(".card-container > .custom-card").css("width", wh);
+                $(".card-container > .custom-card").css("height", wh);
+
+                $(".card-container > .custom-card > .front").css("width", wh);
+                $(".card-container > .custom-card > .front").css("height", wh);
+
+                $(".card-container > .custom-card > .back").css("width", wh);
+                $(".card-container > .custom-card > .back").css("height", wh);
+
+                // Play Cards Buttons Container
+                $(".playcard-buttons").css("width", wh);
+            }
+        });
+
+        function StartGame() {
+            var dtlCards = "@detailCards";
+
+            $(".card-container").show();
+            ApplyFlipCard_Manual();
+            InitCards($(".card-container"));
+            ApplyMagnificPopup();
+
+            var splitCards = dtlCards.split(",");
+            for (var i = 0; i < splitCards.length - 1; i++) {
+                $("#playCard_" + splitCards[i]).flip('toggle');
+            }
+        }
+
+        $(document).ready(function () {
+            maxPlayCards = @tokCounter;
+            $("#progMax").text(maxPlayCards - 1);
+            $("#cardProgress").attr("max", maxPlayCards - 1);
+            $(window).keydown(function (e) {
+                switch (e.keyCode) {
+                    case 39: // Right Arrow
+                        NavigateCards(true);
+                        break;
+                    case 37: // Left Arrow
+                        NavigateCards();
+                        break;
+                }
+            });
+
+            $("#chkDatabase, #chkScreen").change(function () {
+                if ($(this).is(":checked")) {
+                    loadtype = $(this).val();
+                }
+                
+                switch ($(this).attr("id")) {
+                    case "chkDatabase":
+                        $("#chkScreen").attr("checked", !$(this).is(":checked"));
+                        break;
+                    case "chkScreen":
+                        $("#chkDatabase").attr("checked", !$(this).is(":checked"));
+                        break;
+                }
+            });
+            
+            if (dataType == 7 || dataType == 8 || dataType == 0) {
+                StartGame();
+            }
+            else {
+                $('#introModal').modal('show');
+                $("#btnStartGame").click(function () {
+                    StartGame();
+
+                    $('#introModal').modal('hide');
+                });
+            }
+        });
+    </script>
+}

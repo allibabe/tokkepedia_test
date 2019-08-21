@@ -1,0 +1,28 @@
+﻿@model ResultData<TokketUser>
+
+<div class="container">
+    <div class="row">
+        @if (Model != null)
+        {
+            if (Model.Results.Count > 0)
+            {
+                foreach (var cat in Model.Results)
+                {
+                    @await Html.PartialAsync("UserView", cat)
+                }
+            }
+            else
+            {
+                <div class="col-md-12 text-center">
+                    <h2 style="text-align: center; margin-top: 12px">No results found!</h2>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-md-12 text-center">
+                <h2 style="text-align: center; margin-top: 12px">No results found!</h2>
+            </div>
+        }
+    </div>
+</div>

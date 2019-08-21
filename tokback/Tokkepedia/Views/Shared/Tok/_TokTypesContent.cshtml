@@ -1,0 +1,43 @@
+﻿@model BrowseViewModel
+
+@for (var s = 0; s < Model.TokGroups.Count; ++s)
+{
+    //var group = Model.TokGroups[s];
+    var group = Model.Counters[s];
+
+    string groupCountText = group.TokGroup;
+    if (Model.Counters != null)
+    {
+        if (Model.Counters[s] != null)
+        {
+            groupCountText += " - " + Model.Counters[s].GroupCount.ToString();
+        }
+    }
+
+    <div class="col-md-4">
+        <div class="card mb-4 box-shadow" style="margin-bottom:0.5em!important;">
+            <a href="/tokgroup?name=@group.TokGroup"><img class="card-img-top" data-src="holder.js/100px35?theme=thumb&bg=673AB7&fg=eceeef&text=@groupCountText" alt="@group.TokGroup"></a>
+            <div class="card-body" style="padding-top:0.25em!important; padding-bottom:0.25em!important;">
+                <h6 style="margin-bottom:0em!important;"><u>Types:</u></h6>
+                @for (var t = 0; t < group.TokTypes.Length; ++t)
+                {
+                    string countText = "", typeId = "";
+                    if (Model.Counters != null)
+                    {
+                        if (t < Model.Counters[s].TokTypeCounts.Length)
+                        {
+                            countText = "- " + Model.Counters[s].TokTypeCounts[t].ToString();
+
+                        }
+                    }
+                    typeId = Model.TokGroups[s].TokTypeIds[t].ToString();
+                    <a asp-controller="Tok" asp-action="toktype" asp-route-id="@typeId" class="card-text" style="font-size:0.95rem!important;">
+                        · @group.TokTypes[t]
+                    </a> @countText<br />
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/js/holder.min.js"></script>

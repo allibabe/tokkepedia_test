@@ -1,0 +1,69 @@
+﻿@model DeleteViewModel
+@{
+    ViewData["Title"] = "Personal Data";
+}
+
+<div class="col-md-9">
+    <h4>@ViewData["Title"]</h4>
+
+    <div class="row">
+        <div class="col-md-6">
+            <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+            <p>
+                <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+            </p>
+            <form asp-action="DownloadPersonalData" asp-controller="Report" method="post" class="form-group">
+                <button class="btn btn-default" type="submit">Download as PDF</button>
+            </form>
+            <form asp-action="DownloadPersonalDataAsJson" asp-controller="User" method="post" class="form-group">
+                <button class="btn btn-default" type="submit">Download as JSON</button>
+            </form>
+            <p>
+                <a class="btn btn-default text-white" data-toggle="modal" data-target="#deleteModal">Delete</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade deleteModal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered reportdialog" role="document">
+        <div class="modal-content reportcontent">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModal">Delete Personal Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    <p>
+                        <span class="glyphicon glyphicon-warning-sign"></span>
+                        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+                    </p>
+                </div>
+
+                <div>
+                    <form asp-controller="User" asp-action="DeletePersonalData" method="post" class="form-group">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Password"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <button class="btn btn-danger" type="submit">Delete data and close my account</button>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer reportbtngroup">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#profile-tab").removeClass("active");
+        $("#pda-tab").addClass("active");
+    });
+</script>

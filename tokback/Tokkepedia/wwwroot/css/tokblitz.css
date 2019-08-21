@@ -1,0 +1,37 @@
+﻿.tokblitz-bg {
+    position: relative;
+    height: 900px;
+    background-image: url(/images/tokblitz/bgagain.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
+}
+
+.tokblitz-logo {
+    position: relative;
+    max-height: 164px;
+    left: 15%;
+}
+
+.tokblitz-menu {
+    margin-top: 8px !important;
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 1px 3px 2px gray, inset -1px 0px 2px gray;
+    -moz-box-shadow: inset 1px 3px 2px gray, inset -1px 0px 2px gray;
+    box-shadow: inset 1px 3px 2px gray, inset -1px 0px 2px gray;
+    background-color: #17202A;
+    color: white;
+    text-shadow: 1px 6px 1px black;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.tokblitz-award {
+    height: 96px;
+    position: absolute !important;
+    left: 10%;
+    bottom: -44%;
+    cursor: pointer;
+}

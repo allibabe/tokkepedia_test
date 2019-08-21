@@ -1,0 +1,10 @@
+﻿@model ResultData<Tok>
+
+@if (Model.Results.Count > 0)
+{
+    @foreach (Tok tok in Model.Results)
+    {
+        @await Html.PartialAsync("Tok/_SetTokView", tok)
+        <hr />
+    }
+}

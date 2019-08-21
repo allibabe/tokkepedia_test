@@ -1,0 +1,18 @@
+﻿@model Set
+@using Microsoft.AspNetCore.Identity
+@using Tokkepedia.Models
+@using Newtonsoft.Json
+
+<input id="set-@Model.Id" type="hidden" value="@JsonConvert.SerializeObject(Model)" />
+
+<!-- Set Area -->
+<div style="display:inline">
+    <div id="setView">
+        <button type="button" class="list-group-item list-group-item-action" name="setlist-@Model.Id" id="setlist-@Model.Id" data-groupid="@Model.Id" data-groupiduser="@Model.UserId" onclick="SelectSet(this)">
+            <span class="float-left">@Model.Name</span>
+            <span class="badge badge-success float-right">@Model.CreatedTime.ToShortDateString()</span>
+            <span class="badge badge-warning float-right" style="margin-right:1em!important;">Type: @Model.TokType</span>
+        </button>
+    </div>
+</div>
+

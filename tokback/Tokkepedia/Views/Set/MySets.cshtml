@@ -1,0 +1,180 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+
+@inject SignInManager<TokketUser> SignInManager
+@inject UserManager<TokketUser> UserManager
+@{
+    ViewData["Title"] = "My Sets";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+@section Styles {
+    <link type="text/css" rel="stylesheet" href="~/css/croppie.css" />
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <br />
+                <div class="row overview">
+                    <div class="col-sm-12 text-center">
+                        <h1>My Sets</h1>
+                    </div>
+                </div>
+
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item nav-link"><a href="#sets" data-toggle="tab">Tok Sets</a></li>
+                                <li class="nav-item nav-link"><a href="#gamesets" data-toggle="tab">Game Sets</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="sets">
+                                    <br />
+                                    <a asp-controller="Set" asp-action="AddSet" class="btn btn-primary" style="margin-bottom:0.5em!important;">+ Add set</a>
+                                    <br />
+                                    <div class="center containerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="SetFeed">
+                                    </div>
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="gamesets">
+                                    <br />
+                                    <div class="center containerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="GameSetFeed">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/tab-pane-->
+                        </div>
+                        <!--/tab-content-->
+                        @*<div class="col-md-5">
+                            <a id="btnPlayBlitz" class="btn btn-primary" asp-action="TokBlitz" asp-controller="Tok" style="width: 100%;">Play Tok Blitz</a>
+                        </div>*@
+                    </div>
+                    <!--/col-9-->
+                </div>
+                <!--/row-->
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/croppie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/SetFeed.js"></script>
+
+    <script>
+        enableMultipleSelection = true;
+
+        $(document).ready(function () {
+            //var getUrl = window.location;
+            //var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+
+            //var animation = bodymovin.loadAnimation({
+            //    container: document.getElementById("progress"), // Required
+            //    path: baseUrl + '/images/anim/trail_loading.json', // Required
+            //    renderer: 'svg', // Required
+            //    loop: true, // Optional
+            //    autoplay: true, // Optional
+            //    name: "", // Name for future reference. Optional.
+            //});
+
+
+            //Select existing set
+            $("#SetFeed").on("click", ".addtosetmodal .addtosetdialog .addtosetcontent .addtosetbody .addtosetsetssection .addtosetlistgroup .addtoexistingset", function (event) { // .addtosetcontent .addtosetform .addtosetbtngroup .addtosetbtn
+                //Set id
+                var id = $(this).attr('name').replace("setlist-", "");
+                var SetValId = "selectedsets-" + id;
+
+                //Get Tok Id
+                var TokId = $(this).attr('id').replace("setlist-" + id + "-", "");
+
+                //Get Tok Data
+                var TokData = $("#" + TokId + "-tokdata").val();
+
+                //Get array
+                var arr = $("#selectedsets-" + id).val();
+
+                if (arr == "") { arr = []; }
+                else {
+                    arr = JSON.parse(arr);
+                }
+
+                if (arr.includes(TokData)) {
+                    var index = arr.indexOf(TokData);
+                    arr.splice(index, 1);
+                }
+                else {
+                    arr.push(TokData);
+                }
+
+                //alert(arr);
+                $("#selectedsets-" + id).val(JSON.stringify(arr));
+
+                var idBtn = "gameset-" + id + "-button";
+                //Enable button
+                if (arr.length == 5 || arr.length == 10) {
+                    $("#" + idBtn).prop("disabled", false);
+                }
+                else {
+                    $("#" + idBtn).prop("disabled", true);
+                }
+            });
+
+
+            //Create Game Set button
+            $("#SetFeed").on("click", ".addtosetmodal .addtosetdialog .addtosetcontent .addtosetbtngroup .gamesetbtn", function (event) { // .addtosetcontent .addtosetform .addtosetbtngroup .addtosetbtn
+                //Set Id
+                var id = $(this).attr('id').replace("gameset-", "").replace("-button", "");
+                //var idsection = "#" + id + "-section";
+                //var tokval = "#tok-" + id;
+                //alert($(tokval).val());//var tok = json.parse($(tokval).val())
+
+                ////Tok Id
+                var SetId = $("#selectedset-" + id).val();
+                var setname = $("#" + id + "-setname").val();
+
+                //Get array
+                var arr = $("#selectedsets-" + id).val();
+
+                var ReactionOptions = {};
+                ReactionOptions.url = "/Home/CreateGameSet";
+                ReactionOptions.type = "POST";
+                ReactionOptions.data = JSON.stringify({ group: arr, comment: $(this).attr('name') }); //group: $("#Reaction").val()
+                ReactionOptions.datatype = "json";
+                ReactionOptions.contentType = "application/json";
+                //alert(ReactionOptions.data.toString());
+
+                ReactionOptions.success = function (Data) {
+                    alert(Data);
+                };
+                ReactionOptions.error = function () {
+
+                };
+                $.ajax(ReactionOptions);
+
+            });
+
+            GetSetData("", 5, false);
+            GetSetData("", 5, true);
+        });
+    </script>
+}

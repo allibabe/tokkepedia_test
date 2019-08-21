@@ -1,0 +1,381 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using Microsoft.Extensions.Options
+@using Microsoft.AspNetCore.Identity
+@inject IOptions<GoogleAnalyticsViewModel> GoogleAnalytics
+@inject UserManager<TokketUser> UserManager
+
+@{
+    var userId = UserManager.GetUserId(User);
+
+    TokketUser user = null;
+    if (userId != null)
+    {
+        user = await UserManager.FindByIdAsync(userId);
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=@GoogleAnalytics.Value.TrackingId"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', '@GoogleAnalytics.Value.TrackingId');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!-- Title -->
+    <title>Tokkepedia - @ViewData["Title"]</title>
+
+    @RenderSection("Meta", required: false)
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/favicon.ico">
+
+    <!-- Core Stylesheet -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+
+    <!-- Responsive CSS -->
+    <link href="~/css/responsive.css" rel="stylesheet">
+
+    <!-- Tokkepedia Stylesheet -->
+    <link href="~/css/tokkepedia.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <link href="~/css/magnific-popup.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="~/css/sweetalert.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="~/css/flag-icon.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/croppie.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/easy-autocomplete.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/quill.snow.css" />
+
+    <!-- Google Analytics -->
+    <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', '@GoogleAnalytics.Value.TrackingId', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->
+
+    @Html.Raw(JavaScriptSnippet.FullScript)
+
+    @RenderSection("Styles", required: false)
+
+</head>
+
+<body>
+    <div id="fb-root"></div>
+    @*<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>*@
+    <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '2096904330562973',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v3.3'
+            });
+        };
+        window.twttr = (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+
+            t._e = [];
+            t.ready = function (f) {
+                t._e.push(f);
+            };
+
+            return t;
+        }(document, "script", "twitter-wjs"));
+    </script>
+    @RenderSection("Body", required: false)
+    <!-- Preloader Start -->
+    <div id="preloader">
+        <div class="colorlib-load"></div>
+    </div>
+
+    <!-- ***** Header Area Start ***** -->
+    @await Html.PartialAsync("_LayoutNavbar")
+    <!-- ***** Header Area End ***** -->
+    @RenderBody()
+    <!-- ***** Footer Area Start ***** -->
+    @await Html.PartialAsync("_LayoutFooter")
+    <!-- ***** Footer Area Start ***** -->
+    <!-- Jquery-2.2.4 JS -->
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <!-- Popper js -->
+    <script src="~/js/popper.min.js"></script>
+    <!-- Bootstrap-4 Beta JS -->
+    <script src="~/js/bootstrap.min.js"></script>
+    <!-- All Plugins JS -->
+    <script src="~/js/plugins.js"></script>
+    <!-- Slick Slider Js-->
+    <script src="~/js/slick.min.js"></script>
+    <!-- Footer Reveal JS -->
+    <script src="~/js/footer-reveal.min.js"></script>
+    <!-- Active JS -->
+    <script src="~/js/active.js"></script>
+    <script src="~/js/magnific-popup.min.js"></script>
+    <script src="~/js/holder.min.js"></script>
+    <script src="~/js/sweetalert.js"></script>
+    <script src="~/js/croppie.js"></script>
+    <script src="~/js/jquery.easy-autocomplete.js"></script>
+    <script src="~/js/quill.min.js"></script>
+    @*<script src="~/twemoji/twemoji.min.js"></script>*@
+
+    <script>
+        var unseenCnt = 0, paginationId = "";
+        function RequireLogin(str = "") {
+            swal("Login is required", "You must be logged in to " + str + "!", "warning")
+        }
+
+        $(document).ready(function () {
+            $(".searchbar").on("keypress input keyup", function (e) {
+                var text = $(".searchbar").val();
+                if (e.which == 13) {
+                    if (text.length > 0)
+                        location.href = "/search?text=" + text;
+                }
+            });
+
+            $(".searchbar-icon").click(function () {
+                var text = $(".searchbar").val();
+                if (text.length > 0)
+                    location.href = "/search?text=" + text;
+            });
+
+            //Comment text required
+            $("#text").on("input", function (event) {
+                if ($(this).val().length <= 0) {
+                    $("#btnsearch").prop("disabled", true);
+                }
+                else {
+                    $("#btnsearch").prop("disabled", false);
+                }
+            });
+
+            // Prevent clicking within dropdown-menu
+            $(".notificationicon > .dropdown-menu").click(function (e) {
+                e.stopPropagation();
+            });
+
+            LoadNotifications();
+            GetMyRecentSearches();
+
+            // Bootstrap Tooltip
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="modal"][title]').tooltip();
+            })
+
+            $('body').on('click', function (e) {
+                $('[data-toggle=popover]').each(function () {
+                    // hide any open popovers when the anywhere else in the body is clicked
+                    if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                        $(this).popover('hide');
+                    }
+                });
+            });
+
+            window.onbeforeunload = function () {
+                if (unsaved) {
+                    return "Unsaved changes - are you sure you want to leave this page?";
+                } else {
+                    return;
+                }
+            };
+        });
+
+        function LoadNotifications() {
+            var ajaxOpt = {};
+            ajaxOpt.url = "/Home/InitializeNotification";
+            ajaxOpt.type = "GET";
+            ajaxOpt.datatype = "json";
+            ajaxOpt.success = function (data) {
+                $(".notificationContainer").append(data);
+            };
+            ajaxOpt.error = function (e) {
+                //console.log(e.responseText);
+            };
+            ajaxOpt.complete = function (e) {
+                // Bootstrap Tooltip
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="modal"][title]').tooltip();
+                })
+            };
+            $.ajax(ajaxOpt);
+        }
+
+        function MarkAsRead(id) {
+            var ajaxOpt = {};
+            ajaxOpt.url = "/Home/MarkAsRead";
+            ajaxOpt.type = "POST";
+            ajaxOpt.data = { id: id };
+            ajaxOpt.datatype = "json";
+            ajaxOpt.success = function (data) {
+                if (data.result) {
+                    var deleted1 = false;
+                    var deleted2 = false;
+
+                    $(".notificationContainer > div").each(function () {
+                        var ntfId = $(this).attr("data-notifId");
+                        if (ntfId == id) {
+                            if ($(this).find(".ntfContent").hasClass("ntf-hightlighted")) {
+                                $(this).find(".ntfContent").removeClass("ntf-hightlighted");
+                                deleted1 = true;
+                            }
+                        }
+                    });
+
+                    $(".allNotificationContainer > div").each(function () {
+                        var ntfId = $(this).attr("data-notifId");
+                        if (ntfId == id) {
+                            if ($(this).find(".ntfContent").hasClass("ntf-hightlighted")) {
+                                $(this).find(".ntfContent").removeClass("ntf-hightlighted");
+                                deleted2 = true;
+                            }
+                        }
+                    });
+
+                    if (deleted1 || deleted2) {
+                        var cnt = parseInt($(".ntfBadge").text());
+                        cnt -= 1;
+                        $(".ntfBadge").text(cnt);
+                    }
+                }
+            };
+            ajaxOpt.error = function (e) {
+                //console.log(e.responseText);
+            };
+            $.ajax(ajaxOpt);
+        }
+
+        function RemoveNotification(ids) {
+            swal({
+                title: "Are you sure you want to remove this?",
+                text: "This cannot be reverted!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes!",
+                closeOnConfirm: false
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var ajaxOpt = {};
+                        ajaxOpt.url = "/Home/RemoveNotification";
+                        ajaxOpt.type = "DELETE";
+                        ajaxOpt.data = { ids: ids };
+                        ajaxOpt.datatype = "json";
+                        ajaxOpt.success = function (data) {
+                            if (data.result) {
+                                var deleted1 = false;
+                                var deleted2 = false;
+                                $(".notificationContainer > div").each(function () {
+                                    var ntfId = $(this).attr("data-notifId");
+                                    if (ntfId == id) {
+                                        $(this).remove();
+                                        deleted1 = true;
+                                        break;
+                                    }
+                                });
+
+                                $(".allNotificationContainer > div").each(function () {
+                                    var ntfId = $(this).attr("data-notifId");
+                                    if (ntfId == id) {
+                                        $(this).remove();
+                                        deleted2 = true;
+                                        break;
+                                    }
+                                });
+
+                                if (deleted1 || deleted2) {
+                                    swal("Success!", "Notification has been removed.", "success");
+                                }
+                                else {
+                                    swal("Failed!", "Oops! Something went wrong. Please try again later or refresh the page.", "error");
+                                }
+                            }
+                            else {
+                                swal("Failed!", "Oops! Something went wrong. Please try again later or refresh the page.", "error");
+                            }
+                        };
+                        ajaxOpt.error = function (e) {
+                            //console.log(e.responseText);
+                        };
+                        $.ajax(ajaxOpt);
+                    }
+                });
+        }
+
+        function GetMyRecentSearches() {
+            var options = {
+                url: function (phrase) {
+                    return "Home/GetRecentSearch";
+                },
+
+                getValue: function (element) {
+                    return element;
+                },
+
+                ajaxSettings: {
+                    dataType: "json",
+                    method: "GET",
+                    data: {
+                        dataType: "json"
+                    }
+                },
+
+                preparePostData: function (data) {
+                    data.keyword = $(".searchbar").val();
+                    return data;
+                },
+
+                requestDelay: 400,
+                theme: "round"
+            };
+
+            $(".searchbar").easyAutocomplete(options);
+        }
+    </script>
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (user.IsAvatarProfilePicture ?? false)
+        {
+            <script>
+                $(document).ready(function () {
+                    $("#scrollUp").html('<img src="@PurchasesTool.GetProduct(user.SelectedAvatar).Image" style="width:48px; height:48px; border-radius: 50%" data-toggle="tooltip" data-placement="top" title="Selected Avatar" />');
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="modal"][title]').tooltip();
+                });
+            </script>
+        }
+    }
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

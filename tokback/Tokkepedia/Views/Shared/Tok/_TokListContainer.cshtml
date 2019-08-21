@@ -1,0 +1,51 @@
+﻿@model ResultData<Tok>
+
+@if (Model != null)
+{
+    @if (Model.Results.Count > 0)
+    {
+        <div class="my-lg-5 p-3 bg-white rounded box-shadow tokviewfeed" style="margin-top: 0px !important;">
+            @Html.HiddenFor(model => model.Token, new { id = "Token" })
+
+            <div id="TokFeed" class="container-fluid tokviewfeed">
+                <input id="RenderedTokContent" type="hidden" value="" />
+                @foreach (Tok tok in Model.Results)
+                {
+                    await Html.RenderPartialAsync("TokView", tok);
+                    <hr />
+                }
+            </div>
+            <div class="justify-content-center" style="align-content:center!important;">
+                <div class="justify-content-center tokProgress" style="display:none; height:200px; width:200px;"></div>
+            </div>
+        </div>
+    }
+
+    <script>
+        //Image popup
+        $('.image-popup-no-margins').magnificPopup({ //.image-popup-no-margins
+            type: 'image',
+            closeOnContentClick: true,
+            closeBtnInside: false,
+            fixedContentPos: true,
+            mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+            image: {
+                verticalFit: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300 // don't foget to change the duration also in CSS
+            }
+        });
+
+        $(document).ready(function () {
+            window.onbeforeunload = function () {
+                if (unsaved) {
+                    return "Unsaved changes - are you sure you want to leave this page?";
+                } else {
+                    return;
+                }
+            };
+        });
+    </script>
+}

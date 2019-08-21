@@ -1,0 +1,36 @@
+﻿@model ResultData<Tok>
+
+@if (Model != null)
+{
+    @if (Model.Results.Count > 0)
+    {
+        <div class="my-lg-5 p-3 box-shadow tokviewfeed" style="padding-left:0.2em!important;margin-top: 0px !important;">
+            @Html.HiddenFor(model => model.Token, new { id = "Token" })
+
+            <div class="container tokviewfeed TokCardFeed">
+                <input id="RenderedTokContent" type="hidden" value="" />
+                @foreach (Tok tok in Model.Results)
+                {
+                    @await Html.PartialAsync("Tok/_TokCardView", tok)
+                    <hr />
+                }
+            </div>
+            <div class="justify-content-center" style="align-content:center!important;">
+                <div class="justify-content-center cardMoreProgress" style="display:none; height:200px; width:200px;"></div>
+            </div>
+        </div>
+    }
+
+    <script>
+        // This is required to load the loading animation script
+        var animation = bodymovin.loadAnimation({
+            container: $(".cardMoreProgress")[0], // Required
+            path: window.location.origin + '/images/anim/trail_loading.json', //baseUrl + 'images/anim/trail_loading.json', // Required
+            renderer: 'svg', // Required
+            loop: true, // Optional
+            autoplay: true, // Optional
+            name: "" // Name for future reference. Optional.
+        });
+
+    </script>
+}

@@ -1,0 +1,353 @@
+﻿@model SetViewModel
+@using System.Drawing;
+
+@{
+    // Calculate Image Size
+    int width = 0;
+    int height = 0;
+
+    if (!string.IsNullOrEmpty(Model.CurrentSet.Image))
+    {
+        System.Net.WebRequest request =  System.Net.WebRequest.Create(Model.CurrentSet.Image);
+        System.Net.WebResponse response = request.GetResponse();
+        System.IO.Stream responseStream = response.GetResponseStream();
+        Bitmap bmp = new Bitmap(responseStream);
+
+        width = bmp.Width;
+        height = bmp.Height;
+        if (bmp.Width > 600) { width = bmp.Width - (int)(bmp.Width * 0.80); }
+        if (bmp.Width > 250) { width = bmp.Width - (int)(bmp.Width * 0.40); }
+
+        if (bmp.Height > 600) { height = bmp.Height - (int)(bmp.Height * 0.80); }
+        if (bmp.Height > 250) { height = bmp.Height - (int)(bmp.Height * 0.40); }
+    }
+}
+
+@section Meta {
+    <meta property="fb:app_id" content="2096904330562973" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@@tokkepedia" />
+    <meta property="og:url" content="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/set?id={Model.CurrentSet.Id}")" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@Model.CurrentSet.Name | Tokkepedia Set" />
+    <meta property="og:description" content="@Model.CurrentSet.Description" />
+    <meta property="og:image" content="@(!string.IsNullOrEmpty(Model.CurrentSet.Image) ? Model.CurrentSet.Image : string.Empty)" />
+    <meta property="og:image:alt" content="@Model.CurrentSet.Name" />
+    <meta property="og:image:height" content="@height" />
+    <meta property="og:image:width" content="@width" />
+}
+
+@{
+    ViewData["Title"] = "Set Toks";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+@section Styles {
+    @*<link href="~/css/material.css" rel="stylesheet" />*@
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+                    <br />
+                    <div class="row overview">
+                        <div class="col-sm-12 text-center">
+                            @if (!string.IsNullOrEmpty(Model.CurrentSet.Image))
+                            {
+                                <img class="rounded-corner" src="@Model.CurrentSet.Image" />
+                            }
+                            <h1>@Model.CurrentSet.Name</h1>
+                            <p>Tok Group: @Model.CurrentSet.TokGroup<br />Tok Type: @Model.CurrentSet.TokType</p>
+                            <p class="lead">@Model.CurrentSet.Description</p>
+                        </div>
+                    </div>
+
+                    <div class="row overview">
+                        <div class="col-md-12 user-pad text-center">
+                            <h3>TOKS</h3>
+                            <h4>@(Model.CurrentSet.TokIds?.Count ?? 0)</h4>
+
+                            <div class="col-md-6" style="margin: 0px auto;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <a id="btnPlayCards" asp-action="PlayToks" asp-controller="Set" asp-route-id="@Model.CurrentSet.Id" style="width: 100%;"><img src="~/images/tokcards.jpg" /></a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a id="btnPlayCards" asp-action="TokMatch" asp-controller="Tok" asp-route-id="@Model.CurrentSet.Id" asp-route-type="8" style="width: 100%;"><img src="~/images/tokmatch.jpg" /></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a class="btn btn-danger float-right" style="color: white; margin-left: 4px;" data-toggle="modal" data-target="#removeTokModal" id="btnRemoveToksModal">- Remove Toks</a>
+                            <a class="btn btn-primary float-right" style="color: white;" data-toggle="modal" data-target="#addTokModal" id="btnAddToksModal">+ Add Toks</a>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <!--/col-3-->
+                        <div class="col-sm-12">
+
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item nav-link"><a href="#home" data-toggle="tab">Toks</a></li>
+                                <li class="nav-item nav-link"><a href="#cards" data-toggle="tab">Tok Cards</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <input id="IsLoadMore" type="hidden" value="yes" />
+                                    <input id="LoadMoreFunction" type="hidden" value="GetSearchData" />
+                                    <input id="ValSearchText" type="hidden" value="" />
+                                    <input id="TxtCategory" type="hidden" value="" />
+                                    <input id="CountryFilter" type="hidden" value="" />
+                                    <input id="TokTypeFilter" type="hidden" value="" />
+                                    <input id="TokTypeIdFilter" type="hidden" value="" />
+                                    <input id="UserIdFilter" type="hidden" value="" />
+                                    <input id="searchorder" type="hidden" value="newest" />
+                                    @Html.HiddenFor(model => model.Token, new { id = "Token" })
+                                    <div class="center containerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokContainer" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="tokTileContainer" class="row">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center tokProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane active" id="cards" style="visibility: hidden;">
+                                    <div class="center cardContainerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokCardContainer" class="container" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="cardContainer" class="row">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center cardMoreProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/tab-pane-->
+                        </div>
+                        <!--/tab-content-->
+
+                    </div>
+                </div>
+                <!--Add to Set Modal -->
+                <div class="modal fade multiSelectModal" id="addTokModal" tabindex="-1" role="dialog" aria-labelledby="addTokModal-title" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered addtosetdialog" role="document">
+                        <div class="modal-content addtosetcontent">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">Add Tok to @Model.CurrentSet.TokType Set</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body addtosetbody">
+                                <h6>@Model.CurrentSet.Name</h6>
+                                <hr />
+                                Select a tok:
+                                <br />
+
+                                <div id="divSelectionContainer" class="addtosetsetssection">
+                                    <div class="list-group addtosetlistgroup" id="list-tab" role="tablist">
+                                        <input type="hidden" id="" value="" />
+                                        <div class="scrollsets" style="max-height: 200px; overflow: auto;">
+
+                                        </div>
+
+                                        <div class="center containerProgress" style="margin: 24px auto">
+                                            <div class="colorlib-load"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer addtosetbtngroup">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary addtosetbtn" onclick="AddToksToSet()">Add to Set</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Remove Toks from Set Modal -->
+                <div class="modal fade multiSelectModal" id="removeTokModal" tabindex="-1" role="dialog" aria-labelledby="addTokModal-title" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered addtosetdialog" role="document">
+                        <div class="modal-content addtosetcontent">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">Remove Toks from @Model.CurrentSet.TokType Set</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body addtosetbody">
+                                <h6>@Model.CurrentSet.Name</h6>
+                                <hr />
+                                Select a tok:
+                                <br />
+
+                                <div id="divSelectionContainer_remove" class="addtosetsetssection">
+                                    <div class="list-group addtosetlistgroup" id="list-tab" role="tablist">
+                                        <input type="hidden" id="" value="" />
+                                        <div class="scrollsets">
+
+                                        </div>
+
+                                        <div class="center containerProgress" style="margin: 24px auto">
+                                            <div class="colorlib-load"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer addtosetbtngroup">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary addtosetbtn" onclick="RemoveToksFromSet()">Remove from Set</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/tokkepedia.js"></script>
+    <script src="~/js/SetFeed.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/jquery.flip.js"></script>
+    <script>
+        setId = '@Model.CurrentSet.Id';
+        isSetTokPage = true;
+        $(document).ready(function () {
+            LoadSetTokFeeds();
+            LoadSetTokFeeds(100, 0, true);
+            LoadSetToksByTokType('@Model.CurrentSet.TokTypeId');
+            LoadSetToksListing(setId, $("#divSelectionContainer_remove"));
+
+            $("#btnAddToksModal, #btnRemoveToksModal").click(function () {
+                enableMultipleSelection = true;
+            });
+            $(".multiSelectModal").on("hidden.bs.modal", function () {
+                enableMultipleSelection = false;
+            });
+
+            $('#divSelectionContainer').find(".scrollsets").on('scroll', function () {
+                let div = $(this).get(0);
+                if (div.scrollTop + div.clientHeight >= div.scrollHeight) {
+                    LoadSetToksByTokType('@Model.CurrentSet.TokTypeId', $("#txtToken").val());
+                }
+            });
+
+            //$('#divSelectionContainer_remove').find(".scrollsets").on('scroll', function () {
+            //    let div = $(this).get(0);
+            //    if (div.scrollTop + div.clientHeight >= div.scrollHeight) {
+            //        LoadSetToksListing(setId, $("#divSelectionContainer_remove"), 5, stepAt);
+            //    }
+            //});
+        });
+
+        function AddToksToSet() {
+            var selectedToks = [];
+            $("#divSelectionContainer").find(".scrollsets").find(".tokView").each(function () {
+                var e = $(this);
+                var tokId = $(e).attr("data-tokid");
+                if (e.find(".list-group-item-action").hasClass("selected")) {
+                    selectedToks.push(tokId);
+                }
+            });
+
+            if (selectedToks.length > 0) {
+                $.ajax({
+                    url: "/Set/AddToksToSet",
+                    type: "POST",
+                    data: { setId: setId, tokIds: selectedToks },
+                    dataType: "json",
+                    async: true,
+                    success: function (res) {
+                        switch (res.resultEnum) {
+                            case 1: // Success
+                                window.location.reload();
+                                break;
+                            case 2: // Failed
+                                swal("Error", res.resultMessage, "error")
+                                break;
+                        }
+                    },
+                    error: function () {
+                        // Error here..
+                    }
+                });
+            }
+            else {
+                swal("Warning", "Please select at least 1 tok.", "warning");
+            }
+        }
+
+        function RemoveToksFromSet() {
+            var selectedToks = [];
+            $("#divSelectionContainer_remove").find(".scrollsets").find(".tokView").each(function () {
+                var e = $(this);
+                var tokId = $(e).attr("data-tokid");
+                if (e.find(".list-group-item-action").hasClass("selected")) {
+                    selectedToks.push(tokId);
+                }
+            });
+
+            if (selectedToks.length > 0) {
+                $.ajax({
+                    url: "/Set/RemoveToksFromSet",
+                    type: "DELETE",
+                    data: { setId: setId, tokIds: selectedToks },
+                    dataType: "json",
+                    async: true,
+                    success: function (res) {
+                        switch (res.resultEnum) {
+                            case 1: // Success
+                                RemoveToksFromList(selectedToks);
+                                break;
+                            case 2: // Failed
+                                swal("Error", res.resultMessage, "error")
+                                break;
+                        }
+                    },
+                    error: function () {
+                        // Error here..
+                    }
+                });
+            }
+            else {
+                swal("Warning", "Please select at least 1 tok.", "warning");
+            }
+        }
+    </script>
+}

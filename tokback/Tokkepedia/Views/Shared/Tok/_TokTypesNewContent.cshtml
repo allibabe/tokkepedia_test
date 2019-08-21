@@ -1,0 +1,129 @@
+﻿@model BrowseViewModel
+@using System.Drawing
+@{
+    var tokgroups_basic = new List<TokTypeList>();
+    var tokgroups_detailed = new List<TokTypeList>();
+    var groups_basic = new List<TokTypeListCounter>();
+    var groups_detailed = new List<TokTypeListCounter>();
+
+    var colorIndex = 0;
+    var materialColors = new List<string> { "f44336", "E91E63", "9C27B0", "673AB7", "3F51B5", "2196F3", "03A9F4", "00BCD4", "009688", "4CAF50", "8BC34A", "CDDC39", "efdc3c", "FFC107", "FF9800", "FF5722" };
+    var materialLightColors = new List<string> { "ef9a9a", "F48FB1", "CE93D8", "B39DDB", "9FA8DA", "90CAF9", "81D4FA", "80DEEA", "80CBC4", "A5D6A7", "C5E1A5", "E6EE9C", "FFF59D", "FFE082", "FFCC80", "FFAB91" };
+}
+
+@for (var s = 0; s < Model.TokGroups.Count; ++s)
+{
+    var tokgroup = Model.TokGroups[s];
+    var group = Model.Counters[s];
+
+    if (tokgroup.IsDetailBased)
+    {
+        tokgroups_detailed.Add(tokgroup);
+        groups_detailed.Add(group);
+    }
+    else
+    {
+        tokgroups_basic.Add(tokgroup);
+        groups_basic.Add(group);
+    }
+}
+
+<div class="col-md-12" style="background-color: white; border-radius: 8px;">
+    @* Basic Styles *@
+    <div class="row">
+        <div class="col-md-6" style="background-color: white; padding-top: 82px; border-radius: 8px;">
+            <div style="border: 1px solid #5B83CC; position: absolute; top: 12px;  right: 0px; height: 100%"></div>
+            <h1 class="toktype-header" style="background-color: #2196F3; text-align: center;">BASIC</h1>
+            <div class="divDetailed" style="padding-top: 12px; padding-right: 32px; position: absolute; top: 0px; width: 100%;height: 100%;">
+                <h1 class="tokkepedia-title" style="background-color: #2196F3; text-align: center;">BASIC</h1>
+            </div>
+            <hr style="border-top: 4px solid #5B83CC;margin-right:-14px" />
+            @for (int i = 0; i < tokgroups_basic.Count; ++i)
+            {
+                var item = tokgroups_basic[i];
+                var g = groups_basic[i];
+                if (colorIndex >= materialColors.Count) { colorIndex = 0; }
+
+                <div style="left: 31.5%; position: relative; width: 296px;text-align: center;">
+                    <a href="/tokgroup?name=@g.TokGroup"><h3 class="toktype-link" data-toggle="popover" data-container="body" data-title="<h5>@g.TokGroup</h5>" data-content="<p style='color: black;'>@item.Description</p>" data-placement="right" data-trigger="hover" style="padding: 12px 8px; background-color: #@materialColors[colorIndex]; border: 1px solid #2F528F;color: white !important;">@item.TokGroup</h3></a>
+                    <div>
+                        <ol>
+                            @for (int x = 0; x < g.TokTypes.Length; ++x)
+                            {
+                                var typeId = item.TokTypeIds[x].ToString();
+                                <li style="padding: 6px 24px 2px 24px;"><a asp-controller="Tok" asp-action="toktype" asp-route-id="@typeId"><h4  class="toktype-link" data-toggle="popover" data-container="body" data-title="<h5>@g.TokTypes[x]</h5>" data-content="<p style='color: black;'>@item.Descriptions[x]</p>" data-placement="right" data-trigger="hover" style="padding: 12px 8px; border: 1px solid #2F528F; background-color: #@materialLightColors[colorIndex];color: white !important;">@g.TokTypes[x]</h4></a></li>
+                            }
+                        </ol>
+                    </div>
+                </div>
+                <br />
+                colorIndex += 1;
+            }
+        </div>
+        <div class="col-md-6" style="padding-top: 82px; background-color: white; border-radius: 8px;">
+            <div style="border: 1px solid #5B83CC; position: absolute; top: 12px; left: 0px; height: 100%"></div>
+            <h1 class="toktype-header" style="background-color: #283593; text-align: center;">DETAILED</h1>
+            <div class="divDetailed" style="padding-top: 12px; padding-right: 32px; position: absolute; top: 0px; width: 100%;height: 100%;">
+                <h1 class="tokkepedia-title" style="background-color: #283593; text-align: center;">DETAILED</h1>
+            </div>
+            <hr style="border-top: 4px solid #5B83CC;margin-left:-14px;" />
+            @for (int i = 0; i < tokgroups_detailed.Count; ++i)
+            {
+                var item = tokgroups_detailed[i];
+                var g = groups_detailed[i];
+                if (colorIndex >= materialColors.Count) { colorIndex = 0; }
+
+                <div style="left: 31.5%; position: relative;width: 296px; text-align: center;">
+                    <a style="" href="/tokgroup?name=@g.TokGroup"><h3 class="toktype-link" data-toggle="popover" data-container="body" data-title="<h5>@g.TokGroup</h5>" data-content="<p style='color: black;'>@item.Description</p>" data-placement="right" data-trigger="hover" style="padding: 12px 8px; background-color: #@materialColors[colorIndex]; border: 1px solid #2F528F;color: white !important;">@item.TokGroup</h3></a>
+                    <div>
+                        <ol>
+                            @for (int x = 0; x < g.TokTypes.Length; ++x)
+                            {
+                                var typeId = item.TokTypeIds[x].ToString();
+                                <li style="padding: 6px 24px 2px 24px;"><a asp-controller="Tok" asp-action="toktype" asp-route-id="@typeId"><h4 class="toktype-link" data-toggle="popover" data-container="body" data-title="<h5>@g.TokTypes[x]</h5>" data-content="<p style='color: black;'>@item.Descriptions[x]</p><p style='font-style: italic;'>Example: <br />@item.Examples[x]</p>" data-placement="right" data-trigger="hover" style="padding: 12px 8px;background-color: #@materialLightColors[colorIndex]; border: 1px solid #2F528F;color: white !important;">@g.TokTypes[x]</h4></a></li>
+                            }
+                        </ol>
+                    </div>
+                </div>
+                <br />
+                colorIndex += 1;
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var titleWidth = $('.tokkepedia-title').outerWidth() + 0;
+        $('.toktype-header').css('width', titleWidth + 'px');
+
+        // Popover
+        $(".toktype-link").popover({
+            html: true,
+            delay: { show: 300, hide: 100 }
+        });
+
+        // For Header
+        $(window).scroll(function () {
+
+            var target = $(window).scrollTop();
+            var alturaA = $('.divDetailed').offset().top;
+            var alturaB = alturaA + $('.divDetailed').height() - 32 - $('.tokkepedia-title').height();
+
+            //console.log(target + ' ' + alturaA + ' ' + alturaB);
+            if (target > alturaB) {
+                //$('.tokkepedia-title').css('margin-top', (alturaB - alturaA) + 64 + 'px');
+                $('.tokkepedia-title').hide();
+                $('.toktype-header').show();
+            } else if (target > alturaA && target < alturaB) {
+                //$('.tokkepedia-title').css('margin-top', (target - alturaA) + 64 + 'px');
+                $('.tokkepedia-title').hide();
+                $('.toktype-header').show();
+            } else {
+                //$('.tokkepedia-title').css('margin-top', '0');
+                $('.tokkepedia-title').show();
+                $('.toktype-header').hide();
+            }
+        });
+    });
+</script>

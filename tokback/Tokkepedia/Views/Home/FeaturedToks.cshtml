@@ -1,0 +1,268 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "FeaturedToks";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+                    <br />
+                    <div class="row overview">
+                        <div class="col-sm-12 text-center">
+                            <h1>Featured Toks</h1>
+                        </div>
+                    </div>
+
+                    <div class="row overview">
+                        <div class="col-md-12 user-pad text-center">
+                            <h3>TOKS</h3>
+                            <h4>@Model.Toks</h4>
+                            <div class="col-md-6" style="margin: 0px auto;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <a id="btnPlayCards" asp-action="PlayToks" asp-controller="Set" style="width: 100%;"><img src="~/images/tokcards.jpg" /></a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a id="btnPlayCards" asp-action="TokMatch" asp-controller="Tok" style="width: 100%;"><img src="~/images/tokmatch.jpg" /></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <!--/col-3-->
+                        <div class="col-sm-12">
+
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item nav-link"><a href="#home" data-toggle="tab">Toks</a></li>
+                                <li class="nav-item nav-link"><a href="#cards" data-toggle="tab" id="tabTokCards">Tok Cards</a></li>
+                                <li class="nav-item nav-link"><a href="#toklist" data-toggle="tab" id="tabTokList">Tok List</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <input id="IsLoadMore" type="hidden" value="yes" />
+                                    <input id="LoadMoreFunction" type="hidden" value="GetSearchData" />
+                                    <input id="ValSearchText" type="hidden" value="" />
+                                    <input id="TxtCategory" type="hidden" value="" />
+                                    <input id="CountryFilter" type="hidden" value="" />
+                                    <input id="UserIdFilter" type="hidden" value="" />
+                                    <input id="TokTypeFilter" type="hidden" value="" />
+                                    <input id="TokTypeIdFilter" type="hidden" value="" />
+                                    <input id="TokGroupFilter" type="hidden" value="" />
+                                    <input id="searchorder" type="hidden" value="newest" />
+                                    <input id="Token" type="hidden" />
+
+                                    <div class="center" id="containerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokContainer" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="tokTileContainer" class="row">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center tokProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane active" id="cards" style="visibility: hidden;">
+                                    <div class="center cardContainerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokCardContainer" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="cardContainer" class="row">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center cardMoreProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="toklist">
+                                    <div class="center cardContainerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokListContainer" class="no-padding" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="listContainer" class="row">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center tokProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/tab-pane-->
+                        </div>
+                        <!--/tab-content-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/jquery.flip.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            renderCount = 4;
+            GetInitRawData($("#TokGroupFilter").val(), 7);
+        });
+        
+        function GetInitRawData(filter = '', type = 0) {
+            var SelectGroupOptions = {};
+
+            SelectGroupOptions.url = "/Tok/InitializeRawTokData?filter=" + filter + "&type=" + type;
+            SelectGroupOptions.type = "GET";
+            SelectGroupOptions.async = true;
+            SelectGroupOptions.success = function (data) {
+                var toks = data.allToks;
+                //console.log(toks);
+                $("#tokTileContainer").html("");
+                for (var i = 0; i < toks.length; i++) {
+                    //console.log(JSON.stringify(toks[i]));
+                    (function (x) {
+                        $.ajax({
+                            url: "/Tok/RenderTokViews",
+                            type: "POST",
+                            data: JSON.stringify(toks[x]),
+                            datatype: "html",
+                            contentType: "application/json",
+                            async: true,
+                            cache: false,
+                            success: function (res) {
+                                $("#tokTileContainer").append(res.tileHtml);
+                                $("#cardContainer").append(res.cardHtml);
+                                $("#listContainer").append(res.tokHtml);
+                            },
+                            error: function () {
+                                // Error here..
+                            },
+                            complete: function () {
+                                $(".tok-tile").click(function (e) {
+                                    OpenDialog(this);
+                                });
+
+                                $(".tok-tile a").on('click', function (ev) {
+                                    ev.stopImmediatePropagation();
+                                });
+
+                                // Facebook Renderer
+                                $(".tokTile_" + toks[x].id).find('.social-buttons').each(function () {
+                                    var btnShare = $(this).find(".btnShare");
+                                    FB.XFBML.parse(this);
+                                    var obj = {
+                                        method: 'feed',
+                                        link: btnShare.attr("data-href"),
+                                        picture: btnShare.attr("data-pic"),
+                                        name: btnShare.attr("data-title"),
+                                        description: btnShare.attr("data-desc")
+                                    };
+                                    $(".btnShare").click(function () {
+                                        FB.ui(obj, function (response) { console.log(response); });
+                                    });
+                                });
+
+                                $("#twitter-button").click(function (e) {
+                                    e.preventDefault();
+                                    var win = window.open(shareUrl, 'ShareOnTwitter', getWindowOptions());
+                                    win.opener = null; // 2
+                                });
+                                // Twitter Renderer
+                                $.ajax({ url: 'https://platform.twitter.com/widgets.js', dataType: 'script', cache: true });
+                            }
+                        });
+                    })(i);
+                }
+            };
+            SelectGroupOptions.error = function () {
+                $("#containerProgress").hide();
+                $(".cardContainerProgress").hide();
+            };
+            SelectGroupOptions.beforeSend = function () {
+                $("#containerProgress").show();
+                $(".cardContainerProgress").show();
+            };
+            SelectGroupOptions.complete = function () {
+                $("#containerProgress").hide();
+                $(".cardContainerProgress").hide();
+                $("#cards").removeClass("active");
+                $("#cards").css("visibility", "");
+
+                // Facebook Renderer
+                $('.social-buttons').each(function () {
+                    var btnShare = $(this).find(".btnShare");
+                    FB.XFBML.parse(this);
+                    var obj = {
+                        method: 'feed',
+                        link: btnShare.attr("data-href"),
+                        picture: btnShare.attr("data-pic"),
+                        name: btnShare.attr("data-title"),
+                        description: btnShare.attr("data-desc")
+                    };
+                    $(".btnShare").click(function () {
+                        FB.ui(obj, function (response) { console.log(response); });
+                    });
+                });
+
+                $("#twitter-button").click(function (e) {
+                    e.preventDefault();
+                    var win = window.open(shareUrl, 'ShareOnTwitter', getWindowOptions());
+                    win.opener = null; // 2
+                });
+                // Twitter Renderer
+                $.ajax({ url: 'https://platform.twitter.com/widgets.js', dataType: 'script', cache: true });
+
+                // Bootstrap Tooltip
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="modal"][title]').tooltip();
+                })
+
+                setTimeout(function () {
+                    $(".dropdown-menu > .social-buttons > .fb-share-button > span", ".dropdown-menu > .social-buttons > .fb-share-button > span > iframe").css("width", "73px");
+                    $(".dropdown-menu > .social-buttons > .fb-share-button > span", ".dropdown-menu > .social-buttons > .fb-share-button > span > iframe").css("height", "28px");
+                }, 1500);
+            };
+            $.ajax(SelectGroupOptions);
+        }
+    </script>
+}

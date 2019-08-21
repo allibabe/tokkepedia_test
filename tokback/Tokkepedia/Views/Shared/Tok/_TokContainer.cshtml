@@ -1,0 +1,83 @@
+﻿@model ResultData<Tok>
+@using Tokkepedia.Tools.Extensions
+
+@if (Model != null)
+{
+    @if (Model.Results.Count > 0)
+    {
+        List<string> Colors = new List<string>() {
+            "#d32f2f", "#C2185B", "#7B1FA2", "#512DA8",
+            "#303F9F", "#1976D2", "#0288D1", "#0097A7",
+            "#00796B", "#388E3C", "#689F38", "#AFB42B",
+            "#FBC02D", "#FFA000", "#F57C00", "#E64A19"
+            };
+        var rndmColors = Colors.Shuffle();
+        int idx = 0;
+
+        <div class="container">
+            <div id="tokTileContainer" class="row">
+                @if (Model != null)
+                {
+                    if (Model.Results.Count > 0)
+                    {
+                        foreach (var tok in Model.Results)
+                        {
+                            if (idx >= Colors.Count) { rndmColors = Colors.Shuffle(); idx = 0; } // Shuffle Again
+                            tok.ColorHex = rndmColors[idx];
+                            idx += 1;
+
+                            @await Html.PartialAsync("Tok/_TokTileView", tok)
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-md-12 text-center">
+                            <h2 style="text-align: center; margin-top: 12px">No results found!</h2>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-md-12 text-center">
+                        <h2 style="text-align: center; margin-top: 12px">No results found!</h2>
+                    </div>
+                }
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="justify-content-center" style="align-content:center!important;">
+                        <div class="justify-content-center tokProgress" style="display:none; height:200px; width:200px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script>
+        // This is required to load the loading animation script
+        var animation = bodymovin.loadAnimation({
+            container: $(".tokProgress")[0], // Required
+            path: window.location.origin + '/images/anim/trail_loading.json', //baseUrl + 'images/anim/trail_loading.json', // Required
+            renderer: 'svg', // Required
+            loop: true, // Optional
+            autoplay: true, // Optional
+            name: "" // Name for future reference. Optional.
+        });
+
+        //Image popup
+        $('.image-popup-no-margins').magnificPopup({ //.image-popup-no-margins
+            type: 'image',
+            closeOnContentClick: true,
+            closeBtnInside: false,
+            fixedContentPos: true,
+            mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+            image: {
+                verticalFit: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300 // don't foget to change the duration also in CSS
+            }
+        });
+    </script>
+}

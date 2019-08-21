@@ -1,0 +1,181 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<TokketUser> SignInManager
+@inject UserManager<TokketUser> UserManager
+
+@{
+    var userId = UserManager.GetUserId(User);
+
+    TokketUser user = null;
+    if (userId != null)
+    {
+        user = await UserManager.FindByIdAsync(userId);
+    }
+}
+
+<header class="header_area animated">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <!-- Menu Area Start -->
+            <div class="col-12 col-lg-10">
+                <div class="menu_area">
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <!-- Logo -->
+                        <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="~/images/logo.png" style="height:48px" /><span style="font-size:large;">(@Constants.Environment)</span></a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ca-navbar" aria-controls="ca-navbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                        <!-- Menu Area -->
+                        <div class="collapse navbar-collapse" id="ca-navbar">
+                            <ul class="navbar-nav ml-auto" id="nav">
+                                <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Tok" asp-action="AddTok">Add Tok</a></li>
+                                    <li class="nav-item">
+                                        <div class="dropdown">
+                                            <a class="nav-link show dropdown-toggle" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="tokGroupsMenu">Tok Groups</a>
+                                            <div class="dropdown-menu" aria-labelledby="tokGroupsMenu">
+                                                <a class="dropdown-item" href="/toktypes">Tok Types</a>
+                                                <a class="dropdown-item" href="/toktypescounts">Quantities</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <div class="dropdown">
+                                            <a class="nav-link show dropdown-toggle" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="tokPlay">Play</a>
+                                            <div class="dropdown-menu" aria-labelledby="tokPlay">
+                                                <a class="dropdown-item" asp-controller="Set" asp-action="MySets">Sets</a>
+                                                <a class="dropdown-item" asp-controller="Set" asp-action="PlayToks">Tok Cards</a>
+                                                <a class="dropdown-item" asp-controller="Tok" asp-action="TokMatch">Tok Match</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                                    <li class="nav-item"><a class="nav-link menu-with-icon" asp-controller="User" asp-action="UserCoins" asp-route-id="@userId"><img src="~/images/gold.gif" style="width: auto; height: 32px;" /> @user.Coins Coins</a></li>
+                                    <li class="nav-item"><div class="inner-addon right-addon"><i class="fas fa-search text-white searchbar-icon" style="cursor: pointer;z-index: 2;"></i><input type="text" class="form-control searchbar text-white" placeholder="Search"></div></li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                                    <li class="nav-item">
+                                        <div class="dropdown">
+                                            <a class=" nav-link show dropdown-toggle" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="tokGroupsMenu">Tok Groups</a>
+                                            <div class="dropdown-menu" aria-labelledby="tokGroupsMenu">
+                                                <a class="dropdown-item" href="/toktypes">Tok Types</a>
+                                                <a class="dropdown-item" href="/toktypescounts">Quantities</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                                    <li class="nav-item"><div class="inner-addon right-addon"><i class="fas fa-search text-white searchbar-icon" style="cursor: pointer;z-index: 2;"></i><input type="text" class="form-control searchbar text-white" placeholder="Search"></div></li>
+                                }
+                            </ul>
+                            <div class="sing-up-button d-lg-none">
+                                @if (SignInManager.IsSignedIn(User) && user != null)
+                                {
+                                    <div class="dropdown" style="padding:8px;">
+                                        <span id="btnNotifications" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 16px; color: white; cursor: pointer;"><i class="fas fa-bell"></i></span>
+                                        <div class="dropdown-menu ntf" aria-labelledby="btnNotifications">
+                                            <h6 class="center-content" style="margin-bottom: 0px;">Notifications</h6>
+                                            <div class="dropdown-divider"></div>
+                                            <div class="notificationContainer">
+                                                @*@await Html.PartialAsync("Home/_AllNotificationViews", new List<TokkepediaNotification>())*@
+                                            </div>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="center-content" href="/notifications">See All</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="sing-up-button dropdown" style="margin-top: 4px;">
+                                        <a class="show dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            @if (user.IsAvatarProfilePicture ?? false)
+                                            {
+                                                <img src="@PurchasesTool.GetProduct(user.SelectedAvatar).Image" style="width:32px; height:32px; border-radius: 8px" /> @user.DisplayName
+                                            }
+                                            else
+                                            {
+                                                if (!string.IsNullOrEmpty(user.UserPhoto))
+                                                {
+                                                    <img src="@user.UserPhoto" style="width:32px; height:32px; border-radius: 8px" /> @user.DisplayName
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-user-circle" style="font-size:32px;vertical-align: middle;"></i> @user.DisplayName
+                                                }
+                                            }
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item" href="/user?id=@userId">View My Profile</a>
+                                            <a class="dropdown-item" asp-controller="User" asp-action="ManageAccount">My Account</a>
+                                            @*<a class="dropdown-item" asp-controller="Set" asp-action="MySets">My Sets</a>*@
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" asp-controller="User" asp-action="Logout">Logout</a>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                }
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <!-- Login btn -->
+            <div class="col-12 col-lg-2">
+                <div class="menu-button d-none d-lg-block">
+                    @if (SignInManager.IsSignedIn(User) && user != null && userId != null)
+                    {
+                        <div class="dropdown notificationicon" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="center-content" id="btnNotifications" style="font-size: 16px; color: white; cursor: pointer;"><i class="fas fa-bell"></i></span>
+                            <span class="ntfBadge">0</span>
+                            <div class="dropdown-menu ntf" aria-labelledby="btnNotifications">
+                                <h6 class="center-content" style="margin-bottom: 0px;">Notifications</h6>
+                                <div class="dropdown-divider"></div>
+                                <div class="notificationContainer">
+                                    @*@await Html.PartialAsync("Home/_AllNotificationViews", new List<TokkepediaNotification>())*@
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="center-content" href="/notifications">See All</a>
+                            </div>
+                        </div>
+
+                        <div class="dropdown">
+                            <a class="show dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (user.IsAvatarProfilePicture ?? false)
+                                {
+                                    <img src="@PurchasesTool.GetProduct(user.SelectedAvatar).Image" style="width:32px; height:32px; border-radius: 8px" /> @user.DisplayName
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrEmpty(user.UserPhoto))
+                                    {
+                                        <img src="@user.UserPhoto" style="width:32px; height:32px; border-radius: 8px" /> @user.DisplayName
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle" style="font-size:32px;vertical-align: middle;"></i> @user.DisplayName
+                                    }
+                                }
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="/user?id=@userId">View My Profile</a>
+                                <a class="dropdown-item" asp-controller="User" asp-action="ManageAccount">My Account</a>
+                                @*<a class="dropdown-item" asp-controller="Set" asp-action="MySets">My Sets</a>*@
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-controller="User" asp-action="Logout">Logout</a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,9 @@
+﻿@model MySetsViewModel
+
+@if (Model.Sets != null)
+{
+    foreach (var set in Model.Sets)
+    {
+        @await Html.PartialAsync("Set/_SetSelectionView", set)
+    }
+}

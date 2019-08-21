@@ -1,0 +1,987 @@
+﻿@model UserProfileViewModel
+@using Microsoft.AspNetCore.Identity
+@using Tokkepedia.Tools.Extensions
+@{
+    ViewData["Title"] = "User Profile";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+
+    List<PurchaseModel> Avatars = new List<PurchaseModel>() {
+        new PurchaseModel(){ Id="avatar_1", Name="Lani Jaramillo", Type="nonconsumable", PriceUSD = 0.00, PriceCoins = 0, Image="https://tokketcontent.blob.core.windows.net/images/Avatar1_2048x2048.png", Quantity=1, PurchaseType = PurchaseType.NonConsumable, ProductType = ProductType.Avatars },
+        new PurchaseModel(){ Id="avatar_2", Name="Joleen Hackett", Type="nonconsumable", PriceUSD = 1.99,  PriceCoins = 90, Image="https://tokketcontent.blob.core.windows.net/images/Avatar2_2048x2048.png", Quantity=1, PurchaseType = PurchaseType.NonConsumable, ProductType = ProductType.Avatars },
+        new PurchaseModel(){ Id="avatar_3", Name="Eloisa Tobin", Type="nonconsumable", PriceUSD = 1.99, PriceCoins = 90, Image="https://tokketcontent.blob.core.windows.net/images/Avatar3_2048x2048.png", Quantity=1, PurchaseType = PurchaseType.NonConsumable, ProductType = ProductType.Avatars },
+        new PurchaseModel(){ Id="avatar_4", Name="Arron	Crider", Type="nonconsumable", PriceUSD = 3.99, PriceCoins = 180, Image="https://tokketcontent.blob.core.windows.net/images/Avatar4_2048x2048.png", Quantity=1, PurchaseType = PurchaseType.NonConsumable, ProductType = ProductType.Avatars },
+        new PurchaseModel(){ Id="avatar_5", Name="Russ Yost", Type="nonconsumable", PriceUSD = 3.99, PriceCoins = 180, Image="https://tokketcontent.blob.core.windows.net/images/Avatar5_2048x2048.png", Quantity=1, PurchaseType = PurchaseType.NonConsumable, ProductType = ProductType.Avatars }
+    };
+}
+
+@inject SignInManager<TokketUser> SignInManager
+@inject UserManager<TokketUser> UserManager
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <div class="container">
+
+                    <div class="alert alert-success alert-dismissible fade" role="alert">
+                        <strong id="txtMessage">Saved!</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="row no-gutters">
+                        <div class="col-md-12 profile-cover-photo-container">
+                            <div style="background: url(@Model.User.CoverPhoto) no-repeat center; background-size: cover; height: 100%; width: 100%"></div>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                if (User.Identity.Name == Model.User.Id)
+                                {
+                                    <div class="profile-upload-cover-photo" data-toggle="modal" data-target="#changeCoverPhotoModal">
+                                        <i class="fas fa-camera" style="margin-right:4px;"></i>
+                                        <span> Change Cover Photo</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        <div class="col-md-12 profile-body" style="padding: 32px; margin-top: -128px;">
+                            <!-- Floating Tab -->
+                            <div class="floatingTab" style="display: inline-flex;z-index: 4;position: absolute;background: white; left: 275px; top: 10px;">
+                                <div class="center-content tabProfile tokkepedia-tab active" data-target="tabProfile">
+                                    <span style="font-size: 16px; font-weight: 700;">Profile</span>
+                                </div>
+                                <div class="center-content tabAvatars tokkepedia-tab" data-target="tabAvatars">
+                                    <span style="font-size: 16px; font-weight: 700;">Avatars</span>
+                                </div>
+                            </div>
+
+                            <div class="row no-gutters">
+                                <div class="col-md-12 profile-box" id="tabAvatars" style="display: none;">
+                                    @if (Avatars.Count > 0)
+                                    {
+                                        var cnt = 0;
+                                        <div class="container">
+                                            <div class="row p-3">
+                                                <div class="col-md-12" style="margin-top: 24px; margin-bottom: 8px;">
+                                                    <input type="checkbox" id="chkShowAvatar" style="padding: 8px 0px" /><span style="padding: 8px 0px; margin-left: 8px;">Use avatar instead of profile picture</span>
+                                                    <button type="button" class="btn btn-primary" style="float: right;" id="btnUseAvatar">Save</button>
+                                                </div>
+                                                @foreach (var avatar in Avatars)
+                                                {
+                                                    // Temporary 
+                                                    var classSelected = (cnt == 0 ? "selected" : "");
+                                                    <div class="col-md-2 avatar-card @classSelected" data-avatarid="@avatar.Id" style="border: 1px solid #606060; cursor: pointer;">
+                                                        <img src="@avatar.Image" style="height: 128px;" />
+                                                        <div class="selection text-center" style="background-color: #3d3d3d;opacity: .6; position: absolute; bottom: 0px; left: 0px; width: 100%; padding: 8px;@(cnt == 0 ? "" : "display:none;")">
+                                                            <span style="font-weight: bold; font-style:italic; font-size: 14px;color: white;">Selected</span>
+                                                        </div>
+                                                    </div>
+                                                    cnt += 1;
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <h1>No Avatars</h1>
+                                    }
+                                </div>
+
+                                <div class="col-md-12 text-center profile-box" id="tabProfile">
+                                    <h1>@Model.User.DisplayName</h1>
+                                    <div class="row no-gutters">
+                                        <div class="col-md-12 text-center">
+                                            @if (User.GetUserId() == Model.User.Id)
+                                            {
+                                                if (string.IsNullOrEmpty(Model.User.Bio))
+                                                {
+                                                    <div class="divBio"><span class="btnEditBiodata">+ Add a Bio <i class="fas fa-pencil-alt" style="padding: 4px;"></i></span></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="divBio"><p class="btnEditBiodata">@Model.User.Bio<i class="fas fa-pencil-alt" style="padding: 4px;"></i></p></div>
+                                                }
+                                                <form class="p-2" id="frmAddBiodata" method="post" style="display: none;">
+                                                    <div class="form-group mb-2">
+                                                        <label for="txtBiodata" class="sr-only">Bio</label>
+                                                        <textarea class="form-control" id="txtBiodata" name="biodata" placeholder="Enter Biodata" rows="3" maxlength="160"></textarea>
+                                                        <label class="inputCounter" style="color: dimgray;">160</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary mb-2" onclick="ChangeBiodata($('#txtBiodata').val())">Save</button>
+                                                    <button type="button" class="btn btn-danger mb-2" id="btnCancelBiodata">Cancel</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <div class="divBio"><p class="btnEditBiodata">@Model.User.Bio</p></div>
+                                            }
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                            @if (User.GetUserId() == Model.User.Id)
+                                            {
+                                                if (string.IsNullOrEmpty(Model.User.Website))
+                                                {
+                                                    <div class="divWeb btnEditWebsite"><a href="javascript:void(0)" class="">+ Add a Website</a><i class="fas fa-pencil-alt" style="padding: 4px;"></i></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="divWeb btnEditWebsite"><a href="@Model.User.Website" class="">@Model.User.Website</a><i class="fas fa-pencil-alt" style="padding: 4px;"></i></div>
+                                                }
+                                                <form class="form-inline" id="frmAddWebsite" method="post" style="display: none; justify-content: center;">
+                                                    <div class="form-group mx-md-6 col-4 mb-2">
+                                                        <label for="txtWebsite" class="sr-only">Website</label>
+                                                        <input type="url" class="form-control" maxlength="100" style="width: 100%" id="txtWebsite" name="url" placeholder="https://myexample.com">
+                                                        <label class="inputCounter" style="color: dimgray;">100</label>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary mb-2" onclick="ChangeWebsite($('#txtWebsite').val())">Save</button>
+                                                    <button type="button" class="btn btn-danger mb-2" id="btnCancelWebsite">Cancel</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <div class="divWeb"><a href="@Model.User.Website" class="btnEditWebsite">@Model.User.Website</a></div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    @if (Model.UserFollow != null)
+                                    {
+                                        if (Model.UserFollow.UserId == User.GetUserId())
+                                        {
+                                            <button id="BtnFollow" type="button" class="btn btn-primary btn-info btn-md" style="border-radius: 20px">Following</button>
+                                        }
+                                        else
+                                        {
+                                            if (User.Identity.Name != Model.User.Id)
+                                            {
+                                                <button id="BtnFollow" type="button" class="btn btn-primary btn-md" style="border-radius: 20px">
+                                                    <span>Follow</span>
+                                                    <div class="center loading hide">
+                                                        <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                                    </div>
+                                                </button>
+                                            }
+                                        }
+                                        <input id="UserFollow" type="hidden" value="@Model.UserFollowString" />
+                                        <input id="IsFollowing" type="hidden" value="true" />
+                                    }
+                                    else
+                                    {
+                                        if (User.Identity.Name != Model.User.Id)
+                                        {
+                                            if (User.Identity.IsAuthenticated)
+                                            {
+                                                <button id="BtnFollow" type="button" class="btn btn-primary btn-md" style="border-radius: 20px">
+                                                    <span>Follow</span>
+                                                    <div class="center loading hide">
+                                                        <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                                    </div>
+                                                </button>
+                                                <button id="btnReportUser" type="button" class="btn btn-danger btn-md" style="border-radius: 20px" data-toggle="modal" data-target=".reportusermodal">Report User</button>
+                                            }
+                                            else
+                                            {
+                                                @*<button id="BtnFollow" type="button" class="btn btn-primary btn-md" style="border-radius: 20px" onclick="RequireLogin('Follow')">Follow</button>
+                        <button id="btnReportUser" type="button" class="btn btn-danger btn-md" style="border-radius: 20px" onclick="RequireLogin('Report User')">Report User</button>*@
+                                            }
+                                        }
+                                        <input id="UserFollow" type="hidden" value="" />
+                                        <input id="IsFollowing" type="hidden" value="" />
+                                    }
+                                    <input id="FollowId" type="hidden" value="@Model.User.Id" />
+                                    <input id="FollowName" type="hidden" value="@Model.User.DisplayName" />
+                                    <input id="FollowPhoto" type="hidden" value="@Model.User.UserPhoto" />
+
+                                    <div class="row">
+                                        <div class="col user-pad text-center">
+                                            <img src="~/images/gold.gif" style="width: auto; height: 32px;">
+                                            <h6>
+                                                @Model.User.Coins Coins
+                                            </h6>
+                                        </div>
+                                        <div class="col user-pad text-center">
+                                            <h5>COUNTRY</h5>
+                                            <h6><i class="flag-icon flag-icon-@Model.User.Country"></i></h6>
+                                            <h6>@CountryTool.GetCountryName(Model.User.Country)</h6>
+                                        </div>
+                                        <div class="col user-pad text-center">
+                                            <h5>AVATARS</h5>
+                                            <h6><i class="flag-icon flag-icon-@Model.User.Country"></i></h6>
+                                            <h6>0 avatars</h6>
+                                        </div>
+                                        <div class="col user-pad text-center">
+                                            <h5>LEVEL</h5>
+                                            <h6><i class="flag-icon flag-icon-@Model.User.Country"></i></h6>
+                                            <h6>P5</h6>
+                                            <h6>800 points</h6>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col user-pad text-center">
+                                            <h3>FOLLOWERS</h3>
+                                            <h4>
+                                                <a asp-controller="User" asp-action="UserReactions" asp-route-id="@Model.User.Id" asp-route-name="@Model.User.DisplayName">
+                                                    @Model.User.Followers
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div class="col user-pad text-center">
+                                            <h3>FOLLOWING</h3>
+                                            <h4>
+                                                <a asp-controller="User" asp-action="UserReactions" asp-route-id="@Model.User.Id" asp-route-name="@Model.User.DisplayName">
+                                                    @Model.User.Following
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div class="col user-pad text-center">
+                                            <h3>TOKS</h3>
+                                            <h4>@Model.User.Toks</h4>
+                                        </div>
+                                        <div class="col user-pad text-center">
+                                            <h3>LIKES</h3>
+                                            <h4>
+                                                <a asp-controller="User" asp-action="UserReactions" asp-route-id="@Model.User.Id" asp-route-name="@Model.User.DisplayName">
+                                                    @Model.User.Likes
+                                                </a>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-photo">
+                            @if (Model.User.IsAvatarProfilePicture ?? false)
+                            {
+                                <img class="rounded-circle img-circle" src="@PurchasesTool.GetProduct(Model.User.SelectedAvatar).Image" style=" border: 2px solid #542a7d;background-color: white;" />
+                            }
+                            else
+                            {
+                                if (String.IsNullOrEmpty(Model.User.UserPhoto))
+                                {<img class="rounded-circle img-circle" src="~/purple.svg" style=" border: 2px solid #542a7d;background-color: white;" />}
+                                else
+                                {<img class="rounded-circle img-circle" src="@Model.User.UserPhoto" style=" border: 2px solid #542a7d;background-color: white;" />}
+                            }
+
+                            @if (User.Identity.Name == Model.User.Id)
+                            {
+                                <div class="profile-pic-container center-content">
+                                </div>
+
+                                <div class="profile-pic-content center-content" data-toggle="modal" data-target="#changePhotoModal">
+                                    <i class="fas fa-camera" style="margin-right:4px;"></i>
+                                    <span> Update</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <!--left col-->
+
+                            <ul class="list-group">
+                                <li class="list-group-item text-muted">Profile</li>
+                                <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span> @Model.User.Joined.ToShortDateString()</li>
+                                <li class="list-group-item text-right"><span class="pull-left"><strong>Sets</strong></span> @Model.User.Sets</li>
+                            </ul>
+                            <br />
+
+                            @*<ul class="list-group">
+                                    <li class="list-group-item text-muted">Points</li>
+                                    <li class="list-group-item text-right">
+                                        <a asp-controller="User" asp-action="UserPlatformPoints" style="color:black!important;" asp-route-id="@Model.User.Id" asp-route-name="@Model.User.DisplayName">
+                                            View Platform Points
+                                        </a>
+                                        <br />
+                                        <a asp-controller="User" asp-action="UserPoints" asp-route-id="@Model.User.Id" style="color:black!important;">
+                                            View Toktype Points
+                                        </a>
+                                    </li>
+                                </ul>
+                                <br />
+                                <ul class="list-group list-group-item-warning">
+                                    <li class="list-group-item text-muted">My Coins 💰<i class="fa fa-dashboard fa-1x"></i></li>
+                                    <li class="list-group-item text-right"><span class="pull-left"><strong>Gold</strong></span> 0</li>
+                                </ul>
+                                <br />*@
+                            @*<ul class="list-group">
+                                    <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
+                                    <li class="list-group-item text-right"><span class="pull-left"><strong>Shares</strong></span> 0</li>
+                                    <li class="list-group-item text-right"><span class="pull-left"><strong>Likes</strong></span> 0</li>
+                                    <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> 0</li>
+                                    <li class="list-group-item text-right"><span class="pull-left"><strong>Followers</strong></span> 0</li>
+                                </ul>*@
+
+
+                        </div>
+                        <!--/col-3-->
+                        <div class="col-sm-9">
+
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item nav-link"><a href="#home" data-toggle="tab">Home</a></li>
+                                @*<li class="nav-item nav-link"><a href="#messages" data-toggle="tab">Sets</a></li>
+                                    <li class="nav-item nav-link"><a href="#settings" data-toggle="tab">Kingdoms</a></li>*@
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <input id="IsLoadMore" type="hidden" value="yes" />
+                                    <input id="LoadMoreFunction" type="hidden" value="GetSearchData" />
+                                    <input id="ValSearchText" type="hidden" value="" />
+                                    <input id="TxtCategory" type="hidden" value="" />
+                                    <input id="CountryFilter" type="hidden" value="" />
+                                    <input id="TokTypeFilter" type="hidden" value="" />
+                                    <input id="TokTypeIdFilter" type="hidden" value="" />
+                                    <input id="UserIdFilter" type="hidden" value="@Model.User.Id" />
+                                    <input id="searchorder" type="hidden" value="newest" />
+                                    @Html.HiddenFor(model => model.Token, new { id = "Token" })
+                                    @Html.HiddenFor(model => model.IsSignedIn, new { id = "IsSignedIn" })
+
+
+                                    <div class="center" id="containerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokContainer" style="margin-top: 1em !important;">
+
+                                    </div>
+
+
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="messages">
+                                    <a asp-controller="Set" asp-action="AddSet" class="btn btn-primary float-left">+ Create new set</a>
+                                    <br />
+                                    @if (Model.Sets != null)
+                                    {
+                                        foreach (var set in Model.Sets)
+                                        {
+                                            @*@if (set.TokTypeID == Model.TokTypeID) { }*@
+                                            <button type="button" class="list-group-item list-group-item-action addtoexistingset" name="setlist-@set.Id" id="setlist-@set.Id" data-toggle="list" role="tab" aria-controls="h">
+                                                @set.Name
+                                                <span class="badge badge-success float-right">@set.CreatedTime.ToShortDateString()</span>
+                                                <span class="badge badge-warning float-right">@set.TokType</span>
+                                            </button>
+                                        }
+                                    }
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="settings">
+
+                                    <hr>
+                                    <form class="form" action="##" method="post" id="registrationForm">
+                                        <div class="form-group">
+
+                                            <div class="col-xs-6">
+                                                <label for="first_name">
+                                                    <small>First name</small>
+                                                </label>
+                                                <input type="text" class="form-control" name="first_name" id="first_name" placeholder="first name" title="enter your first name if any.">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <div class="col-xs-6">
+                                                <label for="last_name">
+                                                    <small>Last name</small>
+                                                </label>
+                                                <input type="text" class="form-control" name="last_name" id="last_name" placeholder="last name" title="enter your last name if any.">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <div class="col-xs-6">
+                                                <label for="phone">
+                                                    <small>Phone</small>
+                                                </label>
+                                                <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number if any.">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-xs-6">
+                                                <label for="mobile">
+                                                    <small>Mobile</small>
+                                                </label>
+                                                <input type="text" class="form-control" name="mobile" id="mobile" placeholder="enter mobile number" title="enter your mobile number if any.">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <div class="col-xs-6">
+                                                <label for="email">
+                                                    <small>Email</small>
+                                                </label>
+                                                <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" title="enter your email.">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <div class="col-xs-6">
+                                                <label for="email">
+                                                    <small>Location</small>
+                                                </label>
+                                                <input type="email" class="form-control" id="location" placeholder="somewhere" title="enter a location">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <div class="col-xs-6">
+                                                <label for="password">
+                                                    <small>Password</small>
+                                                </label>
+                                                <input type="password" class="form-control" name="password" id="password" placeholder="password" title="enter your password.">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <div class="col-xs-6">
+                                                <label for="password2">
+                                                    <small>Verify</small>
+                                                </label>
+                                                <input type="password" class="form-control" name="password2" id="password2" placeholder="password2" title="enter your password2.">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-xs-12">
+                                                <br>
+                                                <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                                                <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <!--/tab-pane-->
+                        </div>
+                        <!--/tab-content-->
+
+                    </div>
+                    <!--/col-9-->
+                </div>
+                <!--/row-->
+            </div>
+        </div>
+
+
+        @if (User.Identity.Name != Model.User.Id)
+        {
+            <!--Report Modal -->
+            <div class="modal fade reportusermodal" id="report-@Model.User.Id-modal" tabindex="-1" role="dialog" aria-labelledby="report-@Model.User.Id-title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered reportdialog" role="document">
+                    <div class="modal-content reportcontent">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="report-@Model.User.Id-title">Report User</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body reportbody">
+                            <div class="form-group reportform">
+                                <label for="message-text" class="col-form-label">Reason for reporting:</label>
+                                <br />
+                                <input type="text" class="form-control reportcategory" id="@Model.User.Id-reportmsg" maxlength="100" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer reportbtngroup">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button id="report-@Model.User.Id-button" type="button" data-dismiss="modal" class="btn btn-primary reportuserbtn">Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Change Profile Picture -->
+        <div class="modal fade" id="changePhotoModal" tabindex="-1" role="dialog" aria-labelledby="changePhotoModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="changePhotoModalLabel">Change Profile Picture</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>Picture will be displayed as a square or circle - make sure to crop before uploading.</p>
+                                <form id="frmChangeProfilePicture" asp-action="ChangeProfilePicture" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" enctype="multipart/form-data" novalidate>
+                                    <input type="hidden" style="display: none;" id="Base64Image" name="Base64Image" value="@Model.User.UserPhoto" />
+                                    <p class="lead">Select a PNG or JPEG image, max size <span id="max-size">500</span> KB (optional)</p>
+                                    <div id="image-preview-div" style="display: none">
+                                        <label for="exampleInputFile">Selected image:</label>
+                                        <br>
+                                        <div id="resizer">
+
+                                        </div>
+                                        @*<img id="preview-img" src="">*@
+                                    </div>
+                                    <br />
+                                    <div class="col-md-3 mb-3">
+                                        <label class="btn btn-block btn-primary">
+                                            Browse&hellip; <input type="file" name="pic" id="pic" style="display: none;">
+                                        </label>
+                                    </div>
+                                    <div id="message"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-12" style="text-align: center;">
+                            <button type="button" class="btn btn-primary" id="btnUpdatePhoto" style="font-size: 24px">Update</button>
+                            <button type="button" class="btn btn-secondary btn-danger" id="btnCancel" style="font-size: 24px" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Cover Photo -->
+        <div class="modal fade bd-example-modal-lg" id="changeCoverPhotoModal" tabindex="-1" role="dialog" aria-labelledby="changeCoverPhotoModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="changeCoverPhotoModalLabel">Change Profile Picture</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>Picture will be displayed as a square or circle - make sure to crop before uploading.</p>
+                                <form id="frmChangeProfilePicture_cover" asp-action="ChangeProfileCoverPhoto" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" enctype="multipart/form-data" novalidate>
+                                    <input type="hidden" style="display: none;" id="Base64Image_Cover" name="Base64Image_Cover" value="@Model.User.CoverPhoto" />
+                                    <p class="lead">Select a PNG or JPEG image, max size <span id="max-size">500</span> KB (optional)</p>
+                                    <div id="image-preview-div-cover" style="display: none">
+                                        <label for="exampleInputFile">Selected image:</label>
+                                        <br>
+                                        <div id="resizer-cover">
+
+                                        </div>
+                                        @*<img id="preview-img" src="">*@
+                                    </div>
+                                    <br />
+                                    <div class="col-md-3 mb-3">
+                                        <label class="btn btn-block btn-primary">
+                                            Browse&hellip; <input type="file" name="btnUploadCover" id="btnUploadCover" style="display: none;">
+                                        </label>
+                                    </div>
+                                    <div id="message_cover"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-12" style="text-align: center;">
+                            <button type="button" class="btn btn-primary" id="btnUpdatePhoto_cover" style="font-size: 24px">Update</button>
+                            <button type="button" class="btn btn-secondary btn-danger" id="btnCancel" style="font-size: 24px" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/jquery.flip.js"></script>
+    @if (User != null)
+    {
+        <script src="~/js/SetFeed.js"></script>
+    }
+
+    <script>
+
+        var uploadCrop;
+        var maxsize = 500 * 1024; // 500 KB
+
+        function noPreview() {
+            $('#image-preview-div').css("display", "none");
+            $('#pic').attr('disabled', '');
+        }
+
+        function noPreview_cover() {
+            $('#image-preview-div-cover').css("display", "none");
+            $('#btnUploadCover').attr('disabled', '');
+        }
+
+        function selectImage(e) {
+            $('#resizer').addClass('ready');
+            uploadCrop.croppie('bind', {
+                url: e.target.result
+            }).then(function () {
+                //console.log('jQuery bind complete');
+            });
+            $('#file').css("color", "green");
+            $('#image-preview-div').css("display", "block");
+        }
+
+        function selectImage_cover(e) {
+            $('#resizer-cover').addClass('ready');
+            uploadCrop_cover.croppie('bind', {
+                url: e.target.result
+            }).then(function () {
+                //console.log('jQuery bind complete');
+            });
+            $('#image-preview-div-cover').css("display", "block");
+        }
+
+        $(document).ready(function () {
+            $("#BtnFollow").on("click", function (event) {
+
+                $(this).prop("disabled", true);
+                var btn = $(this);
+
+                var FollowOptions = {};
+                FollowOptions.url = "/Reaction/Follow";
+                FollowOptions.type = "POST";
+                FollowOptions.data = JSON.stringify({
+                    UserFollowed: $("#UserFollow").val(),
+                    FollowId: $("#FollowId").val(),
+                    FollowDisplayName: $("#FollowName").val(),
+                    FollowPhoto: $("#FollowPhoto").val()
+                }); //group: $("#Follow").val()
+                FollowOptions.datatype = "json";
+                FollowOptions.contentType = "application/json";
+                //alert(FollowOptions.data.toString());
+
+                FollowOptions.success = function (Data) {
+                    if (btn.find("span").text() === 'Follow') {
+                        btn.find("span").text('Following');
+                    }
+                    else {
+                        btn.find("span").text('Follow');
+                    }
+                };
+                FollowOptions.beforeSend = function (e) {
+                    console.log(btn);
+                    btn.find("span").addClass("hide");
+                    btn.find(".loading").removeClass("hide");
+                };
+                FollowOptions.complete = function () {
+                    btn.find("span").removeClass("hide");
+                    btn.find(".loading").addClass("hide");
+                    //btn.toggleClass('btn-info');
+                    btn.removeAttr('disabled');
+                };
+                FollowOptions.error = function () {
+                    var btnText = btn.find("span").text();
+                    if (btnText === 'Follow') {
+                        swal("Follow failed, please try again.", "", "error");
+                    }
+                    else {
+                        swal("Unfollow failed, please try again.", "", "error");
+                    }
+                    if (btnText === 'Follow') {
+                        btn.find("span").text('Following');
+                    }
+                    else {
+                        btn.find("span").text('Follow');
+                    }
+                    btn.toggleClass('btn-info');
+                };
+                $.ajax(FollowOptions);
+            });
+
+            GetInitData($("#UserIdFilter").val(), 5);
+
+            $("#report-@Model.User.Id-button").click(function () {
+                var reason = $("#@Model.User.Id-reportmsg").val();
+                console.log(reason);
+                $.ajax({
+                    url: "/Report/User",
+                    type: "POST",
+                    async: true,
+                    data: { 'userId': '@Model.User.Id', 'reason': reason },
+                    dataType: "json",
+                    success: function (res) {
+                        switch (res.resultEnum) {
+                            case 1: // Success
+                                // Show success message and reload
+                                location.reload(); // Reload the page after successful
+                                break;
+                            case 2: // Failed
+                                // Display Failed Message
+                                break;
+                            case 3: // Error
+                                // Display error message here
+                                break;
+                        }
+                    },
+                    error: function () {
+                        // Do error handling here.
+                    }
+                });
+            });
+
+            uploadCrop = $('#resizer').croppie({
+                viewport: {
+                    height: 200,
+                    width: 200,
+                    type: 'square'
+                },
+                showZoomer: true,
+                enableOrientation: false,
+                mouseWheelZoom: 'ctrl',
+                enableExif: true
+            });
+
+            uploadCrop_cover = $('#resizer-cover').croppie({
+                viewport: {
+                    height: 500,
+                    width: 1500,
+                    type: 'square'
+                },
+                showZoomer: true,
+                enableOrientation: false,
+                mouseWheelZoom: 'ctrl',
+                enableExif: true
+            });
+
+            $("#btnUpdatePhoto").click(function () {
+                uploadCrop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (resp) {
+                    $("#Base64Image").val(resp);
+                });
+
+                setTimeout(function () {
+                    $("#frmChangeProfilePicture").submit();
+                }, 1000);
+            });
+
+            $("#btnUpdatePhoto_cover").click(function () {
+                uploadCrop_cover.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (resp) {
+                    $("#Base64Image_Cover").val(resp);
+                });
+
+                setTimeout(function () {
+                    $("#frmChangeProfilePicture_cover").submit();
+                }, 1000);
+            });
+
+            $('#max-size').html((maxsize / 1024).toFixed(2));
+
+            $('#pic').change(function () {
+
+                $('#message').empty();
+
+                var file = this.files[0];
+                var match = ["image/jpeg", "image/png", "image/jpg"];
+
+                if (!((file.type == match[0]) || (file.type == match[1]) || (file.type == match[2]))) {
+                    noPreview();
+
+                    $('#message').html('<div class="alert alert-warning" role="alert">Invalid image format. Allowed formats: JPG, JPEG, PNG.</div>');
+
+                    return false;
+                }
+
+                if (file.size > maxsize) {
+                    noPreview();
+
+                    $('#message').html('<div class=\"alert alert-danger\" role=\"alert\">The size of image you are attempting to upload is ' + (file.size / 1024).toFixed(2) + ' KB, maximum size allowed is ' + (maxsize / 1024).toFixed(2) + ' KB</div>');
+
+                    return false;
+                }
+
+                $('#pic').removeAttr("disabled");
+
+                var reader = new FileReader();
+                reader.onload = selectImage;
+                reader.readAsDataURL(this.files[0]);
+
+            });
+
+            $('#btnUploadCover').change(function () {
+
+                $('#message_cover').empty();
+
+                var file = this.files[0];
+                var match = ["image/jpeg", "image/png", "image/jpg"];
+
+                if (!((file.type == match[0]) || (file.type == match[1]) || (file.type == match[2]))) {
+                    noPreview_cover();
+
+                    $('#message_cover').html('<div class="alert alert-warning" role="alert">Invalid image format. Allowed formats: JPG, JPEG, PNG.</div>');
+
+                    return false;
+                }
+
+                if (file.size > maxsize) {
+                    noPreview_cover();
+
+                    $('#message_cover').html('<div class=\"alert alert-danger\" role=\"alert\">The size of image you are attempting to upload is ' + (file.size / 1024).toFixed(2) + ' KB, maximum size allowed is ' + (maxsize / 1024).toFixed(2) + ' KB</div>');
+
+                    return false;
+                }
+
+                $('#btnUploadCover').removeAttr("disabled");
+
+                var reader = new FileReader();
+                reader.onload = selectImage_cover;
+                reader.readAsDataURL(this.files[0]);
+
+            });
+        });
+    </script>
+
+    @if (User.GetUserId() == Model.User.Id)
+    {
+        <script>
+            function ChangeWebsite(url) {
+                $.ajax({
+                    url: "/User/ChangeWebsite",
+                    type: "POST",
+                    async: true,
+                    data: { 'url': url },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.isSuccess) {
+                            $(".alert").addClass("alert-success");
+                            $(".alert").addClass("show");
+                            $(".alert").removeClass("alert-danger");
+                            $("#txtMessage").text("Saved");
+
+                            $(".divWeb").find(".btnEditWebsite > a").attr("href", res.url);
+                            $(".divWeb").find(".btnEditWebsite > a").text(res);
+                            $(".divWeb").find(".btnEditWebsite").append("<i class='fas fa-pencil-alt' style='padding: 4px;'></i>");
+                            $(".divWeb").show();
+                            $("#frmAddWebsite").hide();
+                            $('html, body').animate({ scrollTop: 0 }, '300');
+                        }
+                        else {
+                            $(".alert").addClass("alert-danger");
+                            $(".alert").addClass("show");
+                            $(".alert").removeClass("alert-success");
+                            $("#txtMessage").text("Could not save, please try again.");
+                        }
+                    },
+                    error: function () {
+                        // Do error handling here.
+                    }
+                });
+            }
+
+            function ChangeBiodata(biodata) {
+                $.ajax({
+                    url: "/User/ChangeBiodata",
+                    type: "POST",
+                    async: true,
+                    data: { 'biodata': biodata },
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.isSuccess) {
+                            $(".alert").addClass("alert-success");
+                            $(".alert").addClass("show");
+                            $(".alert").removeClass("alert-danger");
+                            $("#txtMessage").text("Saved");
+
+                            $(".divBio").find(".btnEditBiodata").text(res.biodata);
+                            $(".divBio").find(".btnEditBiodata").append("<i class='fas fa-pencil-alt' style='padding: 4px;'></i>");
+                            $(".divBio").show(); $("#frmAddBiodata").hide();
+                            $('html, body').animate({ scrollTop: 0 }, '300');
+                        }
+                        else {
+
+                            $(".alert").addClass("alert-danger");
+                            $(".alert").addClass("show");
+                            $(".alert").removeClass("alert-success");
+                            $("#txtMessage").text("Could not save, please try again.");
+                        }
+                    },
+                    error: function () {
+                        // Do error handling here.
+                    }
+                });
+            }
+            $(document).ready(function () {
+
+                $(".btnEditWebsite").click(function () {
+                    $(".divWeb").hide();
+                    $("#frmAddWebsite").show();
+                });
+
+                $(".btnEditBiodata").click(function () {
+                    $(".divBio").hide();
+                    $("#frmAddBiodata").show();
+                });
+
+                $("#btnCancelWebsite").click(function () {
+                    $(".divWeb").show();
+                    $("#frmAddWebsite").hide();
+                });
+
+                $("#btnCancelBiodata").click(function () {
+                    $(".divBio").show();
+                    $("#frmAddBiodata").hide();
+                });
+
+                $(".tokkepedia-tab").click(function () {
+                    $(".tokkepedia-tab").removeClass("active");
+                    $(this).addClass("active");
+                    var target = $(this).attr("data-target");
+
+                    $(".profile-box").hide();
+                    $("#" + target).show();
+                });
+                
+                $("#txtBiodata, #txtWebsite").on("input keyup", function () {
+                    var text = $(this).val();
+                    $(this).parent().find(".inputCounter").text($(this).attr("maxlength") - text.length);
+                });
+
+                $(".avatar-card").click(function () {
+                    $(".avatar-card > .selection").hide();
+                    $(".avatar-card").removeClass("selected");
+                    $(this).find(".selection").show();
+                    $(this).addClass("selected");
+                });
+
+                $("#btnUseAvatar").click(function () {
+                    var isShowAvatar = $("#chkShowAvatar").is(":checked");
+                    if (isShowAvatar) {
+                        var avatarId = $(".avatar-card.selected").attr("data-avatarid");
+                        // Save Changes
+                        $.ajax({
+                            url: "/User/UseAvatar",
+                            type: "POST",
+                            async: true,
+                            data: { 'avatarId': avatarId },
+                            dataType: "json",
+                            success: function (res) {
+                                location.reload();
+                            },
+                            error: function () {
+                                // Do error handling here.
+                            }
+                        });
+                        // Change Profile Pic
+                        $(".profile-photo > img").attr("src", $(".avatar-card.selected > img").attr("src")); // Temp
+                    }
+                });
+            });
+        </script>
+    }
+}

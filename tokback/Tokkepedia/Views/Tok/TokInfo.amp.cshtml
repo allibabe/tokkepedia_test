@@ -1,0 +1,570 @@
+﻿@model TokInfoViewModel
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Options
+@inject IOptions<GoogleAnalyticsViewModel> GoogleAnalytics
+
+@inject SignInManager<TokketUser> SignInManager
+@inject UserManager<TokketUser> UserManager
+@{
+    ViewData["Title"] = Model.Tok.PrimaryFieldText + " - Tokkepedia";
+    Layout = null;
+
+    var tokImg = Model.Tok.Image;
+    if (string.IsNullOrEmpty(Model.Tok.Image))
+    {
+        tokImg = "/images/TokketFullLogo.png";
+    }
+
+    var fulldesc = string.Empty;
+    if (Model.Tok.IsDetailBased)
+    {
+        foreach (var item in Model.Tok.Details)
+        {
+            fulldesc += item + " ";
+        }
+    }
+    else
+    {
+        fulldesc += Model.Tok.SecondaryFieldText;
+    }
+}
+
+@{
+    var userId = UserManager.GetUserId(User);
+
+    TokketUser user = null;
+    if (userId != null)
+    {
+        user = await UserManager.FindByIdAsync(userId);
+    }
+}
+
+<!doctype html>
+<html ⚡>
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=@GoogleAnalytics.Value.TrackingId"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', '@GoogleAnalytics.Value.TrackingId');
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="title" property="title" content="@Model.Tok.PrimaryFieldText - Tokkepedia" />
+    <meta name="description" property="description" content="@fulldesc" />
+    <style amp-boilerplate>
+        body {
+            -webkit-animation: -amp-start 8s steps(1,end) 0s 1 normal both;
+            -moz-animation: -amp-start 8s steps(1,end) 0s 1 normal both;
+            -ms-animation: -amp-start 8s steps(1,end) 0s 1 normal both;
+            animation: -amp-start 8s steps(1,end) 0s 1 normal both
+        }
+
+        @@-webkit-keyframes -amp-start {
+            from {
+                visibility: hidden
+            }
+
+            to {
+                visibility: visible
+            }
+        }
+
+        @@-moz-keyframes -amp-start {
+            from {
+                visibility: hidden
+            }
+
+            to {
+                visibility: visible
+            }
+        }
+
+        @@-ms-keyframes -amp-start {
+            from {
+                visibility: hidden
+            }
+
+            to {
+                visibility: visible
+            }
+        }
+
+        @@-o-keyframes -amp-start {
+            from {
+                visibility: hidden
+            }
+
+            to {
+                visibility: visible
+            }
+        }
+
+        @@keyframes -amp-start {
+            from {
+                visibility: hidden
+            }
+
+            to {
+                visibility: visible
+            }
+        }
+    </style>
+    <noscript>
+        <style amp-boilerplate>
+            body {
+                -webkit-animation: none;
+                -moz-animation: none;
+                -ms-animation: none;
+                animation: none
+            }
+        </style>
+    </noscript>
+    <link rel="canonical" href="/tok?id=@Model.Tok.Id">
+    <title>@ViewBag.Title</title>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
+    <script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"></script>
+    <script async custom-element="amp-carousel" src="https://cdn.ampproject.org/v0/amp-carousel-0.1.js"></script>
+    <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
+    <script async custom-element="amp-lightbox-gallery" src="https://cdn.ampproject.org/v0/amp-lightbox-gallery-0.1.js"></script>
+    <script async custom-element="amp-social-share" src="https://cdn.ampproject.org/v0/amp-social-share-0.1.js"></script>
+    <style amp-custom>
+        @@import "/css/bootstrap.min.css";
+        @@import "/css/style.css";
+        @@import "/css/responsive.css";
+        @@import "/css/tokkepedia.css";
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        amp-carousel {
+            margin: 0;
+        }
+
+        input[type=number] {
+            width: 2rem;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .header_area.sticky-amp {
+            background-color: #884bdf;
+            -webkit-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            height: 70px;
+            position: fixed;
+            top: 0;
+            z-index: 99;
+        }
+
+        p {
+            color: black;
+            font-weight: unset;
+        }
+    </style>
+    <!-- Favicon -->
+    <link rel="icon" href="~/favicon.ico">
+
+    <!-- Tokkepedia Stylesheet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    @*<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">*@
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <!-- Google Analytics -->
+    <script>
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', '@GoogleAnalytics.Value.TrackingId', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->
+</head>
+<body>
+    <!-- ***** Header Area Start ***** -->
+    <header class="header_area animated sticky-amp">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <!-- Menu Area Start -->
+                <div class="col-12 col-lg-10 no-padding">
+                    <div class="menu_area">
+                        <nav class="navbar navbar-expand-lg navbar-light">
+                            <!-- Logo -->
+                            <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="~/images/logo.png" style="height:48px" /><span style="font-size:large;">(@Constants.Environment)</span></a>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ca-navbar" aria-controls="ca-navbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                            <!-- Menu Area -->
+                            <div class="collapse navbar-collapse" id="ca-navbar">
+                                <ul class="navbar-nav ml-auto" id="nav">
+                                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <li class="nav-item"><a class="nav-link" asp-controller="Tok" asp-action="AddTok">Add Tok</a></li>
+                                        <li class="nav-item">
+                                            <div class="dropdown">
+                                                <a class="nav-link show dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="tokGroupsMenu">Tok Groups</a>
+                                                <div class="dropdown-menu" aria-labelledby="tokGroupsMenu">
+                                                    <a class="dropdown-item" href="/toktypes">Tok Types</a>
+                                                    <a class="dropdown-item" href="/toktypescounts">Quantities</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" asp-controller="Set" asp-action="MySets">Play</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                                        <li class="nav-item"><a class="nav-link menu-with-icon" asp-controller="User" asp-action="UserCoins" asp-route-id="@userId"><img src="~/images/gold.gif" style="width: auto; height: 32px;" /> @user.Coins Coins</a></li>
+                                        <li class="nav-item"><div class="inner-addon right-addon"><i class="fas fa-search text-white searchbar-icon"></i><input type="text" class="form-control searchbar text-white" placeholder="Search"></div></li>
+                                    }
+                                    else
+                                    {
+                                        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                                        <li class="nav-item">
+                                            <div class="dropdown">
+                                                <a class=" nav-link show dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="tokGroupsMenu">Tok Groups</a>
+                                                <div class="dropdown-menu" aria-labelledby="tokGroupsMenu">
+                                                    <a class="dropdown-item" href="/toktypes">Tok Types</a>
+                                                    <a class="dropdown-item" href="/toktypescounts">Quantities</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                                        <li class="nav-item"><div class="inner-addon right-addon"><i class="fas fa-search text-white searchbar-icon"></i><input type="text" class="form-control searchbar text-white" placeholder="Search"></div></li>
+                                    }
+                                </ul>
+                                <div class="sing-up-button d-lg-none">
+                                    @if (SignInManager.IsSignedIn(User) && user != null)
+                                    {
+                                        <div class="dropdown" style="padding:8px;">
+                                            <span id="btnNotifications" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 16px; color: white; cursor: pointer;"><i class="fas fa-bell"></i></span>
+                                            <div class="dropdown-menu ntf" aria-labelledby="btnNotifications">
+                                                <h6 class="center-content" style="margin-bottom: 0px;">Notifications</h6>
+                                                <div class="dropdown-divider"></div>
+                                                <div class="notificationContainer">
+                                                    @*@await Html.PartialAsync("Home/_AllNotificationViews", new List<TokkepediaNotification>())*@
+                                                </div>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="center-content" href="/notifications">See All</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="sing-up-button dropdown" style="margin-top: 4px;">
+                                            <a class="show dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                @if (!string.IsNullOrEmpty(user.UserPhoto))
+                                                {
+                                                    <img src="@user.UserPhoto" style="width:32px; height:32px; border-radius: 8px" /> @user.DisplayName
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-user-circle" style="font-size:32px;vertical-align: middle;"></i> @user.DisplayName
+                                                }
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <a class="dropdown-item" href="/user?id=@userId">View My Profile</a>
+                                                <a class="dropdown-item" asp-controller="User" asp-action="ManageAccount">My Account</a>
+                                                @*<a class="dropdown-item" asp-controller="Set" asp-action="MySets">My Sets</a>*@
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" asp-controller="User" asp-action="Logout">Logout</a>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                    }
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Login btn -->
+                <div class="col-12 col-lg-2">
+                    <div class="menu-button d-none d-lg-block">
+                        @if (SignInManager.IsSignedIn(User) && user != null && userId != null)
+                        {
+                            <div class="dropdown notificationicon" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="center-content" id="btnNotifications" style="font-size: 16px; color: white; cursor: pointer;"><i class="fas fa-bell"></i></span>
+                                <span class="ntfBadge">0</span>
+                                <div class="dropdown-menu ntf" aria-labelledby="btnNotifications">
+                                    <h6 class="center-content" style="margin-bottom: 0px;">Notifications</h6>
+                                    <div class="dropdown-divider"></div>
+                                    <div class="notificationContainer">
+                                        @*@await Html.PartialAsync("Home/_AllNotificationViews", new List<TokkepediaNotification>())*@
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="center-content" href="/notifications">See All</a>
+                                </div>
+                            </div>
+
+                            <div class="dropdown">
+                                <a class="show dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @if (!string.IsNullOrEmpty(user.UserPhoto))
+                                    {
+                                        <img src="@user.UserPhoto" style="width:32px; height:32px; border-radius: 8px" /> @user.DisplayName
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle" style="font-size:32px;vertical-align: middle;"></i> @user.DisplayName
+                                    }
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="/user?id=@userId">View My Profile</a>
+                                    <a class="dropdown-item" asp-controller="User" asp-action="ManageAccount">My Account</a>
+                                    @*<a class="dropdown-item" asp-controller="Set" asp-action="MySets">My Sets</a>*@
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-controller="User" asp-action="Logout">Logout</a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- ***** Header Area End ***** -->
+    <section class="special-area bg-white">
+        <div class="container h-100">
+            <div class="row h-100">
+                <div class="col-12 col-md header-spacing">
+                    <amp-carousel type="slides"
+                                  width="400"
+                                  height="300"
+                                  layout="responsive"
+                                  lightbox>
+                        <amp-img src="@tokImg"
+                                 width="400"
+                                 height="300"
+                                 layout="responsive"
+                                 alt="@Model.Tok.PrimaryFieldText">
+                        </amp-img>
+                    </amp-carousel>
+
+                    <h2 style="margin-bottom: 24px; margin-top: 24px;">@Model.Tok.PrimaryFieldText</h2>
+
+                    <small><b>@Model.Tok.UserDisplayName</b> (Royalty Title)</small>
+                    <hr />
+                    <amp-social-share width="36" height="36" style="border-radius: 50%; border: 1px solid #808080; margin-bottom: 2px; margin-top: 2px;" type="facebook" data-param-app_id="Tokkepedia" data-param-href="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Tok.Id}")"></amp-social-share>
+                    <amp-social-share width="36" height="36" style="border-radius: 50%; border: 1px solid #808080; margin-bottom: 2px; margin-top: 2px;" type="twitter" data-param-text="Tokkepedia" data-param-url="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Tok.Id}")"></amp-social-share>
+                    <hr />
+
+                    @if (!Model.Tok.IsDetailBased)
+                    {
+                        <span>@Model.Tok.SecondaryFieldText</span>
+                    }
+                    else
+                    {
+                        for (int i = 0; i < Model.Tok.Details.Length; ++i)
+                        {
+                            if (!string.IsNullOrEmpty(Model.Tok.Details[i]))
+                            {
+                                <b>@(Model.Tok.HasAnswerField ? (Model.Tok.AnswerFieldNumber == i ? "Answer:" : "• ") : "• ")</b> <span>@Html.DisplayFor(modelItem => Model.Tok.Details[i])</span>
+                                <br />
+                            }
+                        }
+                    }
+
+                    <p>
+                        <b>Category</b><br />
+                        <span>@Model.Tok.Category</span>
+                    </p>
+                    <p>
+                        <b>Tok Group</b><br />
+                        <span>@Model.Tok.TokGroup</span>
+                    </p>
+                    <p>
+                        <b>Tok Type</b><br />
+                        <span>@Model.Tok.TokType</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jquery-2.2.4 JS -->
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!-- Bootstrap-4 Beta JS -->
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script>
+        var unseenCnt = 0, paginationId = "";
+
+        $(document).ready(function () {
+            $(".searchbar").keypress(function (e) {
+                if (e.which == 13) {
+                    var text = $(".searchbar").val();
+                    if (text.length > 0)
+                        location.href = "/Home/Search?text=" + text;
+                }
+            });
+
+            $(".searchbar-icon").click(function () {
+                var text = $(".searchbar").val();
+                if (text.length > 0)
+                    location.href = "/Home/Search?text=" + text;
+            });
+
+            //Comment text required
+            $("#text").on("input", function (event) {
+                if ($(this).val().length <= 0) {
+                    $("#btnsearch").prop("disabled", true);
+                }
+                else {
+                    $("#btnsearch").prop("disabled", false);
+                }
+            });
+
+            // Prevent clicking within dropdown-menu
+            $(".notificationicon > .dropdown-menu").click(function (e) {
+                e.stopPropagation();
+            });
+
+            LoadNotifications();
+
+            // Bootstrap Tooltip
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="modal"][title]').tooltip();
+            })
+        });
+
+        function LoadNotifications() {
+            var ajaxOpt = {};
+            ajaxOpt.url = "/Home/InitializeNotification";
+            ajaxOpt.type = "GET";
+            ajaxOpt.datatype = "json";
+            ajaxOpt.success = function (data) {
+                $(".notificationContainer").append(data);
+            };
+            ajaxOpt.error = function (e) {
+                //console.log(e.responseText);
+            };
+            ajaxOpt.complete = function (e) {
+                // Bootstrap Tooltip
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="modal"][title]').tooltip();
+                })
+            };
+            $.ajax(ajaxOpt);
+        }
+
+        function MarkAsRead(id) {
+            var ajaxOpt = {};
+            ajaxOpt.url = "/Home/MarkAsRead";
+            ajaxOpt.type = "POST";
+            ajaxOpt.data = { id: id };
+            ajaxOpt.datatype = "json";
+            ajaxOpt.success = function (data) {
+                if (data.result) {
+                    var deleted1 = false;
+                    var deleted2 = false;
+
+                    $(".notificationContainer > div").each(function () {
+                        var ntfId = $(this).attr("data-notifId");
+                        if (ntfId == id) {
+                            if ($(this).find(".ntfContent").hasClass("ntf-hightlighted")) {
+                                $(this).find(".ntfContent").removeClass("ntf-hightlighted");
+                                deleted1 = true;
+                            }
+                        }
+                    });
+
+                    $(".allNotificationContainer > div").each(function () {
+                        var ntfId = $(this).attr("data-notifId");
+                        if (ntfId == id) {
+                            if ($(this).find(".ntfContent").hasClass("ntf-hightlighted")) {
+                                $(this).find(".ntfContent").removeClass("ntf-hightlighted");
+                                deleted2 = true;
+                            }
+                        }
+                    });
+
+                    if (deleted1 || deleted2) {
+                        var cnt = parseInt($(".ntfBadge").text());
+                        cnt -= 1;
+                        $(".ntfBadge").text(cnt);
+                    }
+                }
+            };
+            ajaxOpt.error = function (e) {
+                //console.log(e.responseText);
+            };
+            $.ajax(ajaxOpt);
+        }
+
+        function RemoveNotification(ids) {
+            swal({
+                title: "Are you sure you want to remove this?",
+                text: "This cannot be reverted!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes!",
+                closeOnConfirm: false
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var ajaxOpt = {};
+                        ajaxOpt.url = "/Home/RemoveNotification";
+                        ajaxOpt.type = "DELETE";
+                        ajaxOpt.data = { ids: ids };
+                        ajaxOpt.datatype = "json";
+                        ajaxOpt.success = function (data) {
+                            if (data.result) {
+                                var deleted1 = false;
+                                var deleted2 = false;
+                                $(".notificationContainer > div").each(function () {
+                                    var ntfId = $(this).attr("data-notifId");
+                                    if (ntfId == id) {
+                                        $(this).remove();
+                                        deleted1 = true;
+                                        break;
+                                    }
+                                });
+
+                                $(".allNotificationContainer > div").each(function () {
+                                    var ntfId = $(this).attr("data-notifId");
+                                    if (ntfId == id) {
+                                        $(this).remove();
+                                        deleted2 = true;
+                                        break;
+                                    }
+                                });
+
+                                if (deleted1 || deleted2) {
+                                    swal("Success!", "Notification has been removed.", "success");
+                                }
+                                else {
+                                    swal("Failed!", "Oops! Something went wrong. Please try again later or refresh the page.", "error");
+                                }
+                            }
+                            else {
+                                swal("Failed!", "Oops! Something went wrong. Please try again later or refresh the page.", "error");
+                            }
+                        };
+                        ajaxOpt.error = function (e) {
+                            //console.log(e.responseText);
+                        };
+                        $.ajax(ajaxOpt);
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+﻿@model ResultData<Tok>
+@{ 
+    bool ShowCategory = ViewBag.ShowCategory ?? false;
+}
+
+@if (Model != null)
+{
+    <input type="hidden" value="@Model.Token" id="txtToken" name="txtToken" readonly/>
+    foreach (var tok in Model.Results)
+    {
+        @await Html.PartialAsync("Tok/_TokSelectionView", tok)
+    }
+}

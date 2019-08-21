@@ -1,0 +1,16 @@
+﻿@model List<TokketUser>
+
+@{ int num = 1; }
+@foreach (var item in Model)
+{
+    <div class="media pt-3" style="padding-top:0.3px!important;">
+        <span class="badge badge-pill badge-primary" style="margin-right:0.5em;">@num</span>
+        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <strong class="text-white" asp-controller="User" asp-action="UserProfile" asp-route-id="@item.Id" target="_blank">@item.DisplayName</strong>
+                <a asp-controller="User" asp-action="UserProfile" asp-route-id="@item.Id" target="_blank">@item.Toks toks</a>
+            </div>
+        </div>
+    </div>
+    ++num;
+}

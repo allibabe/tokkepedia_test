@@ -1,0 +1,183 @@
+﻿@model TokketUser
+@using System.Reflection
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <!-- Title -->
+    <title>Tokkepedia - Personal Data</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/favicon.ico">
+
+    <!-- Core Stylesheet -->
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/style.css" rel="stylesheet">
+
+    <!-- Responsive CSS -->
+    <link href="~/css/responsive.css" rel="stylesheet">
+
+    <!-- Tokkepedia Stylesheet -->
+    <link href="~/css/tokkepedia.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <link href="~/css/magnific-popup.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link href="~/css/sweetalert.css" rel="stylesheet">
+    <style>
+        #personalData {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #personalData td, #personalData th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #personalData tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            #personalData tr:hover {
+                background-color: #ddd;
+            }
+
+            #personalData th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #4CAF50;
+                color: white;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Personal Information - Tokket App</h4>
+                <table id="personalData">
+                    <tr>
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
+                    @foreach (PropertyInfo info in Model.GetType().GetProperties())
+                    {
+                        var val = @info.GetValue(Model, null);
+                        switch (info.Name)
+                        {
+                            case "Id":
+                            case "Label":
+                            case "UserName":
+                            case "NormalizedUserName":
+                            case "PasswordHash":
+                            case "ReportedCount":
+                            case "Timestamp":
+                            case "_Timestamp":
+                            case "PartitionKey":
+                            case "IsLockedOut":
+                            case "NormalizedEmail":
+                                // These are excluded properties
+                                // This will remain empty
+                                break;
+                            case "DisplayName":
+                                <tr>
+                                    <td>Display Name</td>
+                                    <td>@(val?.ToString() ?? string.Empty)</td>
+                                </tr>
+                                break;
+                            case "UserPhoto":
+                                <tr>
+                                    <td>User Photo</td>
+                                    <td>
+                                        <span>@(val?.ToString() ?? string.Empty)</span>
+                                        <img src="@(val?.ToString() ?? string.Empty)" style="width: 100px; height: 100px;" />
+                                    </td>
+                                </tr>
+                                break;
+                            case "Birthday":
+                                <tr>
+                                    <td>Date of Birth</td>
+                                    <td>@(string.Format("{0:MMMM dd, yyyy}", (DateTime)val))</td>
+                                </tr>
+                                break;
+                            case "BirthMonth":
+                                string strMonth = string.Empty;
+                                int valMonth = (int)val;
+                                if (valMonth == 0)
+                                {
+                                    strMonth = "January";
+                                }
+                                else
+                                {
+                                    var dateMonth = new DateTime(DateTime.Now.Year, valMonth, 1);
+                                    strMonth = string.Format("{0:MMMM}", dateMonth);
+                                }
+
+                                <tr>
+                                    <td>Birth Month</td>
+                                    <td>@strMonth</td>
+                                </tr>
+                                break;
+                            case "BirthYear":
+                                <tr>
+                                    <td>Birth Year</td>
+                                    <td>@(val?.ToString() ?? string.Empty)</td>
+                                </tr>
+                                break;
+                            case "BirthDay":
+                                <tr>
+                                    <td>Birth Day</td>
+                                    <td>@(val?.ToString() ?? string.Empty)</td>
+                                </tr>
+                                break;
+                            case "TotalReactions":
+                                <tr>
+                                    <td>Total Reactions</td>
+                                    <td>@(val?.ToString() ?? string.Empty)</td>
+                                </tr>
+                                break;
+                            case "CreatedTime":
+                                <tr>
+                                    <td>Created Time</td>
+                                    <td>@(val?.ToString() ?? string.Empty)</td>
+                                </tr>
+                                break;
+                            default:
+                                <tr>
+                                    <td>@info.Name</td>
+                                    <td>@(val?.ToString() ?? string.Empty)</td>
+                                </tr>
+                                break;
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery-2.2.4 JS -->
+    <script src="~/js/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="~/js/popper.min.js"></script>
+    <!-- Bootstrap-4 Beta JS -->
+    <script src="~/js/bootstrap.min.js"></script>
+    <!-- All Plugins JS -->
+    <script src="~/js/plugins.js"></script>
+    <!-- Slick Slider Js-->
+    <script src="~/js/slick.min.js"></script>
+    <!-- Footer Reveal JS -->
+    <script src="~/js/footer-reveal.min.js"></script>
+    <!-- Active JS -->
+    <script src="~/js/active.js"></script>
+</body>
+
+</html>

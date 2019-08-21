@@ -1,0 +1,280 @@
+/*html {
+   
+    background: url('../images/tokblitz/bgagain.png') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}*/
+    .imgRotate {
+     -ms-transform: rotate(20deg); /* IE 9 */
+    -webkit-transform: rotate(20deg); /* Safari 3-8 */
+    transform: rotate(20deg);
+    }
+
+ 
+@font-face {
+  font-family: 'Face Off M54';
+  src: url('../Face Off M54.ttf') format('truetype'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+   url('../Face Off M54.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}  
+ 
+
+@font-face {
+  font-family: 'Proxima Nova Cn Th';
+  src: url('../ProximaNovaCond-Xbold.otf') format('truetype'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+   url('../ProximaNovaCond-Xbold.otf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+@font-face {
+    font-family: 'Face Off M54';
+    src: url('../fonts/Face Off M54.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'ProximaNova-Black';
+    src: url('../fonts/ProximaNova-Black.otf') format('opentype');
+}
+@font-face {
+    font-family: 'ProximaNovaCond-Thin';
+    src: url('../fonts/ProximaNovaCond-Thin.otf') format('opentype');
+}
+@font-face {
+    font-family: 'ProximaNovaCond-Xbold';
+    src: url('../fonts/ProximaNovaCond-Xbold.otf') format('opentype');
+}
+
+.grid-PopUp {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  background-color: #2196F3;
+  padding: 5px;
+}
+.grid-itemPopUp {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+}
+
+
+ 
+ .grid-container2 {
+  display: grid;
+  grid: 50px / auto auto auto;
+  grid-gap: 5px;
+  background-color:inherit;
+  padding:0;
+  font-family: 'Proxima Nova Cn Th';
+  
+  }
+  
+.grid-container2>div {
+  background-color: inherit;
+  text-align: center;
+  font-size: 15px;
+  color:white;
+  font-family: 'Proxima Nova Cn Th';
+   
+  
+  }
+  .grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto;
+  background-color:inherit;
+  padding: 10px;
+font-family: 'Proxima Nova Cn Th';
+  
+  }
+ .grid-containerQ {
+  display: grid;
+  grid: 50px / auto auto auto;
+  grid-gap: 5px;
+  background-color:inherit;
+  padding:0;
+  
+  }
+
+.grid-Q {
+  background-color: inherit;
+  text-align: center;
+  font-size: 15px;
+  background-image : url('../images/tokblitz/wordframe.png');
+  background-repeat:no-repeat;
+  background-size:cover;
+  cursor:pointer;
+  color:black;
+  padding:10px;
+  font-family: 'Face Off M54';
+  
+  font-size:bold;
+  }
+  
+  span{
+	  
+	  display:inline-block;
+	  vertical-align:middle;
+	  line-height:normal;
+	  
+  }
+
+
+.grid-itemBox {
+  background-color: inherit;
+  background-image : url('../images/tokblitz/redbox.png');
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
+  font-family: 'Proxima Nova Cn Th';
+  
+  
+  font-size: 3vw;
+  text-align: center;
+  cursor:pointer;
+  border-radius:4px;
+  
+}
+
+
+
+
+  /*
+  font-family: 'Anton', sans-serif;font-size:40px;
+          */
+  
+font-family: 'Lobster', cursive;
+  color:white;
+}
+    .grid-item:hover {
+    transform: scale(1.2, 1.1);
+    
+    }
+    .class6Btn {
+    width:80%;position:absolute;bottom:2%;left:10%;grid: auto/ auto auto auto auto auto auto;border-radius:12px;
+    
+    }
+    .class3Btn {
+    width:60%;position:absolute;bottom:2%;left:20%;grid: auto/  auto auto auto ;border-radius:12px;
+    
+    }
+	
+	.class4Btn {
+    width:60%;position:absolute;bottom:2%;left:20%;grid: auto/  auto auto auto auto ;border-radius:12px;
+    
+    }
+	
+   
+    .class4Box {
+    width:40%;position:absolute;left:30%;top:50%;border-radius:12px;
+    }
+	
+	.class3Box {
+    width:80%;position:absolute;left:20%;top:50%;grid: auto/ auto auto auto;border-radius:12px;
+    }
+	
+	
+	
+	
+	
+    .w3-animate-leftAlli{position:relative;animation:animateleft 0.9s}@keyframes animateleftAlli{from{left:-300px;opacity:0} to{left:0;opacity:1}}
+.w3-animate-rightAlli{position:relative;animation:animateright 0.9s}@keyframes animateright{from{right:-300px;opacity:0} to{right:0;opacity:1}}
+    
+
+                                                                    
+div {
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
+
+span{
+	-webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+	
+	
+}
+
+
+p{
+	
+	-webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+	
+}
+    img {
+user-drag: none; 
+user-select: none;
+-moz-user-select: none;
+-webkit-user-drag: none;
+-webkit-user-select: none;
+-ms-user-select: none;
+    
+    }
+
+.blink{
+    -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+    animation-name: example;
+    animation-duration: .6s;
+    animation-iteration-count: infinite;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes example {
+   
+    100% {
+        border: solid 2px white;
+        overflow: hidden;
+        background-color:white;
+    }
+}
+
+/* Standard syntax */
+@keyframes example {
+
+    100% {
+        border: solid 2px white;
+        background-color: white;
+        overflow: hidden;
+    }
+}
+
+
+.translateIMG {
+    animation-name: translateIMG;
+    animation-duration: 8s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+
+    width: 12%;
+    height:auto;
+    
+    right: 0;
+}
+
+
+@keyframes translateIMG {
+   
+    25% {
+        transform: translate(-50%,-50%);
+    }
+
+    50% {
+        transform: translate(-300%,50%);
+    }
+
+    75% {
+        transform: translate(-500%,-50%);
+    }
+
+
+    100% {
+        transform: translate(-700%);
+    }
+}

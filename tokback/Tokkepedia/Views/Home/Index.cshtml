@@ -1,0 +1,753 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Home";
+    ViewData["Description"] = "Tokkepedia is the social and playable knowledge app";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white" id="extraSection">
+    <div class="container h-100">
+        <div class="row-fluid h-100 align-items-center">
+            <div class="col-12 col-md" id="pageContainer" style="padding: 0px;">
+                <div class="wellcome-heading" style="text-align:center;">
+                    @*<h2 style="font-size:medium!important;">Tokkepedia</h2> <small>(Dev)</small>*@
+                    @*<h3 style="font-size:medium!important;">Tokkepedia</h3>*@
+                    <span style="font-size:xx-large!important;">The social and playable knowledge app!</span>
+                </div>
+                <div class="get-start-area">
+                    @*<div class="row">
+                            <!-- Single Special Area -->
+                            <div class="col-12 col-md-4">
+                                <div class="single-special text-center wow fadeInUp bg-light" data-wow-delay="0.2s">
+                                    <h4 class="border-bottom border-gray">Top Tok Types - Week</h4>
+                                    <div id="topTokTypes">
+
+                                    </div>
+                                    <div class="center containerProgress">
+                                        <div class="progress_small" style="height:100px; width:100px; margin: 0px auto;"></div>
+                                    </div>
+                                    <small class="d-block text-right mt-3" style="margin-top:0.3rem!important;">
+                                        <a asp-controller="Tok" asp-action="TokTypes">All tok types</a>
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- Single Special Area -->
+                            <div class="col-12 col-md-4">
+                                <div class="single-special text-center wow fadeInUp bg-light" data-wow-delay="0.4s">
+                                    <h4 class="border-bottom border-gray pb-2 mb-0">Top Categories - Week</h4>
+                                    <div id="topCategories">
+
+                                    </div>
+                                    <div class="center containerProgress">
+                                        <div class="progress_small" style="height:100px; width:100px; margin: 0px auto;"></div>
+                                    </div>
+
+                                    <small class="d-block text-right mt-3" style="margin-top:0.3rem!important;">
+                                        <a>-</a>
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- Single Special Area -->
+                            <div class="col-12 col-md-4">
+                                <div class="single-special text-center wow fadeInUp bg-light" data-wow-delay="0.6s">
+                                    <h4 class="border-bottom border-gray pb-2 mb-0">Top Contributors - Week</h4>
+                                    <div id="topUsers">
+
+                                    </div>
+                                    <div class="center containerProgress">
+                                        <div class="progress_small" style="height:100px; width:100px; margin: 0px auto;"></div>
+                                    </div>
+                                    <small class="d-block text-right mt-3" style="margin-top:0.3rem!important;">
+                                        <a>-</a>
+                                    </small>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row clients-feedback-area">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 col-md-5" style="position: absolute; z-index: 1;">
+                                        <div class="slider slider-for">
+                                            <!-- Client Feedback Text  -->
+                                            <div class="client-feedback-text text-center">
+                                                <div class="speech-bubble-purple" style="padding: 8px">
+                                                    <h5 class="text-white">Share something cool to say!</h5>
+                                                </div>
+                                            </div>
+                                            <!-- Client Feedback Text  -->
+                                            <div class="client-feedback-text text-center">
+                                                <div class="speech-bubble-lightblue" style="padding: 8px">
+                                                    <h4 class="text-white">Share what you just learned!</h4>
+                                                </div>
+                                            </div>
+                                            <!-- Client Feedback Text  -->
+                                            <div class="client-feedback-text text-center">
+                                                <div class="speech-bubble-pink" style="padding: 8px">
+                                                    <h4 class="text-white">Share your interests!</h4>
+                                                </div>
+                                                <div class="client-name text-center">
+                                                    <label> </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <!-- Client Thumbnail Area -->
+                                    <div class="col-12 col-md-4" style="margin-top: 50px">
+                                        <div class="slider slider-nav">
+                                            <div class="client-thumbnail" style="margin: 0px 24px;">
+                                                <img src="~/images/tokstargirl2.jpg" alt="">
+                                            </div>
+                                            <div class="client-thumbnail" style="margin: 0px 24px;">
+                                                <img src="~/images/tokstargirl1.jpg" alt="">
+                                            </div>
+                                            <div class="client-thumbnail" style="margin: 0px 24px;">
+                                                <img src="~/images/tokstarguy1.jpg" alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+
+                    <div class="row no-gutters">
+                        <div class="col-md-6">
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- Headings -->
+                                <div class="col tokcolors m-2 d-none d-sm-block">
+                                    <div class="blue1 center-content" style="padding: 12px; text-align: center; height: 100%; border: 1px solid #6f42c1;">
+                                        <h4 class="m-0 text-white">Collections</h4>
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2 d-none d-sm-block">
+                                    <div class="green1 center-content" style="padding: 12px; text-align: center; height: 100%; border: 1px solid #6f42c1;">
+                                        <h4 class="m-0 text-white">Share</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- 1st Row -->
+                                <div class="col tokcolors m-2">
+                                    <div class="blue2 center-content rounded-box" style="padding: 0px;">
+                                        <img style="width: 100%;height:100%;border-radius: 8px;" src="~/images/tokgroups-aesthetic.jpg" />
+                                        <div style="background-color: black;position:absolute;border-radius: 4px;opacity: .8;padding: 6px 6px; width: 100%;top:0;">
+                                            <h4 class="m-0 text-white">Tok Groups</h4>
+                                            <h5 class="m-0 text-white">Anything you can say or talk about</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2">
+                                    <div class="flip-container flip-animate" style="height: 100%">
+                                        <div class="flipper green2 rounded-box">
+                                            <div class="front center-content" style="flex-wrap: wrap;flex-direction: column;height: 100%;width:100%;">
+                                                <img class="img-thumbnail" src="~/images/tokstargirl2.jpg" alt="">
+                                                <h4 class="m-0 text-white r-h4">Share what you just learned</h4>
+                                            </div>
+                                            <div class="back center-content" style="flex-wrap: wrap;flex-direction: column;height: 100%;width:100%;">
+                                                <img class="img-thumbnail" src="~/images/tokstargirl2.jpg" alt="">
+                                                <h4 class="m-0 text-white r-h4">Share something cool to say</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- 2nd Row -->
+                                <div class="col tokcolors m-2">
+                                    <div class="blue3 center-content rounded-box" style="padding: 0px;">
+                                        <img style="width: 100%;height:100%;border-radius: 8px;" src="~/images/politoks-aesthetic.jpg" />
+                                        <div style="background-color: black;position:absolute;border-radius: 4px;opacity: .8;padding: 6px 6px; width: 100%;top:0;">
+                                            <h4 class="m-0 text-white">Politoks</h4>
+                                            <h5 class="m-0 text-white">Political toks (e.g. Candidate Quotes)</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2">
+                                    <div class="flip-container flip-animate-2" style="height: 100%">
+                                        <div class="flipper green3 rounded-box">
+                                            <div class="front center-content" style="flex-wrap: wrap;flex-direction: column;height: 100%;width:100%;">
+                                                <img class="img-thumbnail" src="~/images/tokstargirl1.jpg" alt="">
+                                                <h4 class="m-0 text-white r-h4">Share your interests</h4>
+                                            </div>
+                                            <div class="back center-content" style="flex-wrap: wrap;flex-direction: column;height: 100%;width:100%;">
+                                                <img class="img-thumbnail" src="~/images/tokstargirl1.jpg" alt="">
+                                                <h4 class="m-0 text-white r-h4">Share your study notes</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- 3rd Row -->
+                                <div class="col tokcolors m-2">
+                                    <div class="blue2 center-content rounded-box" style="padding: 0px;">
+                                        <img style="width: 100%;height:100%border-radius: 8px;;" src="~/images/bilingual-aesthetic.jpg" />
+                                        <div style="background-color: black;position:absolute;border-radius: 4px;opacity: .8;padding: 6px 6px; width: 100%;top:0;">
+                                            <h4 class="m-0 text-white">Bilingual</h4>
+                                            <h5 class="m-0 text-white">Post toks in English and another language</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2">
+                                    <div class="flip-container flip-animate-3" style="height: 100%">
+                                        <div class="flipper green4 rounded-box">
+                                            <div class="front center-content" style="flex-wrap: wrap;flex-direction: column;height: 100%;width:100%;">
+                                                <img class="img-thumbnail" src="~/images/tokstarguy1.jpg" alt="">
+                                                <h4 class="m-0 text-white r-h4">Share what you know</h4>
+                                            </div>
+                                            <div class="back center-content" style="flex-wrap: wrap;flex-direction: column;height: 100%;width:100%;">
+                                                <img class="img-thumbnail" src="~/images/tokstarguy1.jpg" alt="">
+                                                <h4 class="m-0 text-white r-h4">Share a phrase in a foreign language</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- Headings -->
+                                <div class="col tokcolors m-2 d-none d-sm-block">
+                                    <div class="purple1 center-content" style="padding: 12px; text-align: center; height: 100%; border: 1px solid #6f42c1;">
+                                        <h4 class="m-0 text-white">Play</h4>
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2 d-none d-sm-block">
+                                    <div class="accent1 center-content" style="padding: 12px; text-align: center; height: 100%; border: 1px solid #6f42c1;">
+                                        <h4 class="m-0 text-white">Trends</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- 1st Row -->
+                                <div class="col tokcolors m-2">
+                                    <div class="purple2 center-content rounded-box">
+                                        <img src="~/images/tokcards_2.jpg" />
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2">
+                                    <div class="accent2 center-content rounded-box" style="flex-wrap: wrap;flex-direction: column;">
+                                        <h4 class="m-0 text-white r-h4">Top Categories</h4>
+                                        <div id="topCategories" style="width: 100%">
+
+                                        </div>
+                                        <div class="center containerProgress">
+                                            <div class="progress_small" style="height:100px; width:100px; margin: 0px auto;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- 2nd Row -->
+                                <div class="col tokcolors m-2">
+                                    <div class="purple3 center-content rounded-box">
+                                        <img src="~/images/tokmatch_2.jpg" />
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2">
+                                    <div class="accent3 center-content rounded-box" style="flex-wrap: wrap;flex-direction: column;">
+                                        <h4 class="m-0 text-white r-h4">Top Contributors</h4>
+                                        <div id="topUsers" style="width: 100%">
+
+                                        </div>
+                                        <div class="center containerProgress">
+                                            <div class="progress_small" style="height:100px; width:100px; margin: 0px auto;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters m-2 no-margin">
+                                <!-- 3rd Row -->
+                                <div class="col tokcolors m-2">
+                                    <div class="purple4 center-content rounded-box">
+                                        <h4 class="m-0 text-white">Game Add</h4>
+                                    </div>
+                                </div>
+                                <div class="col tokcolors m-2">
+                                    <div class="accent4 center-content rounded-box" style="flex-wrap: wrap;flex-direction: column;">
+                                        <h4 class="m-0 text-white r-h4">Top Tok Types</h4>
+                                        <div id="topTokTypes" style="width: 100%">
+
+                                        </div>
+                                        <div class="center containerProgress">
+                                            <div class="progress_small" style="height:100px; width:100px; margin: 0px auto;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div class="col-md-6" style="margin: 0px auto;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a id="btnPlayCards" asp-action="PlayToks" asp-controller="Set" style="width: 100%;"><img src="~/images/tokcards.jpg" /></a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a id="btnPlayCards" asp-action="TokMatch" asp-controller="Tok" style="width: 100%;"><img src="~/images/tokmatch.jpg" /></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="tokviewfeed">
+                                <a href="/all" style="margin-top: 4px;"><h6 style="text-decoration: underline;">View All Toks</h6></a>
+                            </div>
+                            <div class="tokviewfeed">
+                                <a href="/featuredtoks" style="margin-top: 4px;"><h6 style="text-decoration: underline;">View All Featured Toks</h6></a>
+                            </div>
+                            <input id="IsLoadMore" type="hidden" value="yes" />
+                            <input id="LoadMoreFunction" type="hidden" value="GetSearchData" />
+                            <input id="ValSearchText" type="hidden" value="" />
+                            <input id="TxtCategory" type="hidden" value="" />
+                            <input id="CountryFilter" type="hidden" value="" />
+                            <input id="TokTypeFilter" type="hidden" value="" />
+                            <input id="TokTypeIdFilter" type="hidden" value="" />
+                            <input id="UserIdFilter" type="hidden" value="" />
+                            <input id="searchorder" type="hidden" value="newest" />
+                            <input id="Token" type="hidden" />
+                            <div class="center" id="containerProgress" style="margin: 24px auto">
+                                <div class="colorlib-load"></div>
+                            </div>
+                            <div id="tokContainer" style="margin-top: 1em !important;">
+                                <div class="container">
+                                    <div id="tokTileContainer" class="row">
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="justify-content-center" style="align-content:center!important;">
+                                                <div class="justify-content-center tokProgress" style="display:none; height:200px; width:200px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stickers Modal -->
+    <div class="modal fade" id="sticker-modal" tabindex="-1" role="dialog" aria-labelledby="sticker-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="nav-item nav-link active"><a href="#myStickers" data-toggle="tab" class="tabMySticker"><h5 style="margin-bottom: 0px;">My Stickers</h5></a></li>
+                        <li class="nav-item nav-link"><a href="#stickerShop" data-toggle="tab" class="tabStickerShop"><h5 style="margin-bottom: 0px;">Shop</h5></a></li>
+                    </ul>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="myStickers">
+                                    <div class="center" id="myStickersContainerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokContainer" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="myStickersContainer" class="row no-gutters">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <h5>Selected: <span class="txtSelectedStickerName"></span></h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center moreProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="stickerShop">
+                                    <div class="center shopContainerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokCardContainer" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="stickerShopContainer" class="row no-gutters">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <h5>Selected: <span class="txtSelectedStickerName"></span></h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center moreProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12" style="text-align: center;">
+                        <button type="button" class="btn btn-primary" id="btnSelect" disabled style="font-size: 24px" data-stickerid="0" data-tokId="0" data-stickerurl="" data-selecttype="0" data-mode="0">Select</button>
+                        <button type="button" class="btn btn-secondary btn-danger" id="btnQuit" style="font-size: 24px" data-dismiss="modal">Quit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Purchase Modal -->
+    <div class="modal fade purchaseModal" id="purchase-modal" tabindex="-1" role="dialog" aria-labelledby="purchase-title" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="purchase-title">Purchase Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table" style="width: 100%">
+                        <tbody>
+                            <tr>
+                                <td width="96"><img id="imgAvatar" src="~/images/tokket.png" style="width: 96px;" /></td>
+                                <td style="vertical-align: middle;"><h4 id="txtName" style="margin-bottom: 0px;"></h4></td>
+                                <td style="vertical-align: middle;" width="128"><input type="radio" name="rdoAmountType" /><i class="fas fa-dollar-sign" style="font-size: 24px;color: #28B463"></i><span style="font-size: 16px;vertical-align: middle; margin-left: 4px;" id="txtPriceUSD">0</span></td>
+                                <td style="vertical-align: middle;" width="128"><input type="radio" name="rdoAmountType" /><img src="~/images/gold.gif" width="24" height="24" /><span style="font-size: 16px;vertical-align: middle; margin-left: 4px;" id="txtPriceCoins">0 coins</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="btnPurchase" type="button" data-dismiss="modal" class="btn btn-primary" data-stickerid="0">Confirm Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/tokkepedia.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+    <script src="~/js/jquery.flip.js"></script>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script src="~/js/SetFeed.js"></script>
+    }
+
+    <script>
+        renderCount = @(User.Identity.IsAuthenticated ? 4 : 2);
+        $(document).ready(function () {
+            $(".tokcolors > .rounded-box").each(function () {
+                var width = $(this).outerWidth(true);
+                $(this).css("height", width + "px");
+            });
+            
+            GetInitRawData();
+            LoadCounter($("#topTokTypes"), 0);
+            LoadCounter($("#topCategories"), 1);
+            LoadCounter($("#topUsers"), 2);
+            
+            $(".tabMySticker").click(function () {
+                $("#btnSelect").text("Select");
+                $(".nav-item.nav-link").removeClass("active");
+                $(this).parent().addClass("active");
+            });
+
+            $(".tabStickerShop").click(function () {
+                $("#btnSelect").text("Buy and Select");
+                $(".nav-item.nav-link").removeClass("active");
+                $(this).parent().addClass("active");
+                $.ajax({
+                    url: "/Tok/GetStickersForSale",
+                    type: "GET",
+                    async: true,
+                    success: function (ret) {
+                        $("#stickerShopContainer").html(ret);
+                    },
+                    beforeSend: function () {
+                        $(".shopContainerProgress").show();
+                    },
+                    complete: function () {
+                        $(".shopContainerProgress").hide();
+                    }
+                });
+            });
+        });
+
+
+
+        function GetInitRawData(filter = '', type = 0) {
+            var SelectGroupOptions = {};
+
+            SelectGroupOptions.url = "/Tok/InitializeRawTokData?filter=" + filter + "&type=" + type;
+            SelectGroupOptions.type = "GET";
+            SelectGroupOptions.async = true;
+            SelectGroupOptions.success = function (data) {
+                var toks = data.allToks;
+                //console.log(toks.token);
+                $("#tokTileContainer").html("");
+                for (var i = 0; i < toks.length; i++) {
+                    //console.log(JSON.stringify(toks[i]));
+                    (function (x) {  
+                    
+                        $.ajax({
+                            url: "/Tok/RenderTokViews",
+                            type: "POST",
+                            data: JSON.stringify(toks[x]),
+                            datatype: "html",
+                            contentType: "application/json",
+                            async: true,
+                            cache: false,
+                            success: function (res) {
+                                $("#tokTileContainer").append(res.tileHtml);
+                            },
+                            error: function () {
+                                // Error here..
+                            },
+                            complete: function () {
+                                $(".tok-tile").click(function (e) {
+                                    OpenDialog(this);
+                                });
+
+                                
+
+                                $(".tok-tile a").on('click', function (ev) {
+                                    ev.stopImmediatePropagation();
+                                });
+
+                                // Facebook Renderer
+                                $(".tokTile_"+toks[x].id).find('.social-buttons').each(function () {
+                                    var btnShare = $(this).find(".btnShare");
+                                    FB.XFBML.parse(this);
+                                    var obj = {
+                                        method: 'feed',
+                                        link: btnShare.attr("data-href"),
+                                        picture: btnShare.attr("data-pic"),
+                                        name: btnShare.attr("data-title"),
+                                        description: btnShare.attr("data-desc")
+                                    };
+                                    $(".btnShare").click(function () {
+                                        FB.ui(obj, function (response) { console.log(response); });
+                                    });
+                                });
+
+                                $("#twitter-button").click(function (e) {
+                                    e.preventDefault();
+                                    var win = window.open(shareUrl, 'ShareOnTwitter', getWindowOptions());
+                                    win.opener = null; // 2
+                                });
+                                // Twitter Renderer
+                                $.ajax({ url: 'https://platform.twitter.com/widgets.js', dataType: 'script', cache: true });
+                            }
+                        });
+                    })(i);
+                }
+            };
+            SelectGroupOptions.error = function () {
+                $("#containerProgress").hide();
+            };
+            SelectGroupOptions.beforeSend = function () {
+                $("#containerProgress").show();
+            };
+            SelectGroupOptions.complete = function () {
+                $("#containerProgress").hide();
+
+                // Facebook Renderer
+                $('.social-buttons').each(function () {
+                    var btnShare = $(this).find(".btnShare");
+                    FB.XFBML.parse(this);
+                    var obj = {
+                        method: 'feed',
+                        link: btnShare.attr("data-href"),
+                        picture: btnShare.attr("data-pic"),
+                        name: btnShare.attr("data-title"),
+                        description: btnShare.attr("data-desc")
+                    };
+                    $(".btnShare").click(function () {
+                        FB.ui(obj, function (response) { console.log(response); });
+                    });
+                });
+
+                $("#twitter-button").click(function (e) {
+                    e.preventDefault();
+                    var win = window.open(shareUrl, 'ShareOnTwitter', getWindowOptions());
+                    win.opener = null; // 2
+                });
+                // Twitter Renderer
+                $.ajax({ url: 'https://platform.twitter.com/widgets.js', dataType: 'script', cache: true });
+
+                // Bootstrap Tooltip
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="modal"][title]').tooltip();
+                })
+
+                setTimeout(function () {
+                    $(".dropdown-menu > .social-buttons > .fb-share-button > span", ".dropdown-menu > .social-buttons > .fb-share-button > span > iframe").css("width", "73px");
+                    $(".dropdown-menu > .social-buttons > .fb-share-button > span", ".dropdown-menu > .social-buttons > .fb-share-button > span > iframe").css("height", "28px");
+                }, 1500);
+            };
+            $.ajax(SelectGroupOptions);
+        }
+
+        $("#btnSelect").click(function () {
+            var stickerId = $(this).attr("data-stickerid");
+            var tokId = $(this).attr("data-tokid");
+            var url = $(this).attr("data-stickerurl");
+            var selectType = $(this).attr("data-selecttype");
+            //console.log(url);
+            if (stickerId != 0 && tokId != 0) {
+                if (selectType == 0) {
+                    var opt = {};
+                    opt.url = "Tok/AddStickerToTok";
+                    opt.type = "PUT";
+                    opt.data = { stickerId: stickerId, tokId: tokId };
+                    opt.async = true;
+                    opt.success = function (htmlData) {
+                        // Success
+                        console.log(htmlData);
+                        //location.reload();
+                    };
+                    opt.error = function () {
+                        //$("#containerProgress").hide();
+                    };
+                    opt.beforeSend = function () {
+                        //$("#containerProgress").show();
+                        $(this).attr("disabled", true);
+                    };
+                    opt.complete = function () {
+                        //$("#containerProgress").hide();
+                        var newSticker = $("<a>");
+                        var newStickerImg = $("<img>");
+                        newStickerImg.attr("src", url);
+                        newStickerImg.css("height", "32px");
+                        newSticker.addClass("btnAddSticker");
+                        newSticker.attr("data-toggle", "modal");
+                        newSticker.attr("data-target", "#sticker-" + tokId + "-modal");
+                        newSticker.attr("data-tokid", tokId);
+                        newSticker.attr("data-stickerid", stickerId);
+                        newSticker.click(StickerClick());
+                        newSticker.html(newStickerImg);
+                        $("#stickerContent-" + tokId).html(newSticker);
+                        $("#stickerbtnContent-" + tokId).hide();
+                        $("#stickerbtnContent-" + tokId + " > .btnAddSticker > h6").html("+ Replace Sticker");
+                        $("#sticker-modal").modal("hide");
+                    };
+                    $.ajax(opt);
+                }
+                else {
+                    var opt = {};
+                    opt.url = "Payment/BuyAndSelectSticker";
+                    opt.type = "POST";
+                    opt.data = { stickerId: stickerId, tokId: tokId };
+                    opt.async = true;
+                    opt.success = function (htmlData) {
+                        // Success
+                        console.log(htmlData);
+                        //location.reload();
+                    };
+                    opt.error = function () {
+                        //$("#containerProgress").hide();
+                    };
+                    opt.beforeSend = function () {
+                        //$("#containerProgress").show();
+                        $(this).attr("disabled", true);
+                    };
+                    opt.complete = function () {
+                        //$("#containerProgress").hide();
+                        var newSticker = $("<a>");
+                        var newStickerImg = $("<img>");
+                        newStickerImg.attr("src", url);
+                        newStickerImg.css("height", "32px");
+                        newSticker.addClass("btnAddSticker");
+                        newSticker.attr("data-toggle", "modal");
+                        newSticker.attr("data-target", "#sticker-" + tokId + "-modal");
+                        newSticker.attr("data-tokid", tokId);
+                        newSticker.attr("data-stickerid", stickerId);
+                        newSticker.click(StickerClick());
+                        newSticker.html(newStickerImg);
+                        $("#stickerContent-" + tokId).html(newSticker);
+                        $("#stickerbtnContent-" + tokId).hide();
+                        $("#stickerbtnContent-" + tokId + " > .btnAddSticker > h6").html("+ Replace Sticker");
+                        $("#sticker-modal").modal("hide");
+                    };
+                    $.ajax(opt);
+                }
+            }
+            else {
+                // No sticker selected
+            } 
+        });
+
+        function BuySticker(stickerId = '', stickerImage = '', stickerName = '', stickerCoins = 0, stickerUSD = 0) {
+            $("#btnPurchase").attr("data-stickerid", stickerId);
+            $("#imgAvatar").attr("src", stickerImage);
+            $("#txtName").text(stickerName);
+            $("#txtPriceCoins").text(stickerCoins + " coins");
+            $("#txtPriceUSD").text(stickerUSD);
+        }
+
+        function StickerClick() {
+            $("#sticker-modal").modal("toggle");
+            $("#btnSelect").attr("data-tokid", $(this).attr("data-tokid"));
+            $("#btnSelect").attr("data-stickerid", $(this).attr("data-stickerid"));
+            var mode = $("#btnSelect").attr("data-mode");
+            var stickerId = $("#btnSelect").attr("data-stickerid");
+            $.ajax({
+                url: "/Tok/GetMyStickers?userId=" + userId + "&selected=" + stickerId,
+                type: "GET",
+                async: true,
+                success: function (ret) {
+                    $("#myStickersContainer").html(ret);
+                },
+                beforeSend: function () {
+                    $("#myStickersContainerProgress").show();
+                },
+                complete: function () {
+                    $("#myStickersContainerProgress").hide();
+                    if (mode == 0) {
+                        $(".txtSelectedStickerName").html("");
+                        $("#btnSelect").attr("disabled", true);
+                    }
+                    else { // Replace/Edit Mode
+                        $("#btnSelect").attr("disabled", false);
+                    }
+                }
+            });
+        }
+    </script>
+}

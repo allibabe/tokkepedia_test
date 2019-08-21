@@ -1,0 +1,36 @@
+﻿@model UserPlatformPointsViewModel
+
+<br>
+<h2> @Model.User.DisplayName's Platform Points</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Total Points:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TotalPoints)
+        </dd>
+        <dt>
+            Tokkepedia Points:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TokkepediaPoints)
+        </dd>
+
+        <dt>
+            Tokket Points:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TokketPoints)
+        </dd>
+
+        <dt>
+            Tok Game Points:
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TokGamePoints)
+        </dd>
+    </dl>
+</div>

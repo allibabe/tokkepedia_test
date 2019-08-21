@@ -1,0 +1,62 @@
+﻿@model Tokkepedia.Models.Tok
+@using Newtonsoft.Json;
+
+<input id="tok-@Model.Id" type="hidden" value="@JsonConvert.SerializeObject(Model)" />
+<input id="primarytext-@Model.Id" type="hidden" value="@Model.PrimaryFieldText" />
+<div id="tokviewitem-@Model.Id" class="tokviewitem card custom-card">
+    <!--Tok Section-->
+    <div class="front center-content rounded-corner" style="background-color: #fff">
+        <div class="text-center">
+            <h2>@Model.PrimaryFieldText</h2>
+        </div>
+
+        <h6 class="card-hint">Click to flip</h6>
+    </div>
+    <div class="back rounded-corner">
+        <div class="p-4">
+            <div class="col-md-12 text-center center-content">
+                @if (Model.IsDetailBased == false && !String.IsNullOrEmpty(Model.SecondaryFieldText))
+                {
+                    <h2>@Html.DisplayFor(modelItem => Model.SecondaryFieldText)</h2>
+                }
+                else if (Model.IsDetailBased == true)
+                {
+                    @for (int i = 0; i < 5; ++i)
+                    {
+                        string iNum = (i + 1).ToString(), baseName = "EnglishDetail" + iNum, inputName = "txt" + baseName, counterName = "lbl" + baseName + "Num";
+
+                        if (!String.IsNullOrEmpty(Model.Details[i]))
+                        {
+                            <input type="hidden" id="detailtext@(i+1)-@Model.Id" value="@Model.Details[i]" />
+                            @Html.Raw("• ") @Html.DisplayFor(modelItem => Model.Details[i])
+                            <br />
+                        }
+                    }
+
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => Model.Category)
+                }
+
+            </div>
+            @if (Model.Image != null)
+            {
+                if (!String.IsNullOrEmpty(Model.Image))
+                {
+                    <div class="img-container">
+                        <a href="@Model.Image" class="image-popup-no-margins" id="img-@Model.Id">
+                            <img class="cropped" src="@Model.Image" />
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+        <h6 class="card-hint">Click to flip</h6>
+    </div>
+</div>
+
+<script>
+    ApplyFlipCard();
+    ApplyMagnificPopup();
+</script>

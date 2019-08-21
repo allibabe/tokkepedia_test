@@ -1,0 +1,61 @@
+﻿@model BrowseViewModel
+
+@{
+    ViewData["Title"] = "Tok Types";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+@section Styles {
+    <!-- Custom styles for this template -->
+    <link href="~/css/tokTypes.css" rel="stylesheet" />
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="jumbotron-heading text-center">
+                        <h1 class="jumbotron-heading">Tok Types</h1>
+                        <p class="lead">Types for anything you can say or talk about</p>
+                    </div>
+                    <div class="album py-5" style="padding-top:0.25em!important;">
+                        <div class="container-fluid" id="tokTypesContainer">
+                            <div class="row">
+                                <div class="center" id="containerProgress" style="margin: 24px auto">
+                                    <div class="colorlib-load"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Tok/InitializeTokTypes?isNew=true",
+                type: "GET",
+                async: true,
+                success: function (htmlData) {
+                    $("#tokTypesContainer > div.row").html(htmlData);
+                },
+                error: function () {
+                    // Do error handling here.
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,146 @@
+﻿@model List<PurchaseModel>
+@{
+    ViewData["Title"] = "Avatars";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white" id="shop">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Heading Text  -->
+                            <div class="section-heading text-center">
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 style="color: #7F8C8D; float: left;">Avatars</h2>
+                            <h4 style="position: absolute; right: 0; bottom: 0; margin-right: 24px;"><a href="/avatars" style="color: #9B59B6;">View All <i class="fas fa-arrow-circle-right"></i></a></h4>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom: 16px;">
+                        @foreach (var prod in Model.Where(x => x.ProductType == ProductType.Avatars))
+                        {
+                            <div class="col-md-4">
+                                <div class="container" style="border: 1px solid #D5DBDB">
+                                    <div class="row">
+                                        <div class="col-md-12 text-center" style="background-color: #EAEDED">
+                                            <img src="@prod.Image" style="height: 256px;" />
+                                        </div>
+                                    </div>
+                                    <div class="row p-3">
+                                        <div class="col-md-8">
+                                            <div class="col-md-12">
+                                                <h5>@prod.Name</h5>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <img src="~/images/gold.gif" width="24" height="24" /><span style="font-size: 18px;vertical-align: middle; margin-left: 4px;">@prod.PriceCoins coins</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-center center-content">
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+                                                <button type="button" class="btn btn-success btnBuy" style="border-radius: 50%;padding: 12px 24px;" onclick="BuyAvatar('@prod.Id','@prod.Image','@prod.Name',@prod.PriceCoins, @prod.PriceUSD)" data-toggle="modal" data-target="#purchase-modal">Buy</button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-success btnBuy" style="border-radius: 50%;padding: 12px 24px;" onclick="RequireLogin('you account')">Buy</button>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Purchase Modal -->
+    <div class="modal fade purchaseModal" id="purchase-modal" tabindex="-1" role="dialog" aria-labelledby="purchase-title" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="purchase-title">Purchase Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table" style="width: 100%s">
+                        <tbody>
+                            <tr>
+                                <td width="96"><img id="imgAvatar" src="~/images/tokket.png" style="width: 96px;" /></td>
+                                <td style="vertical-align: middle;"><h4 id="txtName" style="margin-bottom: 0px;"></h4></td>
+                                <td style="vertical-align: middle;" width="128"><input type="radio" name="rdoAmountType" /><i class="fas fa-dollar-sign" style="font-size: 24px;color: #28B463"></i><span style="font-size: 16px;vertical-align: middle; margin-left: 4px;" id="txtPriceUSD">0</span></td>
+                                <td style="vertical-align: middle;" width="128"><input type="radio" name="rdoAmountType" /><img src="~/images/gold.gif" width="24" height="24" /><span style="font-size: 16px;vertical-align: middle; margin-left: 4px;" id="txtPriceCoins">0 coins</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="btnPurchase" type="button" data-dismiss="modal" class="btn btn-primary" data-avatarid="0">Confirm Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @if (User.Identity.IsAuthenticated)
+    {
+        <script>
+            $("#btnPurchase").click(function () {
+                var avatarId = $(this).attr("data-avatarid");
+                if (avatarId != 0) {
+                    var opt = {};
+                    opt.url = "Payment/BuyAvatar";
+                    opt.type = "POST";
+                    opt.data = { avatarId: avatarId };
+                    opt.async = true;
+                    opt.success = function (htmlData) {
+                        // Success
+                    };
+                    opt.error = function () {
+                        //$("#containerProgress").hide();
+                    };
+                    opt.beforeSend = function () {
+                        //$("#containerProgress").show();
+                        $(this).attr("disabled", true);
+                    };
+                    opt.complete = function () {
+                        //$("#containerProgress").hide();
+                    };
+                    $.ajax(opt);
+                }
+                else {
+                    // No avatar selected
+                }
+            });
+
+            function BuyAvatar(avatarId = '', avatarImage = '', avatarName = '', avatarCoins = 0, avatarUSD = 0) {
+                $("#btnPurchase").attr("data-avatarid", avatarId);
+                $("#imgAvatar").attr("src", avatarImage);
+                $("#txtName").text(avatarName);
+                $("#txtPriceCoins").text(avatarCoins + " coins");
+                $("#txtPriceUSD").text(avatarUSD);
+            }
+        </script>
+    }
+}

@@ -1,0 +1,352 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Tokkepedia.Models
+
+
+@inject SignInManager<TokketUser> SignInManager
+@inject UserManager<TokketUser> UserManager
+
+@model IndexViewModel
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="~/favicon.ico">
+
+    <title>Tokkepedia</title>
+    <!-- Bootstrap core CSS -->
+    @*<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+    <!-- Custom styles for this template -->
+    <link href="~/css/offcanvas.css" rel="stylesheet" />
+    <link href="~/css/magnific-popup.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        .material-icons.md-darkclose {
+            color: black;
+        }
+
+        .red144 {
+            color: #ff3144;
+        }
+
+        .blue144 {
+            color: #4527A0;
+        }
+
+        .green144 {
+            color: #4CAF50;
+        }
+
+        .orange144 {
+            color: #FF8F00;
+        }
+
+        .lightblue144 {
+            color: #42A5F5;
+        }
+
+        .reactionbtn {
+            width: 6px;
+            height: 6px;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .reactionlbl {
+            margin-left: 0.8em;
+            padding-right: 0em;
+            margin-right: 0.8em;
+            font-size: 10px;
+            cursor: pointer;
+            vertical-align: top;
+        }
+
+
+        .darkdislike {
+            padding: 0.01em;
+            width: 12px;
+            height: 12px;
+        }
+
+        .darkcheck {
+            padding: 0.01em;
+            width: 12px;
+            height: 12px;
+        }
+
+        .darkclose {
+            padding: 0.01em;
+            width: 12px;
+            height: 12px;
+        }
+
+        .darkcomment {
+            padding: 0.01em;
+            width: 12px;
+            height: 12px;
+        }
+
+        .darkdroparrow {
+            padding: 0.01em;
+            height: 24px;
+            width: 24px;
+        }
+
+        .caret-off::before {
+            display: none;
+        }
+
+        .caret-off::after {
+            display: none;
+        }
+
+        .modal-open .navbar-fixed-top {
+            right: -15px;
+        }
+
+        .tokviewfeed {
+            margin: 0 auto;
+            max-width: 900px;
+        }
+
+        .responsivetext {
+            margin-left: 0.5em;
+            margin-right: 1.5em;
+            margin-bottom: 0px;
+            vertical-align: top;
+        }
+
+        .scrollsets {
+            height: 100px;
+            overflow-y: scroll;
+        }
+    </style>
+    
+</head>
+
+<body class="bg-light container tokviewfeed">
+    @* if (SignInManager.IsSignedIn(User)) *@
+
+    <main role="main" class="container">
+        <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+            @*style="padding-top:0.3rem!important; padding-bottom:0.3rem!important;" margin-top:0.3em!important;  margin-bottom:0.3em!important;*@
+        <img class="mr-3" alt="" width="48" height="48" src="~/images/birdlogo.png" />
+        <div class="lh-100">
+            <h3 class="mb-0 text-white lh-100" style="margin-bottom:6em;">Tokkepedia</h3>
+            <br />
+            <h6 class="text-white"><i>The social and playable knowledge app</i></h6>
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center" style="font-size:small">
+        <div class="col-md-4">
+            <div class="my-3 p-3 bg-white rounded box-shadow" style="margin-top:0.3px!important; margin-bottom:0.3px!important; padding:0.6rem!important">
+                <h6 class="border-bottom border-gray pb-2 mb-0" style="font-size:0.85em!important;">Top Tok Types - Month</h6>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">Prayer</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">Acronym</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">Basketball</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <small class="d-block text-right mt-3" style="margin-top:0.3rem!important;">
+                    <a href="#">All tok types</a>
+                </small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="my-3 p-3 bg-white rounded box-shadow" style="margin-top:0.3px!important; margin-bottom:0.3px!important; padding:0.6rem!important">
+                <h6 class="border-bottom border-gray pb-2 mb-0" style="font-size:0.85em!important;">Top Categories - Week</h6>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">NBA</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">NFL</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">MLB</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <small class="d-block text-right mt-3" style="margin-top:0.3rem!important;">
+                    <a href="#">All categories</a>
+                </small>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="my-3 p-3 bg-white rounded box-shadow" style="margin-top:0.3px!important; margin-bottom:0.3px!important; padding:0.6rem!important">
+                <h6 class="border-bottom border-gray pb-2 mb-0" style="font-size:0.85em!important;">Top Contributors - Overall</h6>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">Full Name</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">Full Name</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="media text-muted pt-3" style="padding-top:0.3px!important;">
+                    <img src="~/images/blue.svg" alt="" class="mr-2 rounded" style="margin-top:0.1rem!important; height:12px; width:12px;">
+                    <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" style="padding-top:0.1px!important; padding-bottom:0.1px!important; border-top:0!important; border-bottom:0!important;">
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <strong class="text-gray-dark">Full Name</strong>
+                            <a href="#">View</a>
+                        </div>
+                    </div>
+                </div>
+                <small class="d-block text-right mt-3" style="margin-top:0.3rem!important;">
+                    <a href="#">More contributors</a>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <div class="row border-bottom border-gray pb-2 mb-0" style="margin-left: auto; margin-right: auto;">
+            <div class="row float-sm-right" style="margin-left: auto; margin-right: auto;">
+                <img id="HeadMsg1" src="~/images/tokstargirl1.jpg" alt="" class="mr-2 rounded-circle"
+                     style="max-height:35px!important; max-width:35px!important; margin-left:1.25em!important; margin-right:0!important;">
+                <div class="speech-bubbleleftpink" style="max-height:35px!important;">
+                    <small id="lblPrompt1" style="color:white!important;">Share your interests!</small>
+                </div>
+                <div class="speech-bubblerightpurple" style="max-height:35px!important; margin-left:2em;">
+                    <small id="lblPrompt2" style="color:white!important;">Share something cool to say</small>
+                </div><img id="TokGroupTokstar2" src="~/images/tokstarguy1.jpg" alt="" class="mr-2 rounded-circle"
+                           style="max-height:35px!important; max-width:35px!important; margin-left:0.5em!important; margin-right:0!important;">
+                <div class="speech-bubblerightblue" style="max-height:35px!important; margin-left:2em;">
+                    <small id="lblPrompt3" style="color:white!important;">Share what you just learned!</small>
+                </div><img id="TokGroupTokstar3" src="~/images/tokstargirl2.jpg" alt="" class="mr-2 rounded-circle"
+                           style="max-height:35px!important; max-width:35px!important; margin-left:0.5em!important; margin-right:0!important;">
+            </div>
+
+        </div>
+
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <img id="TokGroupTokstar" src="~/images/tokstargirl2.jpg" alt="" class="mr-2 rounded-circle"
+                 style="max-height:30px!important; max-width:30px!important; margin-left:0!important; margin-right:0.2em!important;">
+            @if (!SignInManager.IsSignedIn(User))
+            {<strong><a asp-area="Identity" asp-page="/Account/Register">Sign up </a></strong>@Html.Raw("to start adding toks and earning coins!")}
+            else
+            {<strong>Follow </strong>@Html.Raw("users and categories to see toks on your feed!")}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @*<div id="overlay">
+            <div class="row">
+                <button class="overtext">Text</button>
+                <img id="coin1" class="overcontent1" src="~/images/silver.gif" style="height:48px; width:48px;"/>
+                <img id="coin2" class="overcontent2" src="~/images/silver.gif" style="height:48px; width:48px;"/>
+                <img id="coin3" class="overcontent3" src="~/images/silver.gif" style="height:48px; width:48px;"/>
+                <img id="coin4" class="overcontent4" src="~/images/silver.gif" style="height:48px; width:48px;"/>
+            </div>
+        </div>*@
+
+        <div class="my-lg-5 p-3 bg-white rounded box-shadow tokviewfeed" style="padding-left:0.2em!important;">
+            <input id="IsLoadMore" type="hidden" value="yes" />
+            <input id="LoadMoreFunction" type="hidden" value="GetData" />
+            <input id="ValSearchText" type="hidden" value="" />
+            <input id="TxtCategory" type="hidden" value="" />
+            <input id="CountryFilter" type="hidden" value="" />
+            <input id="TokTypeFilter" type="hidden" value="" />
+            <input id="TokTypeIdFilter" type="hidden" value="" />
+            <input id="UserIdFilter" type="hidden" value="" />
+            <input id="searchorder" type="hidden" value="newest" />
+            @Html.HiddenFor(model => model.Token, new { id = "Token" })
+            @Html.HiddenFor(model => model.IsSignedIn, new { id = "IsSignedIn" })
+            <div id="TokFeed" class="container-fluid tokviewfeed">
+                <input id="RenderedTokContent" type="hidden" value="" />
+                @foreach (Tokkepedia.Models.Tok tok in Model.Tok)
+                {
+                    @await Html.PartialAsync("TokView", tok)
+                    <hr />
+                }
+
+            </div>
+
+            <div class="justify-content-center" style="align-content:center!important;">
+                <div id="progress" class="justify-content-center" style="display:none; height:200px; width:200px; margin-left: auto; margin-right: auto;">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </main>
+
+
+    <!-- Bootstrap core JavaScript
+       ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    @*<script src="~/js/popper.min.js"></script>*@
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/holder.min.js"></script>
+    <script src="~/js/offcanvas.js"></script>
+    <script src="~/js/magnific-popup.min.js"></script>
+    <script src="~/js/magnific-popup.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+</body>
+
+
+</html>

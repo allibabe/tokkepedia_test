@@ -1,0 +1,41 @@
+﻿@model UserCoinsViewModel
+
+@{
+    ViewData["Title"] = "Add Tok";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <div style="margin-left: auto; margin-right: auto;">
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="profile-header-container">
+                                <div class="profile-header-img" style="padding-bottom:2em">
+                                    <img class="rounded-circle img-circle" src="~/images/gold.gif" style="padding-left:0.3em;" />
+                                    <!-- badge -->
+                                    <div class="rank-label-container">
+                                        <span class="label label-default rank-label">
+                                            @Model.Coins coins
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

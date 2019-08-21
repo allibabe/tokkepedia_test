@@ -1,0 +1,861 @@
+﻿@model Tok
+@using Tokkepedia.Tools.Extensions;
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<TokketUser> UserManager
+
+@{
+    var userId = User.GetUserId();
+
+    TokketUser user = null;
+    if (userId != null)
+    {
+        user = await UserManager.FindByIdAsync(userId);
+    }
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+}
+
+
+
+<div id="tokbackpage1" style="position:fixed;width:100%;height:100%;left:0;z-index:10000!important;display:none;background-color:mediumpurple;">
+    <h1 onclick="document.getElementById('tokbackpage1').style.display='none';" style="background-color:whitesmoke;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;text-align:center;position:fixed;top:0;width:100%;">  Tok Back  Page </h1>
+
+
+    <div class="w3-card-4" style="width:50%;left:25%;position:absolute;top:10%;">
+        <header class="w3-container w3-purple">
+            <h1>Header</h1>
+        </header>
+
+        <div class="w3-container" style="z-index:1000;background-color:white;">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+
+        <footer class="w3-container w3-purple">
+            <h5>Footer</h5>
+        </footer>
+    </div>
+
+
+    <div class="w3-card-4" style="width:50%;left:25%;position:absolute;top:40%;">
+        <header class="w3-container w3-purple">
+            <h1>Header</h1>
+        </header>
+
+        <div class="w3-container" style="z-index:1000;background-color:white;">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+
+        <footer class="w3-container w3-purple">
+            <h5>Footer</h5>
+        </footer>
+    </div>
+
+
+    <div class="w3-card-4" style="width:50%;left:25%;position:absolute;bottom:5%;">
+        <header class="w3-container w3-purple">
+            <h1>Header</h1>
+        </header>
+
+        <div class="w3-container" style="z-index:1000;background-color:white;">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+
+        <footer class="w3-container w3-purple">
+            <h5>Footer</h5>
+        </footer>
+    </div>
+
+</div>
+
+
+
+
+<div class="col-md-3 col-sm-6 col-6 tokTile_@Model.Id" style="padding: 4px;">
+    @if (!string.IsNullOrEmpty(Model.Image))
+    {
+        <div class="col-md-12 tok-tile" style="background-color: white; border: 1px solid #808080;cursor: pointer;">
+            <div class="row no-gutters">
+                <div class="col-md-12">
+                    <div class="img-container" style="height: 164px;">
+                        <img class="cropped" src="@Model.Image" />
+                    </div>
+                    <i class="flag-icon flag-icon-@Model.UserCountry" style="position: absolute; top: 0; right: 0"></i>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-md-12 center-content flexFont" style="text-align: center; padding-top: 12px;">
+                    <h5 class="line-clamp" style="max-height: 48px; overflow: hidden;">@Model.PrimaryFieldText</h5>
+                </div>
+                <div class="col-md-12">
+                    <div class="row no-gutters flexFont">
+                        <div class="col text-center">
+                            @Html.ActionLink(Model.Category, "Category", "Home", new { id = Model.CategoryId }, new { style = "color: black;font-size: 1.19em;", @class = "tok-link2" })
+                        </div>
+                        <div class="col text-center">
+                            <span style="font-size: 1.19em;">@Html.ActionLink(Model.TokGroup, "Group", "Tok", new { name = Model.TokGroup }, new { style = "color: black;", @class = "tok-link2" }) - @Html.ActionLink(Model.TokType, "TokType", "Tok", new { id = Model.TokTypeId }, new { style = "color: black;", @class = "tok-link2" })</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-12 tok-tile" style="background-color: @Model.ColorHex;cursor: pointer;overflow:hidden">
+            <div class="row no-gutters">
+                <div class="col-md-12">
+                    <table style="width: 100%; table-layout: auto;">
+                        <tbody>
+                            <tr>
+                                <td width="48px"><div class="col-md-12" style="padding: 0px;"><a asp-controller="User" asp-action="UserProfile" asp-route-id="@Model.UserId"><img src="@(Model.IsAvatarProfilePicture ?? false ? PurchasesTool.GetProduct(Model.SelectedAvatar).Image : (!string.IsNullOrEmpty(Model.UserPhoto) ? Model.UserPhoto : "/images/tokket.png"))" class="rounded-circle" style="border: 2px solid #542a7d; width: 48px; height: 48px; background-color: white;" /></a></div></td>
+                                <td class="text-white text-center" style="vertical-align: top;">
+                                    <a class="tok-link" asp-controller="User" asp-action="UserProfile" asp-route-id="@Model.UserId" style="color: white;">@Model.UserDisplayName</a><br />
+                                    <small style="font-size: 11px; left: 42.5%; position: absolute;">Royalty Title</small>
+                                </td>
+                                <td width="24px">
+                                    <i class="flag-icon flag-icon-@Model.UserCountry" style="position: absolute; top: 4px;"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @if (User.GetUserId() == Model.UserId)
+            {
+                <div class="row no-gutters" style="height: 48px;">
+                    <div class="col-md-12 center-content flexFont" id="stickerContent-@Model.Id" style="text-align: center;">
+                        @if (!string.IsNullOrEmpty(Model.Sticker))
+                        {
+                            <a class="btnAddSticker" data-toggle="modal" data-target="#sticker-@Model.Id-modal" data-tokid="@Model.Id" data-stickerid="@Model.Sticker"><img src="@Model.StickerImage" style="height: 32px;" /></a>
+                            <a style="position:absolute;width:100%;height:100%;" class="sticker-edit btnAddSticker" data-toggle="modal" data-target="#sticker-@Model.Id-modal" data-tokid="@Model.Id" data-stickerid="@Model.Sticker"><i style="font-size: 16px;padding: 6px;background-color: white;border-radius: 50%;position: absolute; right: 12px;top:22.5%;" class="fas fa-pencil-alt sticker-icon"></i></a>
+                        }
+                    </div>
+                    <div class="col-md-12 center-content flexFont" id="stickerbtnContent-@Model.Id" style="text-align: center;@(!string.IsNullOrEmpty(Model.Sticker) ? "display: none;" : "")">
+                        <a href="javascript:void(0)" class="btnAddSticker" data-toggle="modal" data-target="#sticker-@Model.Id-modal" data-tokid="@Model.Id" data-stickerid="@Model.Sticker"><h6 style="padding: 4px 16px;margin-bottom: 0px; border: 1px dashed #121212;color: white;">@(!string.IsNullOrEmpty(Model.Sticker) ? "+ Replace Sticker" : "+ Add Sticker")</h6></a>
+                    </div>
+                </div>
+                <div class="row no-gutters" style="height: 52%">
+                    <div class="col-md-12 center-content flexFont" style="text-align: center;align-items: flex-start;padding-top: 21px;">
+                        <h5 class="text-white line-clamp-5" style="max-height: 142px; overflow: hidden">@Model.PrimaryFieldText</h5>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @if (!string.IsNullOrEmpty(Model.Sticker))
+                {
+                    <div class="row no-gutters" style="height: 48px;">
+                        <div class="col-md-12 center-content flexFont" id="stickerContent-@Model.Id" style="text-align: center;">
+
+                            <img src="@Model.StickerImage" style="height: 32px;" />
+
+                        </div>
+                    </div>
+                }
+                <div class="row no-gutters" style="height: @(!string.IsNullOrEmpty(Model.Sticker) ? "52%;align-items: flex-start;padding-top: 21px;" : "62%")">
+                    <div class="col-md-12 center-content flexFont" style="text-align: center;">
+                        <h5 class="text-white line-clamp-5" style="max-height: 168px; overflow: hidden">@Model.PrimaryFieldText</h5>
+                    </div>
+                </div>
+            }
+            <div class="row no-gutters text-white" style="font-size: 14px;">
+                <div class="col-md-12">
+                    <table style="width: 100%; table-layout: auto;">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="row no-gutters flexFont">
+                                        <div class="col text-center">
+                                            @Html.ActionLink(Model.Category, "Category", "Home", new { id = Model.CategoryId }, new { style = "color:white; font-size: 1.19em;", @class = "tok-link" })
+                                        </div>
+                                        <div class="col text-center">
+                                            <span style="font-size: 1.19em;">@Html.ActionLink(Model.TokGroup, "Group", "Tok", new { name = Model.TokGroup }, new { style = "color:white;", @class = "tok-link" }) - @Html.ActionLink(Model.TokType, "TokType", "Tok", new { id = Model.TokTypeId }, new { style = "color:white;", @class = "tok-link" })</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="full-dialog">
+        <div class="header">
+            <i class="fas fa-arrow-left fd-close" onclick="CloseDialog(this)"></i>
+            <h4 class="text-white" style="margin-bottom: 0px;">Tok Info</h4>
+        </div>
+        <div class="body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        @await Html.PartialAsync("TokView", Model)
+
+                        <div class="comments tokviewfeed" style="background-color: white;margin-top: 24px;">
+                            <div class="comment-wrap">
+                                <div class="photo">
+                                    <div class="avatar">
+                                        @if (User != null)
+                                        {
+                                            if (User.Identity.IsAuthenticated)
+                                            {
+                                                @if (user.IsAvatarProfilePicture ?? false)
+                                                {
+                                                    <img src="@PurchasesTool.GetProduct(user.SelectedAvatar).Image" style="border-radius: 50%" data-toggle="tooltip" title="@user.DisplayName (You)" />
+                                                }
+                                                else
+                                                {
+                                                    if (!string.IsNullOrEmpty(user.UserPhoto))
+                                                    {
+                                                        <img src="@user.UserPhoto" style="border-radius: 50%" data-toggle="tooltip" title="@user.DisplayName (You)" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/purple.svg" style="border-radius: 50%" data-toggle="tooltip" title="@user.DisplayName (You)" />
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <img src="~/images/purple.svg" style="border-radius: 50%;" data-toggle="tooltip" title="Tok Back" />
+                                                <br>
+                                                <br>
+
+
+                                                <img src="~/images/purple.svg" style="border-radius: 50%;margin-top:5px;" data-toggle="tooltip" title="Sign in to comment." />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/purple.svg" style="border-radius: 50%;" data-toggle="tooltip" title="Tok Back" />
+                                            <br>
+                                            <br>
+                                            <img src="~/images/purple.svg" style="border-radius: 50%;margin-top:5px;" data-toggle="tooltip" title="Sign in to comment." />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="comment-block row">
+                                    <form action="" class="col-12 comment-form" style="position: relative;padding: 0px; max-width: 800px">
+                                        @if (User != null)
+                                        {
+                                            if (User.Identity.IsAuthenticated)
+                                            {
+                                                //<textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Add a comment..."></textarea><div id="editor-container">
+                                                <span style="cursor: pointer;position: absolute; bottom: -24px;" data-flag="1" id="txtToggleTokmoji_@Model.Id" onclick="ToggleTokmojis('@Model.Id')">Hide Tokmoji</span>
+                                                <div class="comment-editor" id="txtCommentEditor_@Model.Id" style="height: auto; min-height: 48px;">
+                                                </div>
+                                                @*<i data-toggle="popover" data-container="body" data-placement="top" data-html="true" class="far fa-smile btnTokMojis2" style="position: absolute; right: 24px; top: 0px; margin: 12px 12px 0px 0px; font-size: 20px; cursor: pointer;"></i>*@
+                                                <i data-toggle="popover" data-container="body" data-placement="top" data-html="true" class="far fa-smile btnTokMojis" style="position: absolute; right: 0; top: 0px; margin: 12px 12px 0px 0px; font-size: 20px; cursor: pointer;"></i>
+                                                <div class="popover-content hide tokmoji-container-@Model.Id">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            @* Tokmojis *@
+                                                            @foreach (var moji in PurchasesTool.GetProducts().Where(x => x.ProductType == ProductType.Tokmoji).ToList())
+                                                            {
+                                                                <div class="col-6">
+                                                                    <div style="padding: 4px; width: 100%;">
+                                                                        <img class="tokmoji-thumbnail" src="@moji.Image" data-tokmojiId="@moji.Id" style="height: 32px;" onclick="AddImageToComment(this, '@Model.Id')" />
+                                                                    </div>
+                                                                </div>
+                                                            }
+
+                                                            @* Twemojis See: https://github.com/twitter/twemoji *@
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" id="TokBackBtn" name="@Model.Id" onclick="alertTokID(this.name)" class=" form-control  offset-3" style="width:47%;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;color:white;background-color:mediumpurple;">TOK BACK </button>
+                                                <br />
+                                                <textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Sign in to comment..."></textarea>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <button type="button" id="TokBackBtn" name="@Model.Id" class=" form-control  offset-3" style="width:47%;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;color:white;background-color:mediumpurple;">TOK BACK </button>
+
+                                            <br />
+                                            <textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Sign in to comment..."></textarea>
+                                        }
+                                    </form>
+                                </div>
+                                @if (User != null)
+                                {
+                                    if (User.Identity.IsAuthenticated)
+                                    {
+                                        <button id="btncomment" name="@Model.Id" type="button" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;" data-activityId="@Model.ActivityId" data-itemUser="@Model.UserId" data-categoryId="@Model.CategoryId" data-tokTypeId="@Model.TokTypeId" onclick="AddComment(this, '@Model.Id')">Comment</button>
+                                    }
+                                    else
+                                    {
+                                        <button name="@Model.Id" type="button" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;">Comment</button>
+                                    }
+                                }
+                                else
+                                {
+                                    <button name="@Model.Id" type="button" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;">Comment</button>
+                                }
+                            </div>
+                            <br /><hr />
+
+                            <div class="center" id="containerProgress" style="margin: 24px auto; display: none;">
+                                <div class="colorlib-load"></div>
+                            </div>
+                            <div class="commentContainer" style="margin-top: 1em !important;">
+
+                            </div>
+                            <div class="center">
+                                <button class="btn btn-primary btnLoadMoreComments">Load More Comments</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" class="txtActivityId hidden" value="@Model.ActivityId" />
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <!--Add to Set Modal -->
+    <div class="modal fade addtosetmodal" id="addtoset-@Model.Id-modal" data-tokid="@Model.Id" tabindex="-1" role="dialog" aria-labelledby="addtoset-@Model.Id-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered addtosetdialog" role="document">
+            <div class="modal-content addtosetcontent">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addtoset-@Model.Id-title">Add Tok to @Model.TokType Set</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body addtosetbody">
+                    <h6>@Model.PrimaryFieldName: @Model.PrimaryFieldText</h6>
+                    <hr />
+                    Select a set:
+                    <br />
+                    @*<button type="button" id="createnewset-@Model.Id" class="btn btn-secondary addtosetcreatenewset" style="margin-bottom:10px!important;">Show English Translations</button>*@
+
+
+                    <div id="@Model.Id-setssection" class="addtosetsetssection">
+                        <div class="list-group addtosetlistgroup" id="list-tab" role="tablist">
+                            @*<button type="button" class="list-group-item list-group-item-action addtosetcreatenewset" id="createnewset-@Model.Id" style="cursor:pointer;" data-toggle="list" href="#list-home" role="tab" aria-controls="home"><b>+ Create new set</b></button>
+                                <div id="@Model.Id-newsetsection" style="display:none;">
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Set Name:</label>
+                                        <input type="text" class="form-control setname" id="@Model.Id-setname" value="" maxlength="100" required>
+                                    </div>
+                                </div>*@
+                            @*<a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Set 1</a>*@
+                            <input type="hidden" id="selectedset-@Model.Id" value="" />
+                            <div class="scrollsets">
+                                @if (Model.Sets != null)
+                                {
+                                    foreach (var set in Model.Sets)
+                                    {
+                                        @if (set.TokTypeId?.ToLower() == Model.TokTypeId?.ToLower())
+                                        {
+                                            <button type="button" class="list-group-item list-group-item-action addtoexistingset" name="setlist-@set.Id" id="setlist-@set.Id-@Model.Id" data-toggle="list" role="tab" aria-controls="h">
+                                                @set.Name
+                                                <span class="badge badge-success float-right">@set.CreatedTime.ToShortDateString()</span>
+                                            </button>
+                                        }
+                                    }
+                                }
+                            </div>
+
+                            <div class="center containerProgress" style="margin: 24px auto">
+                                <div class="progress_small" style="height:100px; width:100px;"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer addtosetbtngroup">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="addtoset-@Model.Id-button" type="button" class="btn btn-primary addtosetbtn" onclick="AddToSet($('#addtoset-@Model.Id-modal'))">Add to Set</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (User.GetUserId() != Model.UserId)
+    {
+        <!--Report Modal -->
+        <div class="modal fade reportmodal" id="report-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="report-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered reportdialog" role="document">
+                <div class="modal-content reportcontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="report-@Model.Id-title">Report Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body reportbody">
+                        <div class="form-group reportform">
+                            @*<label for="message-text" class="col-form-label">Reason for reporting:</label>
+                                <br />
+                                <input type="text" class="form-control reportcategory" id="@Model.Id-reportcategory" maxlength="100" required>*@
+                            <div class="form-control">
+                                <input type="hidden" class="form-control txtReport" id="@Model.Id-reportcategory" maxlength="100" required>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Sexual Content" onchange="ReportSelection(this, $('.txtReport'))" /> Sexual Content</label>
+                                    <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                        <option value="" selected>Choose one</option>
+                                        <option value="Graphic sexual activity">Graphic sexual activity</option>
+                                        <option value="Nudity">Nudity</option>
+                                        <option value="Suggestive, but without nudity">Suggestive, but without nudity</option>
+                                        <option value="Content involving minors">Content involving minors</option>
+                                        <option value="Abusive title or description">Abusive title or description</option>
+                                        <option value="Other sexual content">Other sexual content</option>
+                                    </select>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Violent or repulsive content" onchange="ReportSelection(this, $('.txtReport'))" /> Violent or repulsive content</label>
+                                    <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                        <option value="" selected>Choose one</option>
+                                        <option value="Adults fighting">Adults fighting</option>
+                                        <option value="Physical Attack">Physical Attack</option>
+                                        <option value="Youth violence">Youth violence</option>
+                                        <option value="Animal abuse">Animal abuse</option>
+                                    </select>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Hateful or abusive content" onchange="ReportSelection(this, $('.txtReport'))" /> Hateful or abusive content</label>
+                                    <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                        <option value="" selected>Choose one</option>
+                                        <option value="Promotes hatred or violence">Promotes hatred or violence</option>
+                                        <option value="Abusing vulnerable individuals">Abusing vulnerable individuals</option>
+                                        <option value="Bullying">Bullying</option>
+                                        <option value="Abusive title or description">Abusive title or description</option>
+                                    </select>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Harmful dangerous acts" onchange="ReportSelection(this, $('.txtReport'))" /> Harmful dangerous acts</label>
+                                    <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                        <option value="" selected>Choose one</option>
+                                        <option value="Pharmaceutical or drug abuse">Pharmaceutical or drug abuse</option>
+                                        <option value="Abuse of fire or explosives">Abuse of fire or explosives</option>
+                                        <option value="Suicide or self injury">Suicide or self injury</option>
+                                        <option value="Other dangerous acts">Other dangerous acts</option>
+                                    </select>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Child abuse" onchange="ReportSelection(this, $('.txtReport'))" /> Child abuse</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Promotes terrorism" onchange="ReportSelection(this, $('.txtReport'))" /> Promotes terrorism</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Spam or misleading" onchange="ReportSelection(this, $('.txtReport'))" /> Spam or misleading</label>
+                                    <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                        <option value="" selected>Choose one</option>
+                                        <option value="Mass advertising">Mass advertising</option>
+                                        <option value="Pharmaceutical drugs for sale">Pharmaceutical drugs for sale</option>
+                                        <option value="Misleading text">Misleading text</option>
+                                        <option value="Misleading thumbnail">Misleading image</option>
+                                        <option value="Scams / Fraud">Scams / Fraud</option>
+                                    </select>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="rdoReport" value="Infringes my rights" onchange="ReportSelection(this, $('.txtReport'))" /> Infringes my rights</label>
+                                    <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                        <option value="" selected>Choose one</option>
+                                        <option value="Mass advertising">Infringes my copyright</option>
+                                        <option value="invades my privacy">Invades my privacy</option>
+                                        <option value="Other legal claim">Other legal claim</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer reportbtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="report-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary" onclick="ReportTok($('.txtReport').val())">Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (User.GetUserId() == Model.UserId)
+    {
+        <!--Replicate Modal -->
+        <div class="modal fade replicatemodal" id="replicate-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="replicate-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered replicatedialog" role="document">
+                <div class="modal-content replicatecontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="replicate-@Model.Id-title">Replicate Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body replicatebody">
+                        <div class="form-group replicateform">
+                            <label for="message-text" class="col-form-label">Copy and use this tok in a different category</label>
+                            <br />
+                            <label for="message-text" class="col-form-label">Category:</label>
+                            <input type="text" class="form-control replicatecategory" id="@Model.Id-replicatecategory" maxlength="50" required onkeydown="InputValidation(this, $('#replicate-@Model.Id-button'))" onkeypress="InputValidation(this, $('#replicate-@Model.Id-button'))" onkeyup="InputValidation(this, $('#replicate-@Model.Id-button'))">
+                        </div>
+                    </div>
+                    <div class="modal-footer replicatebtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="replicate-@Model.Id-button" data-tokid="@Model.Id" type="button" data-dismiss="modal" class="btn btn-primary replicatebtn" onclick="Replicate(this)" disabled>Replicate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Edit Modal -->
+        <div class="modal fade editmodal" id="edit-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="edit-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered editdialog" role="document" id="edit-@Model.Id-modaldialog">
+                <div class="modal-content editcontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit-@Model.Id-title">Edit Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body editbody">
+                        <label class="col-form-label">Tok Group: @Model.TokGroup</label><br />
+                        <label class="col-form-label">Tok Type: @Model.TokType</label>
+                        <hr />
+                        <div class="form-group editform">
+                            <label class="col-form-label">Category:</label>
+                            <input type="text" class="form-control editcategory" id="@Model.Id-editcategory" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" value="@Model.Category" title="This field is required!" maxlength="50" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">@Model.PrimaryFieldName:</label>
+                            @{string primaryFieldId = Model.Id + "- edit" + Model.PrimaryFieldName;}
+
+                            <input type="text" class="form-control editprimary" id="@Model.Id-editprimary" value="@Model.PrimaryFieldText" maxlength="150" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                            <div class="invalid-feedback">
+                                Valid primary is required.
+                            </div>
+                        </div>
+
+                        @if (!Model.IsDetailBased)
+                        {
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">@Model.SecondaryFieldName:</label>
+                                @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName;}
+                                <input type="text" class="form-control editsecondary" id="@Model.Id-editsecondary" value="@Model.SecondaryFieldText" maxlength="250" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                            </div>
+
+                        }
+                        else
+                        {
+                            if (!(Model.Details == null || Model.Details.Length == 0))
+                            {
+                                for (int i = 0; i < Model.Details.Length; ++i)
+                                {
+                                    var title = Model.HasAnswerField ? (Model.AnswerFieldNumber == i ? "Answer" : Model.SecondaryFieldName + (i + 1) + ":") : Model.SecondaryFieldName + (i + 1) + ":";
+                                    <div class="form-group @(Model.HasAnswerField ? (Model.AnswerFieldNumber == i ? "answer-field" : "") : "")" style="@(Model.HasAnswerField ? (Model.AnswerFieldNumber == i ? "padding: 8px; border-radius: 8px;" : "") : "")">
+                                        <label for="message-text" class="col-form-label lblTitle">@title</label>
+                                        @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName + (i + 1);}
+
+                                        <input type="text" class="form-control editsecondary" id="@Model.Id-editdetail@(i+1)" value="@Model.Details[i]" maxlength="250" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                    </div>
+                                }
+                            }
+                        }
+
+                        <div id="edit-@Model.Id-requiredsection">
+                            <input type="hidden" id="requiredfieldcount" value="@Model.RequiredFields?.Length" />
+                            @if (!(Model.RequiredFields == null || Model.RequiredFields.Length == 0))
+                            {
+
+                                for (int i = 0; i < Model.RequiredFields.Length; ++i)
+                                {
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">@Model.RequiredFields[i]:</label>
+                                        <input type="hidden" value="@Model.RequiredFields[i]" id="@Model.Id-editrequiredname@(i+1)" />
+
+                                        @{string requiredFieldId = Model.Id + "- edit" + Model.RequiredFields[i] + (i + 1);}
+                                        <input type="text" class="form-control editsecondary" id="@Model.Id-editrequired@(i+1)" value="@Model.RequiredFieldValues[i]" maxlength="100" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+
+
+                        <input type="hidden" id="@Model.Id-editisenglish" value="@Model.IsEnglish.ToString()?.ToLower()" />
+
+
+                        @if (!Model.IsEnglish)
+                        {
+                            <button type="button" id="edit-@Model.Id-translations" class="btn btn-secondary edittranslation" style="margin-bottom:10px!important;">Show English Translations</button>
+                            <div id="edit-@Model.Id-translationsection" style="display:none!important;">
+                                <div class="form-group">
+                                    <label class="col-form-label">Language:</label>
+                                    <input type="text" class="form-control editcategory" id="@Model.Id-editlanguage" value="@Model.Language" maxlength="25" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                </div>
+
+                                <label class="col-form-label"><b>English Translations</b></label><br />
+
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">@Model.PrimaryFieldName - English Translation</label>
+                                    @{string englishPrimaryFieldId = Model.Id + "- editEnglish" + Model.PrimaryFieldName;}
+                                    <input type="text" class="form-control editprimary" id="@Model.Id-editenglishprimary" value="@Model.EnglishPrimaryFieldText" maxlength="150" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                </div>
+
+
+                                @if (!Model.IsDetailBased)
+                                {
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">@Model.SecondaryFieldName - English Translation</label>
+                                        @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName;}
+                                        <input type="text" class="form-control editsecondary" id="@Model.Id-editenglishsecondary" value="@Model.EnglishSecondaryFieldText" maxlength="250" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    if (!(Model.EnglishDetails == null || Model.EnglishDetails.Length == 0))
+                                    {
+                                        for (int i = 0; i < Model.EnglishDetails.Length; ++i)
+                                        {
+                                            <div class="form-group">
+                                                <label for="message-text" class="col-form-label">@Model.SecondaryFieldName @(i + 1) - English Translation</label>
+                                                @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName + (i + 1);}
+                                                <input type="text" class="form-control editsecondary" id="@Model.Id-editenglishdetail@(i+1)" value="@Model.EnglishDetails[i]" maxlength=@Model.SecondaryFieldLimit onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                            </div>
+                                        }
+                                    }
+                                }
+
+
+
+
+                            </div>
+                        }
+                        <button type="button" id="edit-@Model.Id-optionals" class="btn btn-secondary editoptional" style="margin-bottom:10px!important;">Show Optional Fields</button>
+
+                        <div id="edit-@Model.Id-optionalsection" style="display:none!important;">
+                            <input type="hidden" id="optionalfieldcount" value="@Model.OptionalFields?.Length" />
+                            @if (!(Model.OptionalFields == null || Model.OptionalFields.Length == 0))
+                            {
+                                <label class="col-form-label"><b>Optional Fields</b></label><br />
+
+                                for (int i = 0; i < Model.OptionalFields.Length; ++i)
+                                {
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">@Model.OptionalFields[i] @(i + 1):</label>
+                                        <input type="hidden" value="@Model.OptionalFields[i]" id="@Model.Id-editoptionalname@(i+1)" />
+                                        @if (i < Model.OptionalFieldValues?.Length)
+                                        {
+                                            <input type="text" class="form-control editoptional" id="@Model.Id-editoptional@(i+1)" value="@Model.OptionalFieldValues[i]" maxlength="100" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <input class="txtImage" id="txtImage-@Model.Id" value="@Model.Image" style="display:none;" type="hidden" />
+
+                        <p class="lead">Select a PNG or JPEG image, max size <span id="max-size">5000.00</span> KB (optional)</p>
+                        <label for="exampleInputFile">Selected image:</label>
+                        <div class="img-container" style="margin-bottom: 4px;">
+                            <img class="cropped" id="preview-img" src="@Model.Image" />
+                            <i class="fas fa-times float-right close-btn" onclick="RemoveImage($('#edit-@Model.Id-modal'))"></i>
+                        </div>
+                        <label class="btn btn-block btn-primary">
+                            Browse&hellip; <input type="file" style="display: none;" onclick="BrowseFile(this)">
+                        </label>
+                    </div>
+                    <div class="modal-footer editbtngroup">
+                        <button type="button" class="btn btn-secondary editclosebtn" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="edit-@Model.Id-button" data-tokid="@Model.Id" data-dismiss="modal" class="btn btn-primary editbtn" onclick="SaveEdit(this)" disabled>Save Edit</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <!--Delete Modal -->
+        <div class="modal fade deletemodal" id="delete-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="delete-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered deletedialog" role="document">
+                <div class="modal-content deletecontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="delete-@Model.Id-title">Delete Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete?
+                        <div id="delete-@Model.Id-loader"></div>
+                    </div>
+                    <div class="modal-footer deletebtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="delete-@Model.Id-button" data-tokid="@Model.Id" type="button" data-dismiss="modal" class="btn btn-danger deletebtn" onclick="DeleteTok(this)">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<script>
+    $(".btnLoadMoreComments").click(function () {
+        activityId = $(".tokTile_@Model.Id").find(".txtActivityId").val();
+        GetComments($(this).parent().parent());
+    });
+
+    FlexFont();
+    ApplyMagnificPopup();
+
+    var w = $(window).width();
+    $(".comment-form").css("max-width", (w > 820 ? 820 : w - (w * .22)));
+
+
+</script>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <script>
+        $("#TokBackBtn").on("click", function (event) {
+            var getter = event.target.name;
+            alert(getter);
+        });
+        var userId = '@User.GetUserId()';
+        $(".btnTokMojis").popover({
+            container: 'body',
+            html: true,
+            content: function () {
+                var cont = $(this).parent();
+                return cont.find(".popover-content").html();
+            }
+        });
+
+        $(".btnAddSticker").click(function () {
+            $("#sticker-modal").modal("toggle");
+            $("#btnSelect").attr("data-tokid", $(this).attr("data-tokid"));
+            $("#btnSelect").attr("data-stickerid", $(this).attr("data-stickerid"));
+            var mode = $("#btnSelect").attr("data-mode");
+            var stickerId = $("#btnSelect").attr("data-stickerid");
+            $.ajax({
+                url: "/Tok/GetMyStickers?userId=" + userId + "&selected=" + stickerId,
+                type: "GET",
+                async: true,
+                success: function (ret) {
+                    $("#myStickersContainer").html(ret);
+                },
+                beforeSend: function () {
+                    $("#myStickersContainerProgress").show();
+                },
+                complete: function () {
+                    $("#myStickersContainerProgress").hide();
+                    if (mode == 0) {
+                        $(".txtSelectedStickerName").html("");
+                        $("#btnSelect").attr("disabled", true);
+                    }
+                    else { // Replace/Edit Mode
+                        $("#btnSelect").attr("disabled", false);
+                    }
+                }
+            });
+        });
+
+        //$(".btnTokMojis2").popover({
+        //    container: 'body',
+        //    html: true,
+        //    content: function () {
+        //        var cont = $(this).parent();
+        //        return cont.find(".popover-content").html();
+        //    }
+        //});
+
+        // Twemoji
+        //var ul = document.getElementsByTagName('ul')[0];
+        //var total = ul.getElementsByTagName('li').length;
+        //twemoji.parse(ul, { "folder": "svg", "ext": ".svg", "base": "https://twemoji.maxcdn.com/" });
+        //(function (img, metaKey, i) {
+        //    function copyToClipboard(e) {
+        //        prompt('Copy to clipboard via ' + metaKey + '+C and Enter', this.alt);
+        //    }
+        //    for (i = 0; i < img.length; img[i++].onclick = copyToClipboard) { }
+        //}(
+        //    document.getElementsByTagName('img'),
+        //    /\b(?:Mac |i)OS\b/i.test(navigator.userAgent) ? 'Command' : 'Ctrl'
+        //));
+
+        var quill = new Quill("#txtCommentEditor_@Model.Id", {
+            modules: {
+                toolbar: null
+            },
+            placeholder: 'Add a comment...',
+            theme: 'snow'  // or 'bubble'
+        });
+
+        quill.on("text-change", function (delta, oldDelta, source) {
+            var container = document.querySelector("#txtCommentEditor_@Model.Id");
+            var quill = Quill.find(container);
+            var len = quill.getLength();
+            var btn = $(".tokTile_@Model.Id").find("#btncomment");
+            if (len - 1 > 0) {
+                btn.attr("disabled", false);
+            }
+            else {
+                btn.attr("disabled", true);
+            }
+            $(container).find("img").css("height", "32px");
+            $(container).find("img").attr("data-toggle", "tooltip");
+
+            var images = $(".tokmoji-container-@Model.Id").find("img");
+            $(container).find("img").each(function () {
+                var src1 = $(this).attr("src");
+                var img = this;
+                console.log(src1);
+                images.each(function () {
+                    var src2 = $(this).attr("src");
+                    console.log(src2);
+                    if (src1 == src2) {
+                        $(img).attr("title", $(this).attr("data-tokmojiId"));
+                    }
+                });
+            });
+            // Bootstrap Tooltip
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="modal"][title]').tooltip();
+            })
+        });
+    </script>
+    @*@if (User.GetUserId() == Model.UserId)
+        {
+            <script>
+                $("#stickerContent-@Model.Id").mouseenter(function () {
+                    $("#stickerbtnContent-@Model.Id").show();
+                    $(this).hide();
+                });
+
+                $("#stickerContent-@Model.Id").mouseleave(function () {
+                    $("#stickerbtn  Content-@Model.Id").hide();
+                    $(this).show();
+                });
+            </script>
+        }*@
+}
+else
+{
+    <script>
+        function alertTokID(this_Name) {
+            $("#tokbackpage1").slideDown();
+            $(body).hide();
+        }
+
+    </script>
+}

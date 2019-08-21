@@ -1,0 +1,156 @@
+﻿@model ChangeProfilePictureViewModel
+
+@{
+    ViewData["Title"] = "Change Profile Picture";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+@section Styles {
+    <link type="text/css" rel="stylesheet" href="~/css/croppie.css" />
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+
+                <h2>Change Profile Pic</h2>
+
+                <p>Picture will be displayed as a square or circle - make sure to crop before uploading.</p>
+                <form id="frmChangeProfilePicture" asp-action="ChangeProfilePicture" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" enctype="multipart/form-data" novalidate>
+                    @Html.HiddenFor(x => x.Base64Image)
+                    <p class="lead ">Select a PNG or JPEG image, max size <span id="max-size">500</span> KB (optional)</p>
+                    <div id="image-preview-div" style="display: none">
+                        <label for="exampleInputFile">Selected image:</label>
+                        <br>
+                        <div id="resizer">
+
+                        </div>
+                        @*<img id="preview-img" src="">*@
+                    </div>
+                    <br />
+                    <div class="col-md-3 mb-3">
+                        <label class="btn btn-block btn-primary">
+                            Browse&hellip; <input type="file" name="pic" id="pic" style="display: none;">
+                        </label>
+                    </div>
+                    <div id="message"></div>
+
+                    <button class="btn btn-primary btn-lg btn-block" type="button" id="BtnSubmit">Change Profile Picture</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/holder.min.js"></script>
+    <script src="~/js/croppie.js"></script>
+
+    <script>
+        //-----IMAGE UPLOAD CODE----
+        /*jslint browser: true, white: true, eqeq: true, plusplus: true, sloppy: true, vars: true*/
+        /*global $, console, alert, FormData, FileReader*/
+
+        var uploadCrop;
+
+        function noPreview() {
+            $('#image-preview-div').css("display", "none");
+            //$('#preview-img').attr('src', '');
+            $('upload-button').attr('disabled', '');
+        }
+
+        function selectImage(e) {
+            $('#resizer').addClass('ready');
+            uploadCrop.croppie('bind', {
+                url: e.target.result
+            }).then(function () {
+                //console.log('jQuery bind complete');
+            });
+            $('#file').css("color", "green");
+            $('#image-preview-div').css("display", "block");
+            //$('#preview-img').attr('src', e.target.result);
+            //$('#preview-img').css('max-width', '550px');
+        }
+
+        $(document).ready(function (e) {
+            $("#txtLanguage").prop('required', false);
+            $("#txtEnglishPrimary").prop('required', false);
+            $("#txtEnglishSecondary").prop('required', false);
+            $("#txtEnglishDetail1").prop('required', false);
+            $("#txtEnglishDetail2").prop('required', false);
+            $("#txtEnglishDetail3").prop('required', false);
+
+            var maxsize = 500 * 1024; // 500 KB
+
+            uploadCrop = $('#resizer').croppie({
+                viewport: {
+                    height: 200,
+                    width: 200,
+                    type: 'square'
+                },
+                showZoomer: true,
+                enableOrientation: false,
+                mouseWheelZoom: 'ctrl',
+                enableExif: true
+            });
+
+            $("#BtnSubmit").click(function () {
+                uploadCrop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (resp) {
+                    $("#Base64Image").val(resp);
+                });
+
+                setTimeout(function () {
+                    $("#frmChangeProfilePicture").submit();
+                }, 1000);
+            });
+
+            $('#max-size').html((maxsize / 1024).toFixed(2));
+
+            $('#pic').change(function () {
+
+                $('#message').empty();
+
+                var file = this.files[0];
+                var match = ["image/jpeg", "image/png", "image/jpg"];
+
+                if (!((file.type == match[0]) || (file.type == match[1]) || (file.type == match[2]))) {
+                    noPreview();
+
+                    $('#message').html('<div class="alert alert-warning" role="alert">Invalid image format. Allowed formats: JPG, JPEG, PNG.</div>');
+
+                    return false;
+                }
+
+                if (file.size > maxsize) {
+                    noPreview();
+
+                    $('#message').html('<div class=\"alert alert-danger\" role=\"alert\">The size of image you are attempting to upload is ' + (file.size / 1024).toFixed(2) + ' KB, maximum size allowed is ' + (maxsize / 1024).toFixed(2) + ' KB</div>');
+
+                    return false;
+                }
+
+                $('#upload-button').removeAttr("disabled");
+
+                var reader = new FileReader();
+                reader.onload = selectImage;
+                reader.readAsDataURL(this.files[0]);
+
+            });
+
+        });
+
+    </script>
+}
+

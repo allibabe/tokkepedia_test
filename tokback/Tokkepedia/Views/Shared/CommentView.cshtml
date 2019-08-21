@@ -1,0 +1,170 @@
+﻿@model Tokkepedia.Models.TokkepediaReaction
+@{ 
+    var tokmojis = PurchasesTool.GetProducts().Where(x => x.ProductType == ProductType.Tokmoji);
+}
+
+<div class="comment-wrap">
+    <div class="photo">
+        @if (Model.IsAvatarProfilePicture ?? false)
+        {
+            <img class="avatar" src="@PurchasesTool.GetProduct(Model.SelectedAvatar).Image">
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(Model.UserPhoto))
+            {
+                <img class="avatar" src="@Model.UserPhoto">
+            }
+            else
+            {
+                <img class="avatar" src="~/images/tokket.png">
+            }
+        }
+        </div>
+    <div class="comment-block">
+        <ul class="comment-actions">
+            <li><a asp-controller="User" asp-action="UserProfile" asp-route-id="@Model.UserId" style="font-size:small!important; color:#212529!important;"><b>@Html.DisplayFor(modelItem => Model.UserDisplayName)</b></a></li>
+            <li class="right"><span style="color: lightslategray; font-size: 11px;">@Model.CreatedTime.ToShortDateString() @@ @Model.CreatedTime.ToShortTimeString()</span></li>
+        </ul>
+        @if (Model.Kind == "inaccurate")
+        {<br /><a href="#" class="badge badge-danger">Inaccurate</a><br />}
+        else if (Model.Kind == "accurate")
+        {<br /><a href="#" class="badge badge-success">Accurate</a><br />}
+        else
+        {<br />}
+        <p class="comment-text">
+            @foreach (var emoji in tokmojis)
+            {
+                Model.Text = Model.Text.Replace(":" + emoji.Id + ":", ":"+emoji.Image+":");
+            }
+            @Model.Text
+        </p>
+        <div class="bottom-comment">
+            <ul class="comment-actions">
+                @if (User != null)
+                {
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a><i class="material-icons reactionbtn">thumb_up</i> @(Model.ChildrenCounts.Count > 0 ? Model.ChildrenCounts["like"] : 0)</a></li>
+                        <li class="right"><a><i class="material-icons reactionbtn">thumb_down</i></a></li>
+                        <li class="right"><a onclick="ShowReply(this)">REPLY</a></li>
+                    }
+                    else
+                    {
+                        <li><a onclick="RequireLogin('Like')"><i class="material-icons reactionbtn">thumb_up</i> @(Model.ChildrenCounts.Count > 0 ? Model.ChildrenCounts["like"] : 0)</a></li>
+                        <li class="right"><a onclick="RequireLogin('Dislike')"><i class="material-icons reactionbtn">thumb_down</i></a></li>
+                        <li class="right"><a onclick="RequireLogin('Reply')">REPLY</a></li>
+                    }
+                }
+                else
+                {
+                    <li><a onclick="RequireLogin('Like')"><i class="material-icons reactionbtn">thumb_up</i> @(Model.ChildrenCounts.Count > 0 ? Model.ChildrenCounts["like"] : 0)</a></li>
+                    <li class="right"><a onclick="RequireLogin('Dislike')"><i class="material-icons reactionbtn">thumb_down</i></a></li>
+                    <li class="right"><a onclick="RequireLogin('Reply')">REPLY</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="comment-wrap replySection" data-isshown="0" style="display: none">
+                <div class="photo">
+                    <div class="avatar">
+                        @if (User != null)
+                        {
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                if (!string.IsNullOrEmpty(ViewBag.UserPhoto))
+                                {
+                                    <img src="@ViewBag.UserPhoto" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/purple.svg" />
+                                }
+                            }
+                            else
+                            {
+                                <img src="~/images/purple.svg" />
+                            }
+                        }
+                        else
+                        {
+                            <img src="~/images/purple.svg" />
+                        }
+                    </div>
+                </div>
+                <div class="comment-block">
+                    <form action="">
+                        <textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Add a reply..."></textarea>
+                    </form>
+                </div>
+                <button id="btnReply" type="button" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;">Reply</button>
+                <button id="btnReply" type="button" class="btn btn-light float-right" style="margin-bottom: 4px;" onclick="$(this).parent().css('display', 'none'); $(this).parent().attr('data-isshown', 0);">Cancel</button>
+            </div>
+            @if (Model.ChildComments != null)
+            {
+                if(Model.ChildComments.Count > 0)
+                {
+                    <a data-isshown="0" data-cnter="@Model.ChildComments.Count" onclick="ViewReplies(this)" href="javascript:void(0);"><h6>View @Model.ChildComments.Count Replies</h6></a>
+                }
+
+                foreach (var reply in Model.ChildComments)
+                {
+                    <div class="comment-wrap reply" style="display: none;">
+                        <div class="photo">
+                            @if (reply.IsAvatarProfilePicture ?? false)
+                            {
+                                <img class="avatar" src="@PurchasesTool.GetProduct(reply.SelectedAvatar).Image">
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(reply.UserPhoto))
+                                {
+                                    <img class="avatar" src="@reply.UserPhoto">
+                                }
+                                else
+                                {
+                                    <img class="avatar" src="~/images/tokket.png">
+                                }
+                            }
+                        </div>
+                        <div class="comment-block">
+                            <ul class="comment-actions">
+                                <li><a asp-controller="User" asp-action="UserProfile" asp-route-id="@reply.UserId" style="font-size:small!important; color:#212529!important;"><b>@reply.UserDisplayName</b></a></li>
+                                <li class="right"><span style="color: lightslategray; font-size: 11px;">@reply.CreatedTime.ToShortDateString() @@ @reply.CreatedTime.ToShortTimeString()</span></li>
+                            </ul>
+                            <br />
+                            <p class="comment-text">
+                                @reply.Text
+                            </p>
+                            <div class="bottom-comment">
+                                <ul class="comment-actions">
+                                    @if (User != null)
+                                    {
+                                        if (User.Identity.IsAuthenticated)
+                                        {
+                                            <li><a><i class="material-icons reactionbtn">thumb_up</i> @(reply.ChildrenCounts.Count > 0 ? reply.ChildrenCounts["like"] : 0)</a></li>
+                                            <li class="right"><a><i class="material-icons reactionbtn">thumb_down</i></a></li>
+                                        }
+                                        else
+                                        {
+                                            <li><a onclick="RequireLogin('Like')"><i class="material-icons reactionbtn">thumb_up</i> @(reply.ChildrenCounts.Count > 0 ? reply.ChildrenCounts["like"] : 0)</a></li>
+                                            <li class="right"><a onclick="RequireLogin('Dislike')"><i class="material-icons reactionbtn">thumb_down</i></a></li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li><a onclick="RequireLogin('Like')"><i class="material-icons reactionbtn">thumb_up</i> @(reply.ChildrenCounts.Count > 0 ? reply.ChildrenCounts["like"] : 0)</a></li>
+                                        <li class="right"><a onclick="RequireLogin('Dislike')"><i class="material-icons reactionbtn">thumb_down</i></a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

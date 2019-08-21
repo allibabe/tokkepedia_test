@@ -1,0 +1,336 @@
+﻿@model AddMultipleToksViewModel
+@using Newtonsoft.Json;
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>Checkout example for Bootstrap</title>
+    <!-- Bootstrap core CSS -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link href="~/css/offcanvas.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/4.0.0/handsontable.min.css" rel="stylesheet" />
+
+
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Add Multiple Toks</h2>
+            <p class="lead">Add toks to the Tokkepedia knowledge base</p>
+        </div>
+
+        <ul class="list-group col-md-8 mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+                    @*<h6 id="TokGroupName" class="my-0">Tok Group</h6>*@
+                    <div class="speech-bubble">
+                        <small id="TokGroupDesc" style="color:white!important;">
+                            Remember, adding multiple Toks together has limitations:
+                            <br/>
+                            - No images<br />
+                            - Must be in English<br />
+                            - No Optional Fields<br/><br/>
+                            @*Also keep the following in mind:<br />
+                            - Toks won't detected if there are invalid values, so make sure they're correct<br />
+                            - Field names are not provided, so make sure you know the field names for each tok group<br />*@
+                        </small>
+                    </div>
+                </div>
+                <img id="TokGroupTokstar" src="~/images/tokstar1.jpg" alt="" class="mr-2 rounded-circle"
+                     style="max-height:60px!important; max-width:60px!important; margin-left:0.5em!important; margin-right:0!important;">
+            </li>
+        </ul>
+
+        <div class="col-md-12 order-md-1">
+            <h4 class="mb-3" id="json">Enter Toks</h4>
+            <form asp-action="AddMultipleToks" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Toks" id="Toks" />
+                <input type="hidden" asp-for="TokGroupString" id="TokGroupStrings" />
+                <input type="hidden" asp-for="TokGroupDataString" id="TokGroupDataString" />
+
+                <div id="example3" class="hot handsontable"></div>
+
+                <br />
+                <h5 class="mb-3" id="lblCount">0 toks found:</h5>
+                <div id="TokSection"></div>
+                <br />
+                <h5 class="mb-3" id="lblErrors">Errors:</h5>
+                <div id="ErrorSection"></div>
+                <button class="btn btn-primary btn-lg btn-block" type="submit" id="BtnSubmit">Add Toks</button>
+            </form>
+        </div>
+        
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/holder.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var
+                data3 = [
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', ''],
+                    ['', '', '', '', '', '', '', '', '', '']
+                ],
+                container3 = document.getElementById('example3'),
+                hot3;
+
+            hot3 = new Handsontable(container3, {
+                data: data3,
+                startRows: 8,
+                startCols: 5,
+                width: 800,
+                height: 300,
+                colWidths: 125,
+                rowHeights: 23,
+                colHeaders: ['Tok Group', 'Tok Type', 'Category', "Primary Field", "Secondary Field", "Detail 1", "Detail 2", "Detail 3", "Detail 4", "Detail 5"],
+                rowHeaders: true,
+                afterChange: function () {
+                    //Valid toks array to be sent to database
+                    var validToks = [];
+
+                    //Put Tok groups into usable object
+                    var allGroups = JSON.parse($("#TokGroupDataString").val());
+
+                    //Make all types lowercase
+                    for (var i = 0; i < allGroups.length; ++i) {
+                        allGroups[i].tok_group = allGroups[i].tok_group.toLowerCase();
+
+                        for (var j = 0; j < allGroups[i].tok_types.length; ++j) {
+                            allGroups[i].tok_types[j] = allGroups[i].tok_types[j].toLowerCase();
+                        }
+                    }
+
+                    //var obj = $.grep(allGroups, function (obj) { return obj.tok_group.includes('Choices'); })[0];
+                    //alert(JSON.stringify(obj));
+
+                    var tmpData = JSON.stringify(data3); //JSON.parse
+                    var arr = JSON.parse(tmpData);
+
+                    var groupArr = $("#TokGroupStrings").val().toString().split('|');
+                    //alert(groupArr[0]);
+
+                    var tokCount = 0;
+                    $("#TokSection").empty();
+                    $("#ErrorSection").empty();
+                    var errors = [];
+                    for (var i = 0; i < 20; ++i) {
+
+                        // Check if any errors need to be added to the list
+                        var errorFound = false;
+                        var text = arr[i][0].toString().toLowerCase();
+
+                        //Tok Group Check
+                        var invalidGroup = false;
+                        if (!groupArr.includes(text) && arr[i][0].length > 0) {
+                            errors.push("Group on row " + (i + 1) + " is invalid");
+                            errorFound = true;
+                            invalidGroup = true;
+
+
+                            
+                        }
+
+                        //Tok Type Check
+                        //Only use when valid group
+                        //Use .includes() for finding in a string array, use .find() for an object array
+                        if (!invalidGroup && arr[i][0].length > 0 && arr[i][1].length > 0) {
+
+                            //Find Group from cell text
+                            var obj = allGroups.find(function (obj) { return obj.tok_group == text; });
+
+                            //Check if type is in group
+                            if (!obj.tok_types.includes(arr[i][1])) {
+                                errors.push("Type on row " + (i + 1) + " is not a valid type within the Tok Group");
+                                errorFound = true;
+                            }
+
+                            //Primary Field Length Check
+                            if (arr[i][3].length > obj.primaryCharLimit) {
+                                errors.push("Primary Field on row " + (i + 1) + " is too long, must be " + obj.primaryCharLimit + " characters or less");
+                                errorFound = true;
+                            }
+
+                            //Secondary/Detail check
+                            if (!obj.is_detail_based) {
+                                if (arr[i][4].length > obj.secondaryCharLimit) { // No Details
+                                    errors.push("Secondary Field on row " + (i + 1) + " is too long, must be " + obj.secondaryCharLimit + " characters or less");
+                                    errorFound = true;
+                                }
+                            }
+                            else {
+                                if (arr[i][5].length > obj.secondaryCharLimit) { // No Details
+                                    errors.push("Detail 1 on row " + (i + 1) + " is too long, must be " + obj.secondaryCharLimit + " characters or less");
+                                    errorFound = true;
+                                }
+                                if (arr[i][6].length > obj.secondaryCharLimit) { // No Details
+                                    errors.push("Detail 2 on row " + (i + 1) + " is too long, must be " + obj.secondaryCharLimit + " characters or less");
+                                    errorFound = true;
+                                }
+                                if (arr[i][7].length > obj.secondaryCharLimit) { // No Details
+                                    errors.push("Detail 3 on row " + (i + 1) + " is too long, must be " + obj.secondaryCharLimit + " characters or less");
+                                    errorFound = true;
+                                }
+                                if (arr[i][8].length > obj.secondaryCharLimit) { // No Details
+                                    errors.push("Detail 4 on row " + (i + 1) + " is too long, must be " + obj.secondaryCharLimit + " characters or less");
+                                    errorFound = true;
+                                }
+                                if (arr[i][9].length > obj.secondaryCharLimit) { // No Details
+                                    errors.push("Detail 15 on row " + (i + 1) + " is too long, must be " + obj.secondaryCharLimit + " characters or less");
+                                    errorFound = true;
+                                }
+                            }
+                        }
+
+                        //Category check
+                        if (arr[i][2].length > 50) {
+                            errors.push("Category on row " + (i + 1) + " is too long, must be 50 characters or less");
+                            errorFound = true;
+                        }
+
+                        if (!errorFound) {
+                            //No errors need to be added to list, now how many valid toks are there?
+                            if (arr[i][0].length > 0 && arr[i][1].length > 0 && arr[i][2].length > 0 && arr[i][3].length > 0) { //Primary fields
+
+                                if (arr[i][4].length > 0 && arr[i][5].length == 0 && arr[i][6].length == 0 && arr[i][7].length == 0 && arr[i][8].length == 0 && arr[i][9].length == 0) { // No Details
+                                    tokCount = tokCount + 1;
+
+                                    var tokDataArray = [];
+                                    for (var k = 0; k < 10; ++k) {
+                                        tokDataArray.push(arr[i][k]);
+                                    }
+                                    validToks.push(tokDataArray);
+
+                                    $("#TokSection").append('<small>Tok Group: ' + arr[i][0] + ' | Tok Type: ' + arr[i][1] + ' | Category: ' + arr[i][2] + ' | Primary Field: ' + arr[i][3] + ' | Secondary Field: ' + arr[i][4] + '</small><br/>');
+                                }
+
+                                if (arr[i][4].length == 0 && arr[i][5].length > 0 && arr[i][6].length > 0 && arr[i][7].length > 0) { //Has Details
+                                    tokCount = tokCount + 1;
+
+                                    var tokDataArray = [];
+                                    for (var k = 0; k < 10; ++k) {
+                                        tokDataArray.push(arr[i][k]);
+                                    }
+                                    validToks.push(tokDataArray);
+
+                                    $("#TokSection").append('<small>Tok Group: ' + arr[i][0] + ' | Tok Type: ' + arr[i][1] + ' | Category: ' + arr[i][2] + ' | Primary Field: ' + arr[i][3] + ' | Detail 1: ' + arr[i][5] + ' | Detail 2: ' + arr[i][6] + ' | Detail 3: ' + arr[i][7] + ' | Detail 4: ' + arr[i][8] + ' | Detail 5: ' + arr[i][9] + '</small><br/>');
+                                }
+                            }
+                        }
+
+                        //Category Column
+                        //if (arr[i][2].length > 1) {
+                        //    alert("Category too long");
+                        //}
+
+                    }
+                    $("#lblCount").text(tokCount + " toks detected:");
+
+                    errors.forEach(function (err) {
+                        $("#ErrorSection").append('<small>- ' + err + '</small><br/>');
+                    });
+
+                    if (errors.length == 0) {
+                        $("#ErrorSection").append('<small>None, toks are good to go!</small><br/>');
+                    }
+
+                    if (tokCount > 0 && errors.length == 0) {
+                        $("#BtnSubmit").prop("disabled", false);
+                    }
+                    else {
+                        $("#BtnSubmit").prop("disabled", true);
+                    }
+                    
+
+                    // now tmpData has a copy of data3 that can be manipulated
+                    // without breaking the Handsontable data source object
+                    $("#Toks").val(JSON.stringify(validToks)); //tmpData
+                    //alert($("#Toks").val().toString());
+                }
+            });
+
+            //hot3 = new Handsontable(container3, {
+            //    data: data3,
+            //    rowHeaders: ['Tok Group', 'Tok Type', 'Category'],
+            //    stretchH: 'all',
+            //    afterChange: function () {
+            //        var tmpData = JSON.stringify(data3); //JSON.parse
+            //        // now tmpData has a copy of data3 that can be manipulated
+            //        // without breaking the Handsontable data source object
+            //        $("#Toks").val(tmpData);
+            //        alert($("#Toks").val().toString());
+            //    }
+            //}); 
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () { 
+            $("#BtnSubmit").prop("disabled", true);
+
+            
+        });
+
+        function arrayColumn(arr, n) {
+            return arr.map(x => x[n]);
+        }
+    </script>
+
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();</script>
+
+</body>
+</html>

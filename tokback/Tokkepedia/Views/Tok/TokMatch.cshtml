@@ -1,0 +1,292 @@
+﻿@using Tokkepedia.Tools.Helpers
+@{
+    ViewData["Title"] = "Tok Match";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    int typeSelected = ViewBag.DataType ?? 0;
+    var toks = ViewBag.OfflineToks;
+    FilterType type = (FilterType)Enum.Parse(typeof(FilterType), typeSelected.ToString());
+}
+
+@section Styles {
+    <link href="~/css/allicss.css" rel="stylesheet" />
+    <link href="~/css/boxes.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Concert+One" rel="stylesheet">
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+
+                    <!-- Page Content -->
+                    <!-- Header -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label style="font-size:24px; font-family: 'Lobster', cursive; color: white; margin-top: .5rem;">Tok Match</label>
+
+                            <div class="float-right" style="color:white; margin-right: 64px; display: block; margin-top: 10px;" id="txtScoreSection">
+                                SCORE : <span id="score" style="font-family: 'Lobster', cursive;color:red;font-size:24px">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sidePopup" class="w3-modalAlli">
+                        <div class="w3-modal-contentAlli w3-card-4  w3-animate-leftAlli" style="border-radius:20px;background-color:inherit;">
+                            <div class="w3-container default-color-bg" style=" border-radius:20px;border:solid 5px white; padding: 4px;">
+
+                                <img id="flycoin" src="~/images/tokmatch/coin.gif" style="position:relative;float:left;width:10%;height:10%;">
+                                <span id="remarks" class="remarkClass"></span>
+
+                                <button id="btnnext" class=" btn btn-success  " onClick="next()" style="border-radius:20px;float:right;margin-right:5px;">NEXT</button>
+                                <button id="btnreset" class=" btn btn-danger " onClick="window.location.reload()" style="border-radius:20px;float:right;">  QUIT</button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="center containerProgress" style="margin: 24px auto; display: none;">
+                                <div class="colorlib-load"></div>
+                            </div>
+
+                            <div class="row" id="cardContainer">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row m-4">
+                        <div class="col-md-12 ">
+                            <div class="btnsendreset col-md-6" style="margin: 0px auto; display: none;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button id="btnCheck" onclick="flip(this)"
+                                                class="btn-danger"
+                                                style="border-radius:100px;padding:10px;font-family:'Concert One',cursive;width:100%;">
+                                            <img src="~/images/tokmatch/check.png" class="w3-left "
+                                                 style="max-height:20px;max-width:20px;" />CHECK
+                                        </button>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <button id="btnReset" onclick="reset()" class="btn-primary " style="border-radius:100px;padding:10px;font-family:'Concert One', cursive;width:100%;">
+                                            <img src="~/images/tokmatch/refresh.png" class="w3-left " style="max-height:20px;max-width:20px;" />RESET
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <i id="btnPrevious" class="fas fa-arrow-alt-circle-left hide" style="position: absolute; top: 12.5%; left: 0; font-size: 36px; cursor: pointer;" onclick="navigate(-1)"></i>
+                            <i id="btnNext" class="fas fa-arrow-alt-circle-right hide" style="position: absolute; top: 12.5%; right: 0; font-size: 36px; cursor: pointer;" onclick="navigate(1)"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="introModal" tabindex="-1" role="dialog" aria-labelledby="introModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="introModalLabel">Match the toks!</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                @switch (type)
+                {
+                    case FilterType.TokType:
+                    case FilterType.Category:
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>Toks:</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="styled-checkbox" id="chkDefault" type="checkbox" value="7" @(typeSelected == 7 || typeSelected == 0 ? "checked" : "") />
+                                <label for="chkDefault">Featured (Default)</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="styled-checkbox" id="chkCategory" type="checkbox" value="3" @(typeSelected == 3 ? "checked" : "") />
+                                <label for="chkCategory">Category</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="styled-checkbox" id="chkTokType" type="checkbox" value="1" @(typeSelected == 1 ? "checked" : "") />
+                                <label for="chkTokType">Tok Type</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="styled-checkbox" id="chkSet" type="checkbox" value="8" @(typeSelected == 8 ? "checked" : "") />
+                                <label for="chkSet">Set</label>
+                            </div>
+                            <div class="col-md-12">
+                                <div style="margin-bottom: 8px;"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>Get Toks from:</h4>
+                            </div>
+                            <div class="col-md-6" style="text-align: center; margin: 4px auto">
+                                <input class="styled-checkbox" id="chkDatabase" type="checkbox" value="1" checked>
+                                <label for="chkDatabase">Database (Default)</label>
+                            </div>
+                            <div class="col-md-6" style="text-align: center; margin: 4px auto">
+                                <input class="styled-checkbox" id="chkScreen" type="checkbox" value="2">
+                                <label for="chkScreen">Screen (Fast)</label>
+                                <span style="font-size: 12px;color:#9C27B0;position:absolute; right: 40%;margin-top: 24px;">@ViewBag.TotalCards Toks Loaded</span>
+                            </div>
+                            <div class="col-md-12">
+                                <span style="font-size: 12px; font-style: italic;">Drag the purple rectangles up and match them with the correct detail.</span>
+                            </div>
+                        </div>
+                        break;
+                }
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Mode:</h4>
+                    </div>
+                    <div class="col-md-6" style="text-align: center; margin: 4px auto">
+                        <input class="styled-checkbox" id="chkNormal" type="checkbox" value="1" checked>
+                        <label for="chkNormal">Normal Mode</label>
+                    </div>
+                    <div class="col-md-6" style="text-align: center; margin: 4px auto">
+                        <input class="styled-checkbox" id="chkEducation" type="checkbox" value="2">
+                        <label for="chkEducation">Education Mode</label>
+                    </div>
+                    <div class="col-md-12">
+                        <span style="font-size: 12px; font-style: italic;">Drag the purple rectangles up and match them with the correct detail.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12" style="text-align: center;">
+                    <button type="button" class="btn btn-primary" id="btnStartGame" style="font-size: 24px">Start Game!</button>
+                    <button type="button" class="btn btn-secondary btn-danger" id="btnQuit" style="font-size: 24px" data-dismiss="modal">Quit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="gameOverModal" tabindex="-1" role="dialog" aria-labelledby="gameoverModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gameoverModalLabel">End of the game</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" style="text-align: center;">
+                        <span style="font-size: 28px;">GAME OVER!</span>
+                    </div>
+                    <div class="col-md-12">
+                        <span style="font-size: 14px;">You final score is <b id="txtFinalScore" style="font-size: 20px;">0.</b></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12" style="text-align: center;">
+                    @*<button type="button" class="btn btn-primary" style="font-size: 24px">End</button>*@
+                    <button type="button" class="btn btn-secondary btn-danger" id="btnEndGame" style="font-size: 21px" data-dismiss="modal" onclick="location.reload()">Quit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/jquery.flip.js"></script>
+    <script src="~/js/tokkepedia.js"></script>
+    <script src="~/js/tokmatchgame.js"></script>
+    <script>
+        id = "@ViewBag.Id";
+        cardCount = @ViewBag.TotalCards;
+        maxRound = @ViewBag.MaxRound;
+        dataType = @ViewBag.DataType;
+        offlineToks = @Html.Raw(Json.Serialize(toks));
+        $(document).ready(function () {
+            var modeSelected = 1, loadtype = 1;
+            $('#introModal').modal('show');
+
+            $("#btnStartGame").click(function () {
+                $('#introModal').modal('hide');
+                Init(modeSelected, loadtype);
+            });
+
+            $("#chkNormal, #chkEducation").change(function () {
+                if ($(this).is(":checked")) {
+                    modeSelected = $(this).val();
+                }
+
+                switch ($(this).attr("id")) {
+                    case "chkNormal":
+                        $("#chkEducation").attr("checked", !$(this).is(":checked"));
+                        break;
+                    case "chkEducation":
+                        $("#chkNormal").attr("checked", !$(this).is(":checked"));
+                        break;
+                }
+            });
+
+            $("#chkDatabase, #chkScreen").change(function () {
+                if ($(this).is(":checked")) {
+                    loadtype = $(this).val();
+                }
+                console.log(loadtype);
+                switch ($(this).attr("id")) {
+                    case "chkDatabase":
+                        $("#chkScreen").attr("checked", !$(this).is(":checked"));
+                        break;
+                    case "chkScreen":
+                        $("#chkDatabase").attr("checked", !$(this).is(":checked"));
+                        break;
+                }
+            });
+
+            $("#chkDefault, #chkCategory, #chkSet, #chkTokType").change(function () {
+                if ($(this).is(":checked")) {
+                    dataType = $(this).val();
+                }
+
+                switch ($(this).attr("id")) {
+                    case "chkDefault":
+                        $("#chkCategory").attr("checked", !$(this).is(":checked"));
+                        $("#chkSet").attr("checked", !$(this).is(":checked"));
+                        $("#chkTokType").attr("checked", !$(this).is(":checked"));
+                        break;
+                    case "chkCategory":
+                        $("#chkDefault").attr("checked", !$(this).is(":checked"));
+                        $("#chkSet").attr("checked", !$(this).is(":checked"));
+                        $("#chkTokType").attr("checked", !$(this).is(":checked"));
+                        break;
+                    case "chkSet":
+                        $("#chkDefault").attr("checked", !$(this).is(":checked"));
+                        $("#chkCategory").attr("checked", !$(this).is(":checked"));
+                        $("#chkTokType").attr("checked", !$(this).is(":checked"));
+                        break;
+                    case "chkTokType":
+                        $("#chkDefault").attr("checked", !$(this).is(":checked"));
+                        $("#chkCategory").attr("checked", !$(this).is(":checked"));
+                        $("#chkSet").attr("checked", !$(this).is(":checked"));
+                        break;
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,551 @@
+.w3-modalAlli{z-index:1;display:none;padding-top:10%;position:fixed;left:0;top:0;overflow:auto;}
+.w3-modal-contentAlli{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:80%;height:10%;margin-top:40%;}
+.remarkClass{
+	
+	font-size:24px;
+	font-family: 'Lobster', cursive;text-align:center;margin-left:30px;color:white;margin-top:15px;
+	
+	
+}
+.answertextBox{
+	position: absolute;
+    bottom: 20px;
+    left:0;
+    width: 100%;
+    text-align: center;
+    background-color:#A569BD;
+    color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+	overflow-X:auto;
+	overflow-Y:auto;
+}
+
+.answertextBox > h3 {
+    color: white;
+}
+  
+  .qText{
+	  
+ text-align:justify;
+ text-justify: inter-word;
+ padding:30px;
+ position:absolute;font-family:'Lobster', cursive;font-size:18px;
+	  
+  }
+	
+.fill {
+  background-image: url('/images/tokmatch/washingtonmonument.png');
+  position: relative;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  background-repeat:no-repeat;
+  background-size:100% 100%;
+  border-radius:20px;
+  
+}
+
+.fill2 {
+    background-image: url('/images/tokmatch/tajmahal.jpg');
+    position: relative;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border-radius: 20px;
+}
+.fill3 {
+    background-image: url('/images/tokmatch/banauerice.jpg');
+    position: relative;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border-radius: 20px;
+}
+
+
+
+.hovered {
+    border: 3px #FFF753 dashed !important;
+}
+
+.hold {
+ border: solid 5px #ccc;
+}
+
+.empty {
+    float: left;
+    height: 100%;
+    width: 100%;
+    border-radius: 20px;
+    background: white;
+    /*background: url('/images/tokmatch/yellowpaper.jpeg');*/
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+  
+.empty2{
+	float:left;
+	height: 196px;
+	width: 100% ;
+	/*margin-left:10px;*/
+	margin-top:20px;
+	background: inherit;
+	border-radius:20px;
+	border: solid 10px white;
+	padding:5px;
+  
+	
+  
+  
+  }
+  
+div {
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
+
+span{
+	-webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+	
+	
+}
+
+
+p{
+	
+	-webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+	
+}
+
+  
+  
+.empty2:hover{
+ 
+ -webkit-transform: rotateX(20deg);
+    transform: rotateX(20deg);
+    
+}
+
+
+@media only screen and (max-width: 700px) {
+    	 .qText{
+	  padding:11px;
+	  font-size:11px;
+	  
+	}
+	
+	.empty2{
+	margin-top:20px;
+	border-radius:20px;
+	padding:5px;
+	border: solid 5px white;
+	padding:2px;
+	height: 25%;
+	width: 31% ;
+	
+	
+	}
+	.empty{
+ 		height: 100%;
+		width: 100%;
+  	
+    }
+	
+	.flip-box {
+  background-color: transparent;
+  width: 31%;
+  height: 45%;
+  border: 1px solid #f1f1f1;
+  border-radius:20px;
+  perspective: 1000px;
+
+  } 
+  .qText{
+	  padding:5px;
+	  font-size:9px;
+	  
+  }
+  
+	.answertextBox{
+		font-size:11px;
+		padding:6px;
+	}
+	
+	
+  .btnsendreset{
+	margin-left:auto;
+	margin-right:auto;	
+  }
+  
+  .btnsendreset{
+	left:10%;
+	position:absolute;
+	bottom:25px;
+	width:80%;
+ 
+	  
+  }
+  
+ .w3-modal-contentAlli{
+	  
+	  margin-top:80%;
+	  
+  }	
+}
+
+
+
+@media only screen and (max-width: 800px) {
+	 .qText{
+	  padding:15px;
+	  font-size:12px;
+	  
+  }
+
+	.empty2{
+	height: 25%;
+	width: 31% ;
+	
+	border: solid 1px white;
+	padding:2px;
+	
+	}
+	
+	.empty{
+ 		height: 100%;
+		width: 100%;
+  	
+    }
+	
+	
+	
+	.flip-box {
+  background-color: transparent;
+  width: 31%;
+  height: 40%;
+  border: 1px solid #f1f1f1;
+  border-radius:20px;
+  perspective: 1000px;
+
+  }
+  
+ 
+  .w3-modal-contentAlli{
+	  
+	  margin-top:65%;
+	  
+  }	
+
+	
+} 
+
+
+
+@media only screen and (max-width: 999px) {
+	 .qText{
+	  padding:15px;
+	  font-size:12px;
+	  
+  }
+
+	.empty2{
+	height: 25%;
+	width: 31% ;
+	
+	border: solid 1px white;
+	padding:2px;
+	
+	}
+	
+	.empty{
+ 		height: 100%;
+		width: 100%;
+  	
+    }
+	
+	
+	
+	.flip-box {
+  background-color: transparent;
+  width: 31%;
+  height: 40%;
+  border: 1px solid #f1f1f1;
+  border-radius:20px;
+  perspective: 1000px;
+
+  }
+  
+	
+} 
+
+
+
+
+@media only screen and (max-width: 500px) {
+
+	 .qText{
+	  padding:10px;
+	  font-size:10px;
+	  
+	}
+	
+	.btnsendreset{
+	left:10%;
+	position:absolute;
+	bottom:25px;
+	width:80%;
+ 
+	  
+  }
+	
+
+	.empty2{
+		
+	height: 25%;
+	width: 25% ;
+		
+	}
+
+	
+	
+	.empty{
+ 		height: 100%;
+		width: 100%;
+  	
+    }
+
+	.flip-box {
+  background-color: transparent;
+  width: 25%;
+  height: 43%;
+  border: 1px solid #f1f1f1;
+  border-radius:20px;
+  perspective: 1000px;
+
+  }.qText{
+	  padding:11px;
+	  font-size:10px;
+	  
+  }
+  
+  
+  .answertextBox{
+		font-size:10px;
+		padding:2px;
+	}
+
+	
+
+#btnnext,#btnreset,#flycoin{
+	
+	width:25%;
+	
+}
+
+.remarkClass{
+	
+	font-size:14px;
+	
+	
+}
+
+.w3-modal-contentAlli{
+	  
+	  margin-top:95%;
+	  
+  }	
+
+
+
+}
+ 
+
+
+
+@media only screen and (max-width: 399px) {
+	
+	.imagebtnside{
+	width:5%;
+	height:7%;
+		
+	}
+
+	
+	
+	.empty2{
+	width: 28%;
+	height:25%;
+	
+	}
+
+	
+	
+	
+	.empty{
+ 		height: 100%;
+		width: 100%;
+  	
+    }
+	
+	
+	
+	
+	
+	.flip-box {
+  background-color: transparent;
+  width: 28%;
+  height: 35%;
+  border: 1px solid #f1f1f1;
+  border-radius:20px;
+  perspective: 1000px;
+
+  }
+  
+  .qText{
+	  padding:11px;
+	  font-size:8px;
+	  
+  }
+  
+	.answertextBox{
+		font-size:10px;
+		padding:2px;
+	}
+	
+	
+  .btnsendreset{
+	margin-left:auto;
+	margin-right:auto;	
+  }
+  
+  .btnsendreset{
+	left:10%;
+	position:absolute;
+	bottom:25px;
+	width:80%;
+ 
+	  
+  }
+  .w3-modal-contentAlli{
+	  
+	  margin-top:90%;
+	  
+  }
+	div{
+		font-size:8px;
+		
+	}
+} 
+
+
+@media only screen and (max-width: 340px) {
+	
+	.imagebtnside{
+	width:5%;
+	height:7%;
+		
+	}
+
+	
+	
+	.empty2{
+	width: 28%;
+	height:25%;
+	
+	}
+
+	
+	
+	
+	.empty{
+ 		height: 100%;
+		width: 100%;
+  	
+    }
+	
+	
+	
+	
+	
+	.flip-box {
+  background-color: transparent;
+  width: 28%;
+  height: 35%;
+  border: 1px solid #f1f1f1;
+  border-radius:20px;
+  perspective: 1000px;
+
+  }
+  
+  .qText{
+	  padding:5px;
+	  font-size:8px;
+	  
+  }
+  
+	.answertextBox{
+		font-size:8px;
+		padding:2px;
+	}
+	
+	
+  .btnsendreset{
+	margin-left:auto;
+	margin-right:auto;	
+  }
+  
+  .btnsendreset{
+	left:10%;
+	position:absolute;
+	bottom:25px;
+	width:80%;
+ 
+	  
+  }
+
+.w3-modal-contentAlli{
+	  
+	  margin-top:80%;
+	  
+  }	
+div{
+		font-size:8px;
+		
+	}
+  
+} 
+
+
+
+
+img:hover {
+    cursor: pointer;
+} 	
+.w3-animate-fadingAlli{animation:fading 10s infinite}@keyframes fading{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+.w3-animate-opacityAlli{animation:opac 0.8s}@keyframes opac{from{opacity:0} to{opacity:1}}
+.w3-animate-topAlli{position:relative;animation:animatetop 0.9s}@keyframes animatetop{from{top:-300px;opacity:0} to{top:0;opacity:1}}
+.w3-animate-leftAlli{position:relative;animation:animateleft 0.9s}@keyframes animateleftAlli{from{left:-300px;opacity:0} to{left:0;opacity:1}}
+.w3-animate-rightAlli{position:relative;animation:animateright 0.9s}@keyframes animateright{from{right:-300px;opacity:0} to{right:0;opacity:1}}
+.w3-animate-bottomAlli{position:relative;animation:animatebottom 1s}@keyframes animatebottom{from{bottom:-300px;opacity:0} to{bottom:0;opacity:1}}
+.w3-animate-zoomAlli {animation:animatezoom 1s}@keyframes animatezoom{from{transform:scale(0)} to{transform:scale(1)}}
+.w3-animate-zoomAlli2 {animation:animatezoom 2s}@keyframes animatezoom{from{transform:scale(0)} to{transform:scale(1)}}
+.w3-animate-zoomAlli3 {animation:animatezoom 3s}@keyframes animatezoom{from{transform:scale(0)} to{transform:scale(1)}}
+
+.w3-animate-zoomAlli4 {animation:animatezoom 4s}@keyframes animatezoom{from{transform:scale(0)} to{transform:scale(1)}}
+.w3-animate-zoomAlli5 {animation:animatezoom 5s}@keyframes animatezoom{from{transform:scale(0)} to{transform:scale(1)}}
+.w3-animate-zoomAlli6 {animation:animatezoom 6s}@keyframes animatezoom{from{transform:scale(0)} to{transform:scale(1)}}
+
+

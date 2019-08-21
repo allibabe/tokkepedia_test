@@ -1,0 +1,130 @@
+﻿@model TokkepediaNotificationSet
+
+@{
+    ViewData["Title"] = "Notifications";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <br />
+                <h2>Notifications</h2>
+                <hr />
+                <div class="allNotificationContainer" style="background-color: white; padding: 8px; border-radius: 8px;">
+                    @if (Model != null)
+                    {
+                        if (Model.Results.Count > 0)
+                        {
+                            foreach (var notif in Model.Results)
+                            {
+                                var item = notif.Items.FirstOrDefault();
+                                var msg = "";
+                                switch (item.Kind)
+                                {
+                                    case "accurate":
+                                    case "accurate1":
+                                    case "accurate2":
+                                    case "accurate3":
+                                        msg += " reacted on your post as accurate.";
+                                        break;
+                                    case "inaccurate":
+                                    case "inaccurate1":
+                                    case "inaccurate2":
+                                    case "inaccurate3":
+                                        msg += " reacted on your post as inaccurate.";
+                                        break;
+                                    case "comment":
+                                    case "comment1":
+                                    case "comment2":
+                                    case "comment3":
+                                        msg += " commented on your post.";
+                                        break;
+                                    case "dislike":
+                                    case "dislike1":
+                                    case "dislike2":
+                                    case "dislike3":
+                                        msg += " disliked your post.";
+                                        break;
+                                    case "like":
+                                    case "like1":
+                                    case "like2":
+                                    case "like3":
+                                        msg += " liked your post.";
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                <div class="notif-@notif.Id" data-notifId="@notif.Id">
+                                    <div class="row" style="margin: 0px; border-bottom: 1px solid #e9ecef">
+                                        <div class="col-md-12 @(!notif.IsRead ? "ntf-hightlighted" : "") ntfContent" style="padding-top: 4px; padding-bottom: 4px;">
+                                            <div class="row" style="margin: 0px;">
+                                                <div class="col-md-10" style="padding: 0px;">
+                                                    <div class="row" style="margin: 0px;">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            @foreach (var react in notif.Items)
+                                                            {
+                                                                <a href="/user?id=@(react.ReactionData?.OwnerId ?? string.Empty)"><img src="@react.UserPhoto" style="width: 48px; height: 48px; border-radius: 24px;" /></a>
+                                                            }
+                                                        </div>
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            @if (notif.Items.Count() > 1)
+                                                            {
+                                                                <p style="font-size: 13px; margin-bottom: 0px;"><a href="/user?id=@(item.ReactionData?.OwnerId ?? string.Empty)" style="font-weight: bold;">@item.UserDisplayName</a> and @(notif.Items.Count() - 1) other(s) @msg</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <p style="font-size: 13px; margin-bottom: 0px;"><a href="/user?id=@(item.ReactionData?.OwnerId ?? string.Empty)" style="font-weight: bold;">@item.UserDisplayName</a> @msg</p>
+                                                            }
+                                                        </div>
+                                                        @if (notif.Items.Count() == 1)
+                                                        {
+                                                            if (item.ReactionData != null)
+                                                            {
+                                                                if (item.ReactionData.IsComment)
+                                                                {
+                                                                    <div class="col-md-12" style="padding: 0px;">
+                                                                        <p style="font-size: 13px; margin-bottom: 0px; color: #B2BABB">"@item.ReactionData.Text"</p>
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 center-content" style="padding: 0px;">
+                                                    <span class="ntf-action" style="color: forestgreen;" onclick="MarkAsRead('@notif.Id')" data-toggle="tooltip" data-placement="top" title="Mark as Read"><i class="fas fa-eye"></i></span>
+                                                    <span class="ntf-action" style="color: red;" onclick="RemoveNotification('@notif.Id')" data-toggle="tooltip" data-placement="top" title="Remove Notification"><i class="fas fa-trash-alt"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <h5 class="center-content" style="margin-bottom: 0px;">No new notifications</h5>
+                        }
+                    }
+                    else
+                    {
+                        <h5 class="center-content" style="margin-bottom: 0px;">No new notifications</h5>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+
+}

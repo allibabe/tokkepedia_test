@@ -1,0 +1,139 @@
+﻿@page
+@model LoginModel
+@using Tokkepedia.Models
+@inject SignInManager<TokketUser> SignInManager
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+@section Styles {
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.css" />
+    <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white" >
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <br />
+                <h2>@ViewData["Title"]</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <section>
+                            <form method="post">
+                                <hr />
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="form-group">
+                                    <label asp-for="Input.Email"></label>
+                                    <input asp-for="Input.Email" class="form-control" />
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Input.Password"></label>
+                                    <input asp-for="Input.Password" class="form-control" />
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label asp-for="Input.RememberMe">
+                                            <input asp-for="Input.RememberMe" />
+                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-default">Log in</button>
+                                </div>
+                                <div class="form-group">
+                                    <p>
+                                        <a asp-page="./ForgotPassword">Forgot your password?</a>
+                                    </p>
+                                    <p>
+                                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                                    </p>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                    <div class="col-md-6 col-md-offset-2">
+                        <section>
+                            <hr />
+                            @{
+                                var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                                if (loginProviders.Count == 0)
+                                {
+                                    <div>
+                                        <p>
+                                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                                            for details on setting up this ASP.NET application to support logging in via external services.
+                                        </p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                        <div>
+                                            <p>
+                                                @foreach (var provider in loginProviders)
+                                                {
+                                                    @*if (provider.Name == "Google")
+                                                    {
+                                                        <button type="submit" name="provider" class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" data-upgraded=",MaterialButton" value="@provider.Name">
+                                                            <span class="firebaseui-idp-icon-wrapper"><img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"></span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span>
+                                                        </button>
+                                                        <br />
+                                                    }*@
+
+                                                    if (provider.Name == "Facebook")
+                                                    {
+                                                        <button type="submit" name="provider" class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-facebook firebaseui-id-idp-button" data-upgraded=",MaterialButton" data-provider-id="facebook.com" value="@provider.Name">
+                                                            <span class="firebaseui-idp-icon-wrapper">
+                                                                <img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg">
+                                                            </span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Facebook</span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-short">Facebook</span>
+                                                        </button>
+                                                        <br />
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="submit" name="provider" class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" data-upgraded=",MaterialButton" value="@provider.Name">
+                                                            <span class="firebaseui-idp-icon-wrapper"><img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"></span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span>
+                                                        </button>
+                                                        <br />
+                                                    }
+
+                                                    @*<button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>*@
+                                                }
+
+
+                                            </p>
+                                        </div>
+                                    </form>
+                                }
+                            }
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,361 @@
+﻿@page
+@model RegisterModel
+@using Tokkepedia.Models
+@using System.Globalization;
+@inject SignInManager<TokketUser> SignInManager
+@{
+    ViewData["Title"] = "Sign Up";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+@{
+    List<CountryModel> CountryList = CountryTool.GetCountries();
+}
+
+@section Styles {
+    <link type="text/css" rel="stylesheet" href="~/css/croppie.css" />
+    <script src="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.0/firebaseui.css" />
+    <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+    <link type="text/css" rel="stylesheet" href="~/css/select2.min.css" />
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <br />
+                <h2>@ViewData["Title"]</h2>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <form asp-route-returnUrl="@Model.ReturnUrl" id="frmRegistration" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <hr />
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                    <div class="form-group">
+                                        <label asp-for="Input.DisplayName"></label>
+                                        <input asp-for="Input.DisplayName" class="form-control" />
+                                        <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Input.Birthday"></label><br />
+                                        <input asp-for="Input.Birthday" type="date" class="form-control">
+                                        <span asp-validation-for="Input.Birthday" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Input.Country"></label>
+                                        <select class="form-control" id="Input_Country" name="Input.Country">
+                                            @foreach (var country in CountryList)
+                                            {
+                                                <option value="@country.Id">@country.Name</option>
+                                            }
+                                        </select>
+                                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group" id="stateContainer">
+                                        <label asp-for="Input.State"></label>
+                                        <select class="form-control" id="Input_State" name="Input.State">
+                                            @*@foreach (var country in CountryList)
+                                            {
+                                                <option value="@country.Id">@country.Name</option>
+                                            }*@
+                                        </select>
+                                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Input.Email"></label>
+                                        <input asp-for="Input.Email" class="form-control" />
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Input.Password"></label>
+                                        <input asp-for="Input.Password" class="form-control" />
+                                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Input.ConfirmPassword"></label>
+                                        <input asp-for="Input.ConfirmPassword" class="form-control" />
+                                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" asp-for="Input.CroppedPhoto" id="txtCroppedPhoto" type="hidden" value="" />
+                                    </div>
+                                    <p class="lead">Select a profile image (optional)</p>
+                                    <div id="image-preview-div">
+                                        <label for="exampleInputFile">Selected image:</label>
+                                        <br>
+                                        <div id="resizer">
+
+                                        </div>
+                                        @*<img id="preview-img" src="" style="max-height:192px!important; max-width:192px!important;">*@
+                                    </div>
+                                    <br />
+                                    <div id="message"></div>
+                                    <label class="btn btn-secondary col-md-4">
+                                        Browse&hellip; <input asp-for="Input.Pic" type="file" name="Pic" id="pic" style="display: none;">
+                                    </label>
+                                    <div>
+                                        <input asp-for="Input.TermAccepted" type="checkbox" id="terms" />
+                                        <label for="terms">I agree to the <a asp-controller="Home" asp-action="Terms" target="_blank">Terms of Service.</a></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-block btn-primary" id="btnRegister">Register</button>
+                        </form>
+                    </div>
+                    <div class="col-md-4 col-md-offset-2">
+                        <section>
+                            <hr />
+                            @{
+                                var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                                if (loginProviders.Count == 0)
+                                {
+                                    <div>
+                                        <p>
+                                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                                            for details on setting up this ASP.NET application to support logging in via external services.
+                                        </p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                        <div>
+                                            <p>
+                                                @foreach (var provider in loginProviders)
+                                                {
+                                                    if (provider.Name == "Google")
+                                                    {
+                                                        <button type="submit" name="provider" class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" data-upgraded=",MaterialButton" value="@provider.Name">
+                                                            <span class="firebaseui-idp-icon-wrapper"><img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"></span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
+                                                            <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span>
+                                                        </button>
+                                                        <br />
+                                                    }
+
+
+                                                    @*if (provider.Name == "Facebook")
+                                                        {
+                                                            <button type="submit" name="provider" class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-facebook firebaseui-id-idp-button" data-upgraded=",MaterialButton" data-provider-id="facebook.com" value="@provider.Name">
+                                                                <span class="firebaseui-idp-icon-wrapper">
+                                                                    <img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg">
+                                                                </span>
+                                                                <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Facebook</span>
+                                                                <span class="firebaseui-idp-text firebaseui-idp-text-short">Facebook</span>
+                                                            </button>
+                                                            <br />
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="submit" name="provider" class="firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button" data-provider-id="google.com" data-upgraded=",MaterialButton" value="@provider.Name">
+                                                                <span class="firebaseui-idp-icon-wrapper"><img class="firebaseui-idp-icon" alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"></span>
+                                                                <span class="firebaseui-idp-text firebaseui-idp-text-long">Sign in with Google</span>
+                                                                <span class="firebaseui-idp-text firebaseui-idp-text-short">Google</span>
+                                                            </button>
+                                                            <br />
+                                                        }*@
+
+                                                    @*<button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>*@
+                                                }
+
+
+                                            </p>
+                                        </div>
+                                    </form>
+                                }
+                            }
+                        </section>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/croppie.js"></script>
+    <script src="~/js/select2.min.js"></script>
+    <script>
+        var uploadCrop;
+
+        function GetAllStates(countryCode) {
+            if (countryCode != "us") {
+                $("#stateContainer").hide();
+            }
+            else {
+                $("#stateContainer").show();
+                $.ajax({
+                    url: "/Home/GetCountryStates",
+                    type: "GET",
+                    async: true,
+                    data: { 'countryId': countryCode },
+                    dataType: "json",
+                    success: function (res) {
+                        $("#Input_State").html("");
+                        for (var i = 0; i < res.length; i++) {
+                            $("#Input_State").append("<option value='" + res[i].id + "' data-image='" + res[i].image + "'>" + res[i].name + "</option>");
+                        }
+                    },
+                    error: function () {
+                        // Do error handling here.
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            //-----IMAGE UPLOAD CODE----
+            /*jslint browser: true, white: true, eqeq: true, plusplus: true, sloppy: true, vars: true*/
+            /*global $, console, alert, FormData, FileReader*/
+
+            uploadCrop = $('#resizer').croppie({
+                viewport: {
+                    height: 200,
+                    width: 200,
+                    type: 'square'
+                },
+                showZoomer: true,
+                enableOrientation: false,
+                mouseWheelZoom: 'ctrl',
+                enableExif: true
+            });
+
+            $("#btnRegister").click(function () {
+                uploadCrop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (resp) {
+                    //console.log(resp);
+                    //console.log(fileSelected);
+                    $("#txtCroppedPhoto").val(resp);
+                    //console.log($("#txtCroppedPhoto").val());
+                });
+
+                setTimeout(function () {
+                    $("#frmRegistration").submit();
+                }, 1000);
+            });
+
+            function noPreview() {
+                $('#image-preview-div').css("display", "none");
+                //$('#preview-img').attr('src', 'noimage');
+                $('upload-button').attr('disabled', '');
+            }
+
+            function selectImage(e) {
+                $('#resizer').addClass('ready');
+                uploadCrop.croppie('bind', {
+                    url: e.target.result
+                }).then(function () {
+                    //console.log('jQuery bind complete');
+                });
+
+                $('#file').css("color", "green");
+                $('#image-preview-div').css("display", "block");
+                //$('#preview-img').attr('src', e.target.result);
+                //$('#preview-img').css('max-width', '550px');
+            }
+
+            $(document).ready(function (e) {
+                var maxsize = 5000 * 1024; // 3000 KB
+
+                $('#max-size').html((maxsize / 1024).toFixed(2));
+
+                $('#pic').change(function () {
+
+                    $('#message').empty();
+
+                    var file = this.files[0];
+                    var match = ["image/jpeg", "image/png", "image/jpg"];
+
+                    if (!((file.type == match[0]) || (file.type == match[1]) || (file.type == match[2]))) {
+                        noPreview();
+
+                        $('#message').html('<div class="alert alert-warning" role="alert">Invalid image format. Allowed formats: JPG, JPEG, PNG.</div>');
+
+                        return false;
+                    }
+
+                    if (file.size > maxsize) {
+                        noPreview();
+
+                        $('#message').html('<div class=\"alert alert-danger\" role=\"alert\">The size of image you are attempting to upload is ' + (file.size / 1024).toFixed(2) + ' KB, maximum size allowed is ' + (maxsize / 1024).toFixed(2) + ' KB</div>');
+
+                        return false;
+                    }
+
+                    $('#upload-button').removeAttr("disabled");
+
+                    var reader = new FileReader();
+                    reader.onload = selectImage;
+                    reader.readAsDataURL(this.files[0]);
+
+                });
+
+            });
+
+            function formatCountry(state) {
+                if (!state.id) return state.text; // optgroup
+
+                var span = $("<span>");
+                span.text(state.text);
+                var flagSpan = $("<i>");
+                flagSpan.addClass("flag-icon");
+                flagSpan.addClass("flag-icon-" + state.id);
+                flagSpan.css("float", "right");
+                flagSpan.css("line-height", "unset");
+                span.append(flagSpan);
+
+                return span;
+            }
+
+            function formatState(state) {
+                if (!state.id) return state.text; // optgroup
+                console.log(state);
+                var span = $("<span>");
+                span.text(state.text);
+                var flagSpan = $("<img>");
+                flagSpan.attr("src", $(state.element).attr("data-image"));
+                flagSpan.css("float", "right");
+                flagSpan.css("line-height", "unset");
+                flagSpan.css("height", "24px");
+                flagSpan.css("width", "21px");
+                span.append(flagSpan);
+
+                return span;
+            }
+
+            $("#Input_Country").select2({
+                templateResult: function (item) {
+                    return formatCountry(item);
+                }
+            });
+
+            $("#Input_Country").change(function () { 
+                var val = $(this).val();
+                GetAllStates(val);
+            });
+
+            $("#Input_State").select2({
+                templateResult: function (item) {
+                    return formatState(item);
+                }
+            });
+        });
+    </script>
+}

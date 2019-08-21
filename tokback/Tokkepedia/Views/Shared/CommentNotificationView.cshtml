@@ -1,0 +1,17 @@
+﻿@model TokkepediaReaction
+
+<div class="comment-wrap">
+    <div class="photo">
+        <img class="avatar" src="~/images/tokket.png">
+    </div>
+    <div class="comment-block">
+        <ul class="comment-actions">
+            <li><a asp-controller="User" asp-action="UserProfile" asp-route-id="@Model.UserId" style="font-size:small!important; color:#212529!important;"><b>@Model.UserDisplayName</b></a></li>
+            <li class="right"><span style="color: lightslategray; font-size: 11px;">@Model.CreatedTime.ToShortDateString() @@ @Model.CreatedTime.ToShortTimeString()</span></li>
+        </ul>
+        <br />
+        <p class="comment-text">
+            "Comment Text here..."
+        </p>
+    </div>
+</div>

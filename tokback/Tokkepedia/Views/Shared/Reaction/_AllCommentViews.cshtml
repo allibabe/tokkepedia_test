@@ -1,0 +1,10 @@
+﻿@model ResultData<TokkepediaReaction>
+
+@if (Model.Results.Count > 0)
+{
+    @foreach (TokkepediaReaction c in Model.Results)
+    {
+        @await  Html.PartialAsync("CommentView", c)
+        <hr />
+    }
+}

@@ -1,0 +1,103 @@
+﻿@model UserReactionsViewModel
+
+@{
+    ViewData["Title"] = "Tok Reactions";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <br />
+                <h2>@Model.User.DisplayName's Reactions</h2>
+                <hr />
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-like-tab" data-toggle="tab" href="#nav-like" role="tab" aria-controls="nav-like" aria-selected="true">Likes</a>
+                        <a class="nav-item nav-link" id="nav-dislike-tab" data-toggle="tab" href="#nav-dislike" role="tab" aria-controls="nav-dislike" aria-selected="false">Dislikes</a>
+                        <a class="nav-item nav-link" id="nav-accurate-tab" data-toggle="tab" href="#nav-accurate" role="tab" aria-controls="nav-accurate" aria-selected="false">Accurates</a>
+                        <a class="nav-item nav-link" id="nav-inaccurate-tab" data-toggle="tab" href="#nav-inaccurate" role="tab" aria-controls="nav-inaccurate" aria-selected="false">Inaccurates</a>
+                        <a class="nav-item nav-link" id="nav-comment-tab" data-toggle="tab" href="#nav-comment" role="tab" aria-controls="nav-comment" aria-selected="false">Comments</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-like" role="tabpanel" aria-labelledby="nav-like-tab">
+                        @if (Model.Reactions != null)
+                        {
+                            @foreach (var reaction in Model.Reactions)
+                            {
+                                if (reaction.Kind == "like")
+                                {
+                                    <button type="button" class="list-group-item list-group-item-action" id="like-@reaction.Id" data-toggle="list" role="tab" aria-controls="h">
+                                        @reaction.UserDisplayName
+                                        @*<span class="badge badge-success float-right">@set.Published.ToShortDateString()</span>
+                        <span class="badge badge-warning float-right">@set.TokType</span>*@
+                                    </button>
+                                    <br />
+                                }
+                            }
+                        }
+                    </div>
+                    <div class="tab-pane fade" id="nav-dislike" role="tabpanel" aria-labelledby="nav-dislike-tab">
+                        @foreach (var reaction in Model.Reactions)
+                        {
+                            if (reaction.Kind == "dislike")
+                            {
+                                <button type="button" class="list-group-item list-group-item-action" id="dislike-@reaction.Id" data-toggle="list" role="tab" aria-controls="h">
+                                    @reaction.UserDisplayName
+                                    @*<span class="badge badge-success float-right">@set.Published.ToShortDateString()</span>
+                                        <span class="badge badge-warning float-right">@set.TokType</span>*@
+                                </button>
+                                <br />
+                            }
+                        }
+                    </div>
+                    <div class="tab-pane fade" id="nav-accurate" role="tabpanel" aria-labelledby="nav-accurate-tab">
+                        @foreach (var reaction in Model.Reactions)
+                        {
+                            if (reaction.Kind == "accurate")
+                            {
+                                <button type="button" class="list-group-item list-group-item-action" id="accurate-@reaction.Id" data-toggle="list" role="tab" aria-controls="h">
+                                    @reaction.Text
+                                    @*<span class="badge badge-success float-right">@set.Published.ToShortDateString()</span>
+                                        <span class="badge badge-warning float-right">@set.TokType</span>*@
+                                </button>
+                                <br />
+                            }
+                        }
+                    </div>
+                    <div class="tab-pane fade" id="nav-inaccurate" role="tabpanel" aria-labelledby="nav-inaccurate-tab">
+                        @foreach (var reaction in Model.Reactions)
+                        {
+                            if (reaction.Kind == "inaccurate")
+                            {
+                                <button type="button" class="list-group-item list-group-item-action" id="inaccurate-@reaction.Id" data-toggle="list" role="tab" aria-controls="h">
+                                    @reaction.Text
+                                    @*<span class="badge badge-success float-right">@set.Published.ToShortDateString()</span>
+                                        <span class="badge badge-warning float-right">@set.TokType</span>*@
+                                </button>
+                                <br />
+                            }
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+}

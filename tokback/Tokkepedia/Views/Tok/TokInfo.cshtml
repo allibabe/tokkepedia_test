@@ -1,0 +1,442 @@
+﻿@model TokInfoViewModel
+@using System.Drawing;
+
+@{
+    ViewData["Title"] = Model.Tok.PrimaryFieldText + " - Tokkepedia";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+
+    // Calculate Image Size
+    int width = 0;
+    int height = 0;
+
+    if (!string.IsNullOrEmpty(Model.Tok.Image))
+    {
+        System.Net.WebRequest request = System.Net.WebRequest.Create(Model.Tok.Image);
+        System.Net.WebResponse response = request.GetResponse();
+        System.IO.Stream responseStream = response.GetResponseStream();
+        Bitmap bmp = new Bitmap(responseStream);
+
+        width = bmp.Width;
+        height = bmp.Height;
+        if (bmp.Width > 600) { width = bmp.Width - (int)(bmp.Width * 0.80); }
+        if (bmp.Width > 250) { width = bmp.Width - (int)(bmp.Width * 0.40); }
+
+        if (bmp.Height > 600) { height = bmp.Height - (int)(bmp.Height * 0.80); }
+        if (bmp.Height > 250) { height = bmp.Height - (int)(bmp.Height * 0.40); }
+    }
+
+    string idAndAmp = $"{Model.Tok.Id}&amp";
+    var fulldesc = string.Empty;
+    if (Model.Tok.IsDetailBased)
+    {
+        foreach (var item in Model.Tok.Details)
+        {
+            fulldesc += item + " ";
+        }
+    }
+    else
+    {
+        fulldesc += Model.Tok.SecondaryFieldText;
+    }
+}
+
+@section Meta {
+    <meta property="fb:app_id" content="2096904330562973" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@@tokkepedia" />
+    <meta property="og:url" content="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Tok.Id}")" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@Model.Tok.PrimaryFieldText | Tokkepedia" />
+    <meta property="og:description" content="@(Model.Tok.IsDetailBased ? Model.Tok.Details[0] : Model.Tok.SecondaryFieldText)" />
+    <meta property="og:image" content="@(!string.IsNullOrEmpty(Model.Tok.Image) ? Model.Tok.Image : string.Empty)" />
+    <meta property="og:image:alt" content="@Model.Tok.PrimaryFieldText" />
+    <meta property="og:image:height" content="@height" />
+    <meta property="og:image:width" content="@width" />
+    <meta name="title" property="title" content="@Model.Tok.PrimaryFieldText - Tokkepedia" />
+    <meta name="description" property="description" content="@fulldesc" />
+}
+
+@section Body {
+    <script>
+        window.twttr = (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+                t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+
+            t._e = [];
+            t.ready = function (f) {
+                t._e.push(f);
+            };
+
+            return t;
+        }(document, "script", "twitter-wjs"));
+    </script>
+}
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="amphtml" href="/tok?id=@idAndAmp">
+   
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+}
+
+
+
+    <div id="tokbackpage" style="position:fixed;width:100%;height:100%;left:0;z-index:1000!important;display:none;background-color:mediumpurple;">
+        <h1 style="background-color:whitesmoke;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;text-align:center;position:fixed;top:0;width:100%;">  Tok Back  Page </h1>
+
+
+        <div class="w3-card-4" style="width:50%;left:25%;position:absolute;top:10%;">
+            <header class="w3-container w3-purple">
+                <h1>Header</h1>
+            </header>
+
+            <div class="w3-container" style="z-index:1000;background-color:white;">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+
+            <footer class="w3-container w3-purple">
+                <h5>Footer</h5>
+            </footer>
+        </div>
+
+
+        <div class="w3-card-4" style="width:50%;left:25%;position:absolute;top:40%;">
+            <header class="w3-container w3-purple">
+                <h1>Header</h1>
+            </header>
+
+            <div class="w3-container" style="z-index:1000;background-color:white;">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+
+            <footer class="w3-container w3-purple">
+                <h5>Footer</h5>
+            </footer>
+        </div>
+
+
+        <div class="w3-card-4" style="width:50%;left:25%;position:absolute;bottom:5%;">
+            <header class="w3-container w3-purple">
+                <h1>Header</h1>
+            </header>
+
+            <div class="w3-container" style="z-index:1000;background-color:white;">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+
+            <footer class="w3-container w3-purple">
+                <h5>Footer</h5>
+            </footer>
+        </div>
+
+
+
+
+    </div>
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white" id="about">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+
+                    <div class="p-3 bg-white rounded box-shadow tokviewfeed" style="padding-left:0.2em!important;">
+
+                        <div class="container-fluid tokviewfeed">
+                            <input id="RenderedTokContent" type="hidden" value="" />
+                            @await Html.PartialAsync("TokView", Model.Tok)
+                        </div>
+
+                        <a class="nav-link" asp-area="" asp-controller="Tok" asp-action="TokReactions" asp-route-id="@Model.Tok.Id">View reactions to this tok</a>
+                        <br />
+                        <!-- Other Fields -->
+                        @for (var i = 0; i < Model.Tok.RequiredFields.Length; ++i)
+                        {
+                            <small>@Model.Tok.RequiredFields[i]:</small>
+                            <small id="lblreq-@Model.Tok.Id-@i" class="reactionlbl">@Model.Tok.RequiredFieldValues[i]</small>
+                            <br />
+                        }
+                        @for (var i = 0; i < Model.Tok.OptionalFields.Length; ++i)
+                        {
+                            <small>@Model.Tok.OptionalFields[i]:</small>
+                            <small id="lblopt-@Model.Tok.Id-@i" class="reactionlbl">@Model.Tok.OptionalFieldValues[i]</small>
+                            <br />
+                        }
+                        <br />
+                        <small class="reactionlbl">Notes:</small>
+                        <small id="lblnotes-@Model.Tok.Id" class="reactionlbl">@Model.Tok.Notes</small>
+                    </div>
+
+                    <div class="comments tokviewfeed" style="background-color: white;">
+                        @if (User != null)
+                        {
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="row">
+                                    <div class="col-md-12" style="padding-left: 4.75rem;">
+                                        <label style="margin-top: .5rem;">Comments: <span id="lblCommentCount">@(Model.Tok.OwnReactions?.Comments?.Count ?? 0)</span></label>
+                                        <button class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#modalMyComments">My Comments</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="comment-wrap">
+                            <div class="photo">
+                                <div class="avatar">
+                                    @if (User != null)
+                                    {
+                                        if (User.Identity.IsAuthenticated)
+                                        {
+                                            if (!string.IsNullOrEmpty(ViewBag.UserPhoto))
+                                            {
+                                                <img src="@ViewBag.UserPhoto" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/images/purple.svg" style="border-radius: 50%;" />
+                                                <br>
+                                                <br>
+
+                                                <img src="~/images/purple.svg" style="margin-top:5px;border-radius: 50%;" />
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <img src="~/images/purple.svg" style="border-radius: 50%;" />
+                                            <br>
+                                            <br>
+
+
+
+                                            <img src="~/images/purple.svg" style="margin-top:5px;border-radius: 50%;" />
+
+
+                                        }
+                                    }
+                                    else
+
+                                    {
+
+                                        <img src="~/images/purple.svg" />
+                                    }
+                                </div>
+                            </div>
+                            <div class="comment-block">
+                                <form action="">
+                                    @if (User != null)
+                                    {
+                                        if (User.Identity.IsAuthenticated)
+                                        {
+                                            <button type="button" id="TokBackBtn" name="@Model.Tok.Id" class=" form-control  offset-3" style="width:47%;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;color:white;background-color:mediumpurple;">TOK BACK </button>
+                                            <br />
+
+                                            <textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Add a comment..."></textarea>
+                                        }
+                                        else
+                                        {
+
+
+                                            <button type="button" id="TokBackBtn" name="@Model.Tok.Id" class=" form-control  offset-3" style="width:47%;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;color:white;background-color:mediumpurple;">TOK BACK </button>
+                                            <br />
+                                            <textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Sign in to comment..."></textarea>
+                                        }
+                                    }
+                                    else
+
+                                    {
+                                        <button type="button" id="TokBackBtn" name="@Model.Tok.Id" class=" form-control  offset-3" style="width:47%;font-family:Helvetica Neue, Helvetica, Arial, sans-serif;color:white;background-color:mediumpurple;">TOK BACK </button>
+                                        <br />
+                                        <textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Sign in to comment..."></textarea>
+                                    }
+                                </form>
+                            </div>
+                            @if (User != null)
+                            {
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    <button id="btncomment" name="@Model.Tok.Id" type="button" data-dismiss="modal" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;">Comment</button>
+                                }
+                                else
+                                {
+                                    <button name="@Model.Tok.Id" type="button" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;">Comment</button>
+                                }
+                            }
+                            else
+                            {
+                                <button name="@Model.Tok.Id" type="button" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;">Comment</button>
+                            }
+                        </div>
+                        <br /><hr />
+
+                        <div class="center" id="containerProgress" style="margin: 24px auto">
+                            <div class="colorlib-load"></div>
+                        </div>
+                        <div id="tokContainer" style="margin-top: 1em !important;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (User != null)
+    {
+        if (User.Identity.IsAuthenticated)
+        {
+            <div class="modal fade" id="modalMyComments" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">My Comments</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="tabComment" data-toggle="tab" href="#nav-comment" role="tab" aria-controls="nav-comment" aria-selected="false" style="color:#495057;">Comments</a>
+                                    <a class="nav-item nav-link" id="tabAccurate" data-toggle="tab" href="#nav-accurate" role="tab" aria-controls="nav-accurate" aria-selected="false" style="color:#495057;">Accurates</a>
+                                    <a class="nav-item nav-link" id="tabInAccurate" data-toggle="tab" href="#nav-inaccurate" role="tab" aria-controls="nav-inaccurate" aria-selected="false" style="color:#495057;">Inaccurates</a>
+                                </div>
+                            </nav>
+                            <div class="tab-pane fade active show" id="nav-comment" role="tabpanel" aria-labelledby="tabComment">
+                                @if (Model.Tok.OwnReactions != null)
+                                {
+                                    foreach (var reaction in (Model.Tok.OwnReactions?.Comments ?? new List<TokkepediaReaction>()))
+                                    {
+                                        if (reaction.Kind == "comment")
+                                        {
+                                            @await Html.PartialAsync("CommentView", reaction)
+                                        }
+                                    }
+                                }
+
+                            </div>
+                            <div class="tab-pane fade" id="nav-accurate" role="tabpanel" aria-labelledby="tabAccurate">
+                                @if (Model.Tok.OwnReactions != null)
+                                {
+                                    foreach (var reaction in (Model.Tok.OwnReactions.Accurates ?? new List<TokkepediaReaction>()))
+                                    {
+                                        if (reaction.Kind == "accurate")
+                                        {
+                                            @await Html.PartialAsync("CommentView", reaction)
+                                        }
+                                    }
+                                }
+
+                            </div>
+                            <div class="tab-pane fade" id="nav-inaccurate" role="tabpanel" aria-labelledby="tabInAccurate">
+                                @if (Model.Tok.OwnReactions != null)
+                                {
+                                    foreach (var reaction in (Model.Tok.OwnReactions.Inaccurates ?? new List<TokkepediaReaction>()))
+                                    {
+                                        if (reaction.Kind == "inaccurate")
+                                        {
+                                            @await Html.PartialAsync("CommentView", reaction)
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="modal-footer deletebtngroup">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/jquery.flip.js"></script>
+    @if (User != null)
+    {
+        <script src="~/js/SetFeed.js"></script>
+    }
+
+    <script>
+    $(document).ready(function () {
+
+
+        $("#TokBackBtn").on("click", function (event) {
+            var getter = event.target.name;
+            $("#tokbackpage").slideDown('fast');
+        });
+        $("#btncomment").on("click", function (event) {
+            var id = $(this).attr('name');
+
+            var idText = "#CommentText";
+            var text = $(idText).val();
+
+            var ReactionOptions = {};
+            ReactionOptions.url = "/Home/Comment";
+            ReactionOptions.type = "POST";
+            ReactionOptions.data = JSON.stringify({ group: id, comment: text }); //group: $("#Reaction").val()
+            ReactionOptions.datatype = "json";
+            ReactionOptions.contentType = "application/json";
+            //alert(ReactionOptions.data.toString());
+
+            ReactionOptions.success = function (Data) {
+                //$("#TokFeed").prepend(Data);
+                alert("Comment added")
+            };
+            ReactionOptions.error = function () {
+
+            };
+            $.ajax(ReactionOptions);
+        });
+
+        //Comment text required
+        $("#CommentText").on("input", function (event) {
+            if ($(this).val().length <= 0) {
+                $("#btncomment").prop("disabled", true);
+            }
+            else {
+                $("#btncomment").prop("disabled", false);
+            }
+        });
+
+        //Image popup
+
+        $('#TokFeed').magnificPopup({ //.image-popup-no-margins
+            delegate: '.tokviewitem .tokviewsection .tokviewrow .tokviewcol .image-popup-no-margins',
+            type: 'image',
+            closeOnContentClick: true,
+            closeBtnInside: false,
+            fixedContentPos: true,
+            mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+            image: {
+                verticalFit: true
+            },
+            zoom: {
+                enabled: true,
+                duration: 300 // don't foget to change the duration also in CSS
+            }
+        });
+
+        activityId = '@Model.Tok.ActivityId';
+        isComment = true;
+        InitializeCommentData(activityId, $("#tokContainer"));
+        ApplyMagnificPopup();
+    });
+    </script>
+}

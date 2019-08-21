@@ -1,0 +1,1225 @@
+﻿@using Newtonsoft.Json;
+@using Tokkepedia.Tools.Extensions;
+@using Microsoft.AspNetCore.Identity;
+@model AddTokViewModel
+@inject UserManager<TokketUser> UserManager
+
+@{
+    ViewData["Title"] = "Add Tok";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    List<SelectListItem> tokGroupListPre = new List<SelectListItem>();
+    List<SelectListItem> tokGroupList = new List<SelectListItem>();
+    List<SelectListItem> tokTypeList = new List<SelectListItem>();
+    tokTypeList.Add(new SelectListItem
+    {
+        Text = "Choose...",
+        Value = "Choose",
+        Selected = true
+    });
+
+    if (Model.TokGroups != null)
+    {
+        for (int i = 0; i < Model.TokGroups?.Count(); ++i)   //Can also be ViewBag.Category
+        {
+            tokGroupListPre.Add(new SelectListItem
+            {
+                Text = Model.TokGroups[i].TokGroup,
+                Value = JsonConvert.SerializeObject(Model.TokGroups[i]),
+                Selected = false
+            });
+
+
+        }
+        tokGroupListPre = tokGroupListPre.OrderBy(x => x.Text).ToList<SelectListItem>();
+
+        tokGroupList.Add(new SelectListItem
+        {
+            Text = "Choose...",
+            Value = "Choose",
+            Selected = true
+        });
+
+        foreach (var item in tokGroupListPre) { tokGroupList.Add(item); }
+    }
+
+    List<string> Colors = new List<string>() {
+"#d32f2f", "#C2185B", "#7B1FA2", "#512DA8",
+"#303F9F", "#1976D2", "#0288D1", "#0097A7",
+"#00796B", "#388E3C", "#689F38", "#AFB42B",
+"#FBC02D", "#FFA000", "#F57C00", "#E64A19"
+};
+    var rndmColors = Colors.Shuffle();
+    var userId = User.GetUserId();
+
+    TokketUser user = null;
+    if (userId != null)
+    {
+        user = await UserManager.FindByIdAsync(userId);
+    }
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white">
+    <div class="container-fluid h-100" id="bodyContentContainer">
+        <div class="row h-100">
+            <div class="col-3" style="padding-top: 108px;">
+                @*//Alert*@
+                <h5>Tips:</h5>
+                <hr />
+                <div class="alert alert-primary alert-dismissible fade show" role="alert" style="max-width: 324px;">
+                    <img id="TokGroupTokstar" src="~/images/tokstargirl2.jpg" alt="" class="mr-2 rounded-circle"
+                         style="max-height:30px!important; max-width:30px!important; margin-left:0!important; margin-right:0.2em!important;">
+                    <strong>Important:</strong> Don't put name of primary/secondary in category or details for game purposes
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="alert alert-primary alert-dismissible fade show" role="alert" style="max-width: 324px;">
+                    <img id="TokGroupTokstar" src="~/images/tokstarguy2.jpg" alt="" class="mr-2 rounded-circle"
+                         style="max-height:30px!important; max-width:30px!important; margin-left:0!important; margin-right:0.2em!important;">
+                    <strong>Don't put the primary field in the details:</strong> This is needed so the name is not in the game clues that come from the tok details
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <hr />
+                <br />
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12">
+                                <h3><b>Preview what your tok will look like:</b></h3>
+                            </div>
+                        </div>
+                        <div class="row" id="tokTileContainer">
+                            <!-- Normal Tok Tile -->
+                            <div class="col-md-12 tok-tile" id="tokTileNormal_Preview" style="max-width: 304px;background-color: @rndmColors[0];cursor: pointer;overflow:hidden">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12">
+                                        <table style="width: 100%; table-layout: auto;">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="48px">
+                                                        <div class="col-md-12" style="padding: 0px;">
+                                                            @if (user.IsAvatarProfilePicture ?? false)
+                                                            {
+                                                                <a asp-controller="User" asp-action="UserProfile" asp-route-id="@User.GetUserId()"><img src="@PurchasesTool.GetProduct(user.SelectedAvatar).Image" class="rounded-circle" style="border: 2px solid #542a7d; width: 48px; height: 48px; background-color: white;" data-toggle="tooltip" title="@user.DisplayName (You)" /></a>
+                                                            }
+                                                            else
+                                                            {
+                                                                if (!string.IsNullOrEmpty(user.UserPhoto))
+                                                                {
+                                                                    <a asp-controller="User" asp-action="UserProfile" asp-route-id="@User.GetUserId()"><img src="@user.UserPhoto" class="rounded-circle" style="border: 2px solid #542a7d; width: 48px; height: 48px; background-color: white;" data-toggle="tooltip" title="@user.DisplayName (You)" /></a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a asp-controller="User" asp-action="UserProfile" asp-route-id="@User.GetUserId()"><img src="~/images/purple.svg" class="rounded-circle" style="border: 2px solid #542a7d; width: 48px; height: 48px; background-color: white;" data-toggle="tooltip" title="@user.DisplayName (You)" /></a>
+                                                                }
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-white text-center" style="vertical-align: top;">
+                                                        <a class="tok-link" asp-controller="User" asp-action="UserProfile" asp-route-id="@User.GetUserId()" style="color: white;">@user.DisplayName</a><br />
+                                                        <small style="font-size: 11px; left: 42.5%; position: absolute;">Royalty Title</small>
+                                                    </td>
+                                                    <td width="24px">
+                                                        <i class="flag-icon flag-icon-@user.Country" style="position: absolute; top: 4px;"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row no-gutters" style="height: 48px;">
+                                    <div class="col-md-12 center-content flexFont" id="stickerContent_preview" style="text-align: center;">
+
+                                    </div>
+                                    <div class="col-md-12 center-content flexFont" id="stickerbtnContent_preview" style="text-align: center;">
+                                        <a href="javascript:void(0)"><h6 style="padding: 4px 16px;margin-bottom: 0px; border: 1px dashed #121212;color: white;">+ Add Sticker</h6></a>
+                                    </div>
+                                </div>
+                                <div class="row no-gutters" style="height: 52%">
+                                    <div class="col-md-12 center-content flexFont" style="text-align: center;align-items: flex-start;padding-top: 21px;">
+                                        <h5 class="text-white line-clamp-5 txtBodyContent_Preview" style="max-height: 142px; overflow: hidden">Primary Text Field</h5>
+                                    </div>
+                                </div>
+                                <div class="row no-gutters text-white" style="font-size: 14px;">
+                                    <div class="col-md-12">
+                                        <table style="width: 100%; table-layout: auto;">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="row no-gutters flexFont">
+                                                            <div class="col text-center txtCategory_Preview">
+                                                                Category
+                                                            </div>
+                                                            <div class="col text-center">
+                                                                <span><span class="txtTokGroup_Preview">Tok Group</span> - <span class="txtTokType_Preview">Tok Type</span></span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tok Tile with Image -->
+                            <div class="col-md-12 tok-tile" id="tokTilewithImage_Preview" style="max-width: 304px;background-color: white; border: 1px solid #808080;cursor: pointer;display:none;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-12">
+                                        <div class="img-container" style="height: 164px;">
+                                            <img class="cropped" id="txtTokTileImage_Preview" src="" />
+                                        </div>
+                                        <i class="flag-icon flag-icon-@user.Country" style="position: absolute; top: 0; right: 0"></i>
+                                    </div>
+                                </div>
+                                <div class="row no-gutters">
+                                    <div class="col-md-12 center-content flexFont" style="text-align: center; padding-top: 12px;">
+                                        <h5 class="line-clamp txtBodyContent_Preview" style="max-height: 48px; overflow: hidden;">Primary Text Field</h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="row no-gutters flexFont">
+                                            <div class="col text-center txtCategory_Preview">
+                                                Category
+                                            </div>
+                                            <div class="col text-center txtTokType_Preview">
+                                                <span><span class="txtTokGroup_Preview">Tok Group</span> - <span class="txtTokType_Preview">Tok Type</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button type="button" id="btnPreviewFullTok" class="btn btn-primary" style="padding: 5px;" onclick="OpenDialog($('#bodyContentContainer'))">Preview Info</button>
+                            <button type="button" id="btnPreviewTokCard" class="btn btn-primary" style="padding: 5px;">Preview Card</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="tokCardItem" class="tokviewitem card custom-card">
+                                    <!--Tok Section-->
+                                    <div class="front center-content rounded-corner" style="background-color: #fff">
+                                        <div class="text-center">
+                                            <h4 class="txtBodyContent_CardPreview">Primary Field Text</h4>
+                                        </div>
+                                        <h6 class="card-hint">Click to flip</h6>
+                                    </div>
+                                    <div class="back rounded-corner">
+                                        <div class="p-4">
+                                            <div class="col-md-12 text-center center-content">
+                                                <h2 class="txtSecondaryField_Preview">Secondary Field Text</h2>
+                                                <span class="txtDetail1_Preview hide"></span>
+                                                <span class="txtDetail2_Preview hide"></span>
+                                                <span class="txtDetail3_Preview hide"></span>
+                                                <span class="txtDetail4_Preview hide"></span>
+                                                <span class="txtDetail5_Preview hide"></span>
+                                                <span class="txtDetail6_Preview hide"></span>
+                                                <span class="txtDetail7_Preview hide"></span>
+                                                <span class="txtDetail8_Preview hide"></span>
+                                                <span class="txtDetail9_Preview hide"></span>
+                                                <span class="txtDetail10_Preview hide"></span>
+                                                <label class="txtCategory_Preview hide"></label>
+
+                                            </div>
+                                            <div class="img-container hide" id="txtTokCardImage_Preview">
+                                                <a href="#" class="image-popup-no-margins">
+                                                    <img class="cropped" src="" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <h6 class="card-hint">Click to flip</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="container bg-light">
+                        <div class="row">
+                            <div class="col-12 text-left" style="padding-top:0px !important; padding-bottom:0px !important;">
+                                <h2>Add Tok</h2>
+                                <h6><span class="badge badge-secondary">Add a tok to the Tokkepedia knowledge app</span></h6>
+                                @*<a class="nav-link" asp-area="" asp-controller="Tok" asp-action="addmultipletoks">Click here to add multiple toks at once:</a>*@
+                            </div>
+                        </div>
+
+                        <form id="frmAddTok" asp-action="AddTok" asp-controller="Tok" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+                            @Html.AntiForgeryToken()
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <input type="hidden" asp-for="Tok.TokGroup" id="TokGroup" />
+                            <input type="hidden" asp-for="Tok.TokType" id="TokType" />
+                            <input type="hidden" asp-for="Tok.IsDetailBased" id="DetailBased" />
+                            <input type="hidden" asp-for="Tok.HasAnswerField" id="txtHasAnswerField" value="False" />
+                            <input type="hidden" asp-for="Tok.AnswerFieldNumber" id="txtAnswerFieldNumber" value="-1" />
+                            <input type="hidden" asp-for="Tok.PrimaryFieldName" id="PrimaryFieldName" value="Primary Field" />
+                            <input type="hidden" asp-for="Tok.SecondaryFieldName" id="SecondaryFieldName" value="Secondary Field" />
+                            <input type="hidden" asp-for="TokGroupDataString" id="TokGroupDataString" />
+                            <input type="hidden" asp-for="Base64Image" value="" />
+
+                            @Html.Hidden("PrimaryLimit")
+                            @Html.Hidden("SecondaryLimit")
+
+                            @Html.Hidden("RequiredFieldCount")
+                            @Html.Hidden("GetSubtypes")
+                            <div class="row">
+                                <div class="col-md-12 order-md-1">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <hr />
+                                            <h4 class="mb-3">Enter the Tok info</h4>
+
+                                            @*Section 1 - Categorical*@
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="country">Tok Group</label>
+                                                    @Html.DropDownList("SelectGroup", tokGroupList, null, new { @class = "custom-select d-block w-100", id = "SelectGroup" })
+                                                    <div class="invalid-feedback">
+                                                        Please select a Tok Group.
+                                                    </div>
+
+                                                    <ul class="list-group mb-3">
+                                                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                                            <div class="w-100">
+                                                                <div class="speech-bubble center">
+                                                                    <small id="TokGroupDesc" style="color:white!important;">Please select a Tok Group</small>
+                                                                </div>
+                                                            </div>
+                                                            <img id="TokGroupTokstar" src="~/images/tokstargirl1.jpg" alt="" class="mr-2 rounded-circle center"
+                                                                 style="max-height:60px!important; max-width:60px!important; margin-left:0.5em!important; margin-right:0!important;">
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="country">Tok Type</label>
+                                                    @Html.DropDownList("SelectType", tokTypeList, null, new { @class = "custom-select d-block w-100", id = "SelectType" })
+                                                    <div class="invalid-feedback">
+                                                        Please select a Tok Type.
+                                                    </div>
+
+                                                    <ul class="list-group mb-3">
+                                                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                                            <div>
+                                                                @*<h6 id="TokTypeName" class="my-0">Tok Type</h6>*@
+                                                                <small id="TokTypeDesc" class="text-muted"></small>
+                                                                <br /><br />
+                                                                <small id="TokTypeExam" class="text-muted" style="line-height:0.75!important; font-size:65%!important;">---</small>
+                                                            </div>
+                                                            <small class="text-muted" style="cursor:pointer;"><u><a id="BtnExam">Example</a></u></small>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label>Category</label>
+                                                    <input asp-for="Tok.Category" type="text" class="form-control" id="txtCategory" placeholder="" value="" maxlength="50" required>
+                                                    <h6 id="lblCategoryNum"></h6>
+                                                    <div class="invalid-feedback">
+                                                        Valid category is required.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @*Section 2 - Fields*@
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="mb-3">
+                                                        <label id="PrimaryFieldLabel">Primary Field</label>
+                                                        <input asp-for="Tok.PrimaryFieldText" type="text" class="form-control" id="txtPrimary" placeholder="" value="" required>
+                                                        <h6 id="lblPrimaryNum"></h6>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a valid value.
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3" id="SecondaryFieldSection">
+                                                        <label id="SecondaryFieldLabel">Secondary Field</label>
+                                                        <input asp-for="Tok.SecondaryFieldText" type="text" class="form-control" id="txtSecondary" placeholder="" value="" required>
+                                                        <h6 id="lblSecondaryNum"></h6>
+                                                        <div class="invalid-feedback">Please enter a valid value.</div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <div class="custom-checkbox style-2" id="chkEnglish">
+                                                        <input id="ChkEnglish" type="checkbox" class="" asp-for="Tok.IsEnglish" checked>
+                                                        <label class="custom-control-label" for="ChkEnglish">Is this tok in English? (Uncheck the box if no)</label><br />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-12">
+                                                <div class="mb-3" id="LanguageSection" style="display:none;">
+                                                    <label id="LanguageLabel">Language/Dialect</label>
+                                                    <input asp-for="Tok.Language" type="text" class="form-control" id="txtLanguage" placeholder="" maxlength="25" value="">
+                                                    <h6 id="lblLanguage"></h6>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a valid value.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12" id="EnglishSection">
+                                                <div class="mb-3" id="EnglishPrimaryFieldSection">
+                                                    <label id="EnglishPrimaryFieldLabel">Primary Field - English Translation</label>
+                                                    <input asp-for="Tok.EnglishPrimaryFieldText" type="text" class="form-control" id="txtEnglishPrimary" placeholder="" value="">
+                                                    <h6 id="lblEnglishPrimaryNum"></h6>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a valid value.
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3" id="EnglishSecondaryFieldSection">
+                                                    <label id="EnglishSecondaryFieldLabel">Secondary Field - English Translation</label>
+                                                    <input asp-for="Tok.EnglishSecondaryFieldText" type="text" class="form-control" id="txtEnglishSecondary" placeholder="" value="">
+                                                    <h6 id="lblEnglishSecondaryNum"></h6>
+                                                    <div class="invalid-feedback">Please enter a valid value.</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3" id="RequiredFieldsSection">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="mb-3" id="DetailsSection">
+                                                @for (int i = 0; i < 10; ++i)
+                                                {
+                                                    string iNum = (i + 1).ToString(), baseName = "Detail" + iNum, inputName = "txt" + baseName, counterName = "lbl" + baseName + "Num";
+                                                    <div id="divDetail@(iNum)" class="@(i >= 3 ? "hide" : "")" style="position: relative;">
+                                                        <label id="@baseName" class="lblTitle">Detail @iNum</label>
+                                                        @if (i == 0)
+                                                        {<label style="float:right;">Answer Field</label>}
+                                                        @if (i >= 3)
+                                                        {<span class="text-muted">(Optional)</span>}
+                                                        @if (i < 3)
+                                                        {
+                                                            <input asp-for="Tok.Details[i]" type="text" class="form-control" id="@inputName" placeholder="" value="" required style="width: 95%">
+                                                            <input type="checkbox" class="chkIsAnswer" style="position: absolute; right: 5px; top: 45px;" data-isOptional="false" data-counter="@iNum" onchange="ChangeToAnswer(this, $('#divDetail@(iNum)'), @iNum)" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input asp-for="Tok.Details[i]" type="text" class="form-control" id="@inputName" placeholder="" value="" style="width: 95%">
+                                                            <input type="checkbox" class="chkIsAnswer" style="position: absolute; right: 5px; top: 44px;" data-isOptional="true" data-counter="@iNum" onchange="ChangeToAnswer(this, $('#divDetail@(iNum)'), @iNum)" />
+                                                            <i class="fas fa-times btnRemoveDetail" data-toggle="tooltip" title="Remove Detail" style="position: absolute; color: red; font-size: 24px;top: 55%; left: -24px; cursor: pointer;" onclick="RemoveDetail(@iNum)"></i>
+                                                        }
+                                                        <h6 id="@counterName"></h6>
+                                                        @if (i < 3)
+                                                        {<div class="invalid-feedback">Please enter a valid value.</div>}
+                                                    </div>
+                                                }
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-primary form-control" id="btnAddMoreDetail">+ Add Detail</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+
+                                            <div class="mb-3" id="EnglishDetailsSection">
+                                                @for (int i = 0; i < 10; ++i)
+                                                {
+                                                    string iNum = (i + 1).ToString(), baseName = "EnglishDetail" + iNum, inputName = "txt" + baseName, counterName = "lbl" + baseName + "Num";
+                                                    <div id="divEnglishDetail@(iNum)" class="@(i >= 3 ? "hide" : "")" style="position: relative;">
+                                                        <label id="@baseName" class="lblTitle">Detail @iNum - English Translation</label>
+                                                        @if (i >= 3)
+                                                        {<span class="text-muted">(Optional)</span>}
+                                                        @if (i < 3)
+                                                        {<input asp-for="Tok.EnglishDetails[i]" type="text" class="form-control" id="@inputName" placeholder="" value="">}
+                                                        else
+                                                        {
+                                                            <input asp-for="Tok.EnglishDetails[i]" type="text" class="form-control" id="@inputName" placeholder="" value="">
+                                                        }
+                                                        <h6 id="@counterName"></h6>
+                                                        @if (i < 3)
+                                                        {<div class="invalid-feedback">Please enter a valid value.</div>}
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="height: 64px;">
+                                        <div class="col-md-12 center-content" id="stickerContent" style="justify-content: flex-start;display:none;">
+                                        </div>
+                                        <div class="col-md-12 center-content" id="stickerbtnContent" style="justify-content: flex-start;">
+                                            <a href="javascript:void(0)" class="btnAddSticker" data-toggle="modal" data-target="#sticker-modal">
+                                                <h6 style="padding: 4px 16px;margin-bottom: 0px; border: 1px dashed #121212;">@(!string.IsNullOrEmpty(Model.Tok?.Sticker) ? "+ Replace Sticker" : "+ Add Sticker")</h6>
+                                            </a>
+                                            <input asp-for="Tok.Sticker" type="text" class="" id="txtSticker" placeholder="" style="display:none;" value="">
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                                        <img id="TokGroupTokstar" src="~/images/tokstargirl2.jpg" alt="" class="mr-2 rounded-circle"
+                                             style="max-height:36px!important; max-width:36px!important; margin-left:0!important; margin-right:0.2em!important;">
+                                        <strong>Tip:</strong> To add more info, use the Notes field below or additional toks
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="mb-3" id="NotesSection">
+                                        <label id="NotesLabel">Notes <span class="text-muted">(2000 characters max)</span></label>
+                                        <textarea asp-for="Tok.Notes" type="text" class="form-control" id="txtNotes" placeholder="" value="" maxlength="2000" rows="5"></textarea>
+                                        <h6 id="lblNotesNum"></h6>
+                                        <div class="invalid-feedback">Please enter a valid value.</div>
+                                    </div>
+
+                                    <h4>Image</h4>
+                                    <p class="lead">Select a PNG or JPEG image, max size <span id="max-size"></span> KB (optional)</p>
+                                    <div id="image-preview-div" style="display: none">
+                                        <label for="exampleInputFile">Selected image:</label>
+                                        <br>
+                                        <img id="preview-img" src="">
+                                    </div>
+                                    <br />
+                                    <div class="col-md-3 mb-3">
+                                        <label class="btn btn-block btn-primary">
+                                            Browse&hellip; <input type="file" name="pic" id="pic" style="display: none;">
+                                        </label>
+                                    </div>
+                                    <div id="message"></div>
+
+                                    <button class="btn btn-primary btn-lg btn-block" type="button" id="BtnSubmit">Add Tok</button>
+
+                                    <br />
+                                    <div class="mb-3" id="OptionalFieldsSection">
+                                    </div>
+
+                                    <hr class="mb-4">
+
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stickers Modal -->
+    <div class="modal fade" id="sticker-modal" tabindex="-1" role="dialog" aria-labelledby="sticker-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="nav-item nav-link active"><a href="#myStickers" data-toggle="tab" class="tabMySticker"><h5 style="margin-bottom: 0px;">My Stickers</h5></a></li>
+                        <li class="nav-item nav-link"><a href="#stickerShop" data-toggle="tab" class="tabStickerShop"><h5 style="margin-bottom: 0px;">Shop</h5></a></li>
+                    </ul>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="myStickers">
+                                    <div class="center" id="myStickersContainerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokContainer" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="myStickersContainer" class="row no-gutters">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <h5>Selected: <span class="txtSelectedStickerName"></span></h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center moreProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="stickerShop">
+                                    <div class="center shopContainerProgress" style="margin: 24px auto">
+                                        <div class="colorlib-load"></div>
+                                    </div>
+                                    <div id="tokCardContainer" style="margin-top: 1em !important;">
+                                        <div class="container">
+                                            <div id="stickerShopContainer" class="row no-gutters">
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <h5>Selected: <span class="txtSelectedStickerName"></span></h5>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="justify-content-center" style="align-content:center!important;">
+                                                        <div class="justify-content-center moreProgress" style="display:none; height:200px; width:200px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="col-md-12" style="text-align: center;">
+                        <button type="button" class="btn btn-primary" id="btnSelect" disabled style="font-size: 24px" data-stickerid="0" data-stickerurl="" data-selecttype="0" data-mode="0">Select</button>
+                        <button type="button" class="btn btn-secondary btn-danger" id="btnQuit" style="font-size: 24px" data-dismiss="modal">Quit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Dialog Modal -->
+    <div class="full-dialog">
+        <div class="header">
+            <i class="fas fa-arrow-left fd-close" onclick="CloseDialog(this)"></i>
+            <h4 class="text-white" style="margin-bottom: 0px;">Tok Info</h4>
+        </div>
+        <div class="body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <div id="tokviewitem" class="col-md-12 tokviewitem">
+
+                            <!--Tok Section-->
+                            <div id="section" class="tokviewsection">
+                                <div class="row tokviewrow">
+                                    <div class="col-md-12 tokviewcol" style="margin-right:0px;">
+                                        @*class="media text-muted pt-3"*@
+                                        @if (user.IsAvatarProfilePicture ?? false)
+                                        {
+                                            <img src="@PurchasesTool.GetProduct(user.SelectedAvatar).Image" alt="" class="mr-2 rounded" style="margin-right:0.8em!important; height:32px!important; width:32px!important;">
+                                        }
+                                        else
+                                        {
+                                            if (!String.IsNullOrEmpty(user.UserPhoto))
+                                            {<img src="@user.UserPhoto" alt="" class="mr-2 rounded" style="margin-right:0.8em!important; height:32px!important; width:32px!important;"> }
+                                            else
+                                            { <img src="~/images/purple.svg" alt="" class="mr-2 rounded" style="margin-right:0.8em!important; height:32px!important; width:32px!important;">}
+                                        }
+                                        <a asp-controller="User" asp-action="UserProfile" asp-route-id="@user.Id" style="font-size:small!important; color:#212529!important;"><b>@Html.DisplayFor(modelItem => user.DisplayName)</b></a> - <span style="margin-right:0.8em!important;">Today</span>
+                                        <div class="float-right" style="display:inline">
+                                            <div class="dropdown">
+                                                <a class="float-left" href="#" style="font-size:small; margin-right:1em!important;">More Info</a>
+                                                <a class="dropdown-toggle float-left" data-toggle="dropdown" href="javascript:void(0)" style="font-size:small;">
+                                                    Actions
+                                                    @*<img id="btnOptions-@Model.Id" class="darkdroparrow float-right" title="Actions" style="vertical-align: middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAr0lEQVR4Ae3QMQoCUQxF0b8Eewu3aWe6WaYI7mOcYlKnihg8B1794K5OAAAAAAAAAJf5X322Y69j19Xven5tk+Ls57ojZZz828bE6YhUxMk9BsTpi1TEyd3XD4pje3ekIk4uVpofqT/O/Ej9caZGGhBnQKRbf5yZkTLOuz/OzEj9cQZH6o8zOFJ/nMGRnv1x5kf66zgpxKmFOLUQpxZ1HKKOQ9RxiO/HAQAAAAAAAD4InAzw7Wf/twAAAABJRU5ErkJggg==">*@
+                                                </a>
+
+                                                <div class="dropdown-menu">
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <br />
+
+                                        <div style="margin-top:0.5em!important; margin-bottom:0em!important;"><strong style="font-weight:700!important; font-size:large!important;">@(Model.Tok?.PrimaryFieldText ?? string.Empty)</strong></div>
+
+                                        @* This one needs to have a checker if not a detailed based it will show the secondary field text if not empty *@
+                                        <span style="color:black; font-size:small!important; line-height:1.25;">@Html.DisplayFor(modelItem => Model.Tok.SecondaryFieldText)</span>
+
+                                        @* This is for detailed based tok only *@
+                                        @for (int i = 0; i < 10; ++i)
+                                        {
+                                            string iNum = (i + 1).ToString(), baseName = "EnglishDetail" + iNum, inputName = "txt" + baseName, counterName = "lbl" + baseName + "Num";
+
+                                            if (!String.IsNullOrEmpty(Model.Tok?.Details[i]))
+                                            {
+                                                <input type="hidden" id="detailtext@(i+1)-@Model.Tok?.Id" value="@Model.Tok?.Details[i]" />
+                                                <b>@(Model.Tok?.HasAnswerField ?? false ? (Model.Tok?.AnswerFieldNumber == i ? "Answer:" : "• ") : "• ")</b> <span>@Model.Tok?.Details[i]</span>
+                                                <br />
+
+
+                                                <span class="reactiondetail">
+                                                    @if (User != null)
+                                                    {
+                                                        if (User.Identity.IsAuthenticated)
+                                                        {
+                                                            <a id="check@(i+1)-@Model.Tok?.Id" name="@(i+1)" style="margin-left: 48px;" class="checkbtn" data-toggle="modal" data-target="#accuratedetail-@Model.Tok?.Id-modal" href="javascript:void(0)">
+                                                                <i id="btncheck@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                                            </a>
+
+                                                            <a id="x@(i+1)-@Model.Tok?.Id" name="@(i+1)" class="xbtn" data-toggle="modal" data-target="#inaccuratedetail-@Model.Tok?.Id-modal" href="javascript:void(0)">
+                                                                <i id="btnx@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn xbtn">close</i>
+                                                            </a>
+
+                                                            <a id="msg@(i+1)-@Model.Tok?.Id" name="@(i+1)" class="msgbtn" data-toggle="modal" data-target="#commentdetail-@Model.Tok?.Id-modal" href="javascript:void(0)">
+                                                                <i id="btncomment@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn">comment_outline</i>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a id="check@(i+1)-@Model.Tok?.Id" name="@(i+1)" style="margin-left: 48px;" class="checkbtn" data-toggle="modal" href="javascript:void(0)" onclick=RequireLogin('Accurate')>
+                                                                <i id="btncheck@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                                            </a>
+
+                                                            <a id="x@(i+1)-@Model.Tok?.Id" name="@(i+1)" class="xbtn" href="javascript:void(0)" onclick=RequireLogin('Inaccurate')>
+                                                                <i id="btnx@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn xbtn">close</i>
+                                                            </a>
+
+                                                            <a id="msg@(i+1)-@Model.Tok?.Id" name="@(i+1)" class="msgbtn" href="javascript:void(0)" onclick=RequireLogin('Comment')>
+                                                                <i id="btncomment@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn">comment_outline</i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <a id="check@(i+1)-@Model.Tok?.Id" name="@(i+1)" style="margin-left: 48px;" class="checkbtn" data-toggle="modal" href="javascript:void(0)" onclick=RequireLogin('Accurate')>
+                                                            <i id="btncheck@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                                        </a>
+
+                                                        <a id="x@(i+1)-@Model.Tok?.Id" name="@(i+1)" class="xbtn" href="javascript:void(0)" onclick=RequireLogin('Inaccurate')>
+                                                            <i id="btnx@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn xbtn">close</i>
+                                                        </a>
+
+                                                        <a id="msg@(i+1)-@Model.Tok?.Id" name="@(i+1)" class="msgbtn" href="javascript:void(0)" onclick=RequireLogin('Comment')>
+                                                            <i id="btncomment@(i+1)-@Model.Tok?.Id" class="material-icons reactionbtn">comment_outline</i>
+                                                        </a>
+                                                    }
+
+
+                                                    @Html.ActionLink("View Reactions", "TokDetailReactions", new { id = Model.Tok?.Id, detailNum = (i + 1)},
+                                                   new { style = "color:#633991!important; font-size: 12px", target = "_blank" })
+                                                </span>
+
+                                                <br />
+                                            }
+                                        }
+
+                                        @* This is for Category if there's no secondary field *@
+                                        <span>@Model.Tok?.Category</span>
+                                        <br />
+
+                                        <!--English Translation-->
+                                        <!-- For Tok Image -->
+                                        <div class="img-container">
+                                            <a href="@Model.Tok?.Image" class="image-popup-no-margins" id="img-@Model.Tok?.Id">
+                                                <img class="cropped" src="@Model.Tok?.Image" />
+                                            </a>
+                                        </div>
+
+                                        @*
+                                            @if (!Model.Tok?.IsEnglish)
+                                            {
+                                                PrimaryName += " - English Translation"; SecondaryName += " - English Translation";
+
+                                                @if (!String.IsNullOrEmpty(Model.Tok?.EnglishPrimaryFieldText))
+                                                {
+                                                    <div style="margin-top:0.5em!important; margin-bottom:0em!important;"><strong style="font-weight:700!important; font-size:small!important;">@Model.Tok?.EnglishPrimaryFieldText</strong></div>
+                                                }
+
+                                                @if (Model.Tok?.IsDetailBased == false && !String.IsNullOrEmpty(Model.Tok?.EnglishSecondaryFieldText))
+                                                {
+                                                    <span style="color:black; font-size:small!important; line-height:1.25;">@Html.DisplayFor(modelItem => Model.Tok?.EnglishSecondaryFieldText)</span>
+                                                }
+                                                else if (Model.Tok?.IsDetailBased == true)
+                                                {
+                                                    @for (int i = 0; i < 5; ++i)
+                                                    {
+                                                        if (!String.IsNullOrEmpty(Model.Tok?.EnglishDetails[i]))
+                                                        {
+                                                            <input type="hidden" id="englishdetailtext@(i+1)-@Model.Tok?.Id" value="@Model.Tok?.EnglishDetails[i]" />
+                                                            @Html.Raw("• ") @Html.DisplayFor(modelItem => Model.Tok?.EnglishDetails[i])
+                                                            <br />
+                                                        }
+                                                    }
+
+                                                }
+                                                <br />
+                                            }
+
+
+                                            <br />
+                                            <div class="card reactioncard" style="border:0px;">
+                                                <strong class="d-block text-gray-dark card-body" style="color:black; padding:0em;">
+                                                    <span class="float-left" style="display:inline-block!important;">
+                                                        <span class="float-right" style="font-size:xx-small; margin-right:0.8em!important;">
+                                                            @if (!String.IsNullOrEmpty(Model.Tok?.TokType))
+                                                            {
+                                                                <u>Tok Type</u><br />@Html.ActionLink(Model.Tok?.TokType, "TokType", "Tok", new { id = Model.Tok?.TokTypeId }, new { style = "color:#633991!important;" })
+                                                            }
+                                                        </span>
+                                                        <span class="float-right" style="font-size:xx-small; margin-right:0.8em!important;">
+                                                            @if (!String.IsNullOrEmpty(Model.Tok?.TokGroup))
+                                                            {
+                                                                <u>Tok Group</u><br />@Html.ActionLink(Model.Tok?.TokGroup, "TokGroup", "Tok", new { name = Model.Tok?.TokGroup }, new { style = "color:#633991!important;" })
+                                                            }
+                                                        </span>
+                                                        <span class="float-right align-content-sm-center" style="font-size:xx-small; margin-right:0.8em!important;">
+                                                            @if (!String.IsNullOrEmpty(Model.Tok?.Category))
+                                                            {
+                                                                <u>Category</u><br />@Html.ActionLink(Model.Tok?.Category, "Category", "Home", new { id = Model.Tok?.CategoryId }, new { style = "color:#633991!important;" })
+                                                            }
+                                                        </span>
+                                                    </span>
+                                                </strong>
+                                                <div class="row reactioncontainer" style="padding-top:0.5em; padding-bottom:0em; padding-left:0.75em; padding-right:0em; justify-content:flex-start!important;">
+                                                    @if (User != null)
+                                                    {
+                                                        if (User.Identity.IsAuthenticated)
+                                                        {
+                                                            bool ownLike = false;
+                                                            bool ownDislike = false;
+                                                            bool ownAccurate = false;
+                                                            bool ownInaccurate = false;
+                                                            bool ownComment = false;
+                                                            var userId = User.GetUserId();
+
+                                                            ownLike = (Model.Tok?.OwnReactions?.Likes?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                                            ownDislike = (Model.Tok?.OwnReactions?.Dislikes?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                                            ownAccurate = (Model.Tok?.OwnReactions?.Accurates?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                                            ownInaccurate = (Model.Tok?.OwnReactions?.Inaccurates?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                                            ownComment = (Model.Tok?.OwnReactions?.Comments?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+
+                                                            <a id="like-@Model.Tok?.Id" class="likebtn @(ownLike ? "active" : "")" data-tokid="@Model.Tok?.Id" data-type="like" data-activityId="@Model.Tok?.ActivityId" data-itemUser="@Model.Tok?.UserId" data-categoryId="@Model.Tok?.CategoryId" data-tokTypeId="@Model.Tok?.TokTypeId" onclick="SendReaction(this)" data-toggle="tooltip" data-placement="top" title="@(ownLike ? "Remove Like" : "Like")">
+                                                                <i id="btnlike-@Model.Tok?.Id" class="material-icons reactionbtn">thumb_up</i>
+                                                                <span id="lbllike-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Likes</span>
+                                                                <div class="center loading hide">
+                                                                    <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                                                </div>
+                                                            </a>
+
+                                                            <a id="dislike-@Model.Tok?.Id" class="dislikebtn @(ownDislike ? "active" : "")" data-tokid="@Model.Tok?.Id" data-type="dislike" data-activityId="@Model.Tok?.ActivityId" data-itemUser="@Model.Tok?.UserId" data-categoryId="@Model.Tok?.CategoryId" data-tokTypeId="@Model.Tok?.TokTypeId" onclick="SendReaction(this)" data-toggle="tooltip" data-placement="top" title="@(ownDislike ? "Remove Dislike" : "Dislike")">
+                                                                <i id="btndislike-@Model.Tok?.Id" class="material-icons reactionbtn">thumb_down</i>
+                                                                <span id="lbldislike-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Dislikes</span>
+                                                                <div class="center loading hide">
+                                                                    <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                                                </div>
+                                                            </a>
+
+                                                            <a id="check-@Model.Tok?.Id" class="checkbtn @(ownAccurate ? "active" : "")" data-tokid="@Model.Tok?.Id" data-type="accurate" data-activityId="@Model.Tok?.ActivityId" data-itemUser="@Model.Tok?.UserId" data-categoryId="@Model.Tok?.CategoryId" data-tokTypeId="@Model.Tok?.TokTypeId" data-toggle="modal" data-target="#accurate-@Model.Tok?.Id-modal" href="javascript:void(0)" data-placement="top" title="Accurate">
+                                                                <i id="btncheck-@Model.Tok?.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                                                <span id="lblcheck-@Model.Tok?.Id" class="reactionlbl checkbtn">@Model.Tok?.Accurates</span>
+                                                                <div class="center loading hide">
+                                                                    <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                                                </div>
+                                                            </a>
+
+                                                            <a id="x-@Model.Tok?.Id" class="xbtn @(ownInaccurate ? "active" : "")" data-tokid="@Model.Tok?.Id" data-type="inaccurate" data-activityId="@Model.Tok?.ActivityId" data-itemUser="@Model.Tok?.UserId" data-categoryId="@Model.Tok?.CategoryId" data-tokTypeId="@Model.Tok?.TokTypeId" data-toggle="modal" data-target="#inaccurate-@Model.Tok?.Id-modal" href="javascript:void(0)" data-placement="top" title="Inaccurate">
+                                                                <i id="btnx-@Model.Tok?.Id" class="material-icons reactionbtn xbtn">close</i>
+                                                                <span id="lblx-@Model.Tok?.Id" class="reactionlbl xbtn">@Model.Tok?.Inaccurates</span>
+                                                                <div class="center loading hide">
+                                                                    <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                                                </div>
+                                                            </a>
+
+                                                            <a id="msg-@Model.Tok?.Id" class="msgbtn @(ownComment ? "active" : "")" data-tokid="@Model.Tok?.Id" data-type="comment" data-activityId="@Model.Tok?.ActivityId" data-itemUser="@Model.Tok?.UserId" data-categoryId="@Model.Tok?.CategoryId" data-tokTypeId="@Model.Tok?.TokTypeId" data-toggle="modal" data-target="#comment-@Model.Tok?.Id-modal" href="javascript:void(0)" data-placement="top" title="Comment">
+                                                                <i id="btncomment-@Model.Tok?.Id" class="material-icons reactionbtn">comment_outline</i>
+                                                                <span id="lblcomment-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Comments</span>
+                                                                <div class="center loading hide">
+                                                                    <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                                                </div>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a id="like-@Model.Tok?.Id" class="likebtn" data-groupid="@Model.Tok?.Id" onclick=RequireLogin('Like') data-toggle="tooltip" data-placement="top" title="Like">
+                                                                <i id="btnlike-@Model.Tok?.Id" class="material-icons reactionbtn">thumb_up</i>
+                                                                <span id="lbllike-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Likes</span>
+                                                            </a>
+
+                                                            <a id="dislike-@Model.Tok?.Id" class="dislikebtn" onclick=RequireLogin('Dislike') data-toggle="tooltip" data-placement="top" title="Dislike">
+                                                                <i id="btndislike-@Model.Tok?.Id" class="material-icons reactionbtn">thumb_down</i>
+                                                                <span id="lbldislike-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Dislikes</span>
+                                                            </a>
+
+                                                            <a id="check-@Model.Tok?.Id" class="checkbtn" onclick=RequireLogin('Accurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Accurate">
+                                                                <i id="btncheck-@Model.Tok?.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                                                <span id="lblcheck-@Model.Tok?.Id" class="reactionlbl checkbtn">@Model.Tok?.Accurates</span>
+                                                            </a>
+
+                                                            <a id="x-@Model.Tok?.Id" class="xbtn" onclick=RequireLogin('Inaccurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Inaccurate">
+                                                                <i id="btnx-@Model.Tok?.Id" class="material-icons reactionbtn xbtn">close</i>
+                                                                <span id="lblx-@Model.Tok?.Id" class="reactionlbl xbtn">@Model.Tok?.Inaccurates</span>
+                                                            </a>
+
+                                                            <a id="msg-@Model.Tok?.Id" class="msgbtn" onclick=RequireLogin('Comment') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Comment">
+                                                                <i id="btncomment-@Model.Tok?.Id" class="material-icons reactionbtn">comment_outline</i>
+                                                                <span id="lblcomment-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Comments</span>
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <a id="like-@Model.Tok?.Id" class="likebtn" data-groupid="@Model.Tok?.Id" onclick=RequireLogin('Like') data-toggle="tooltip" data-placement="top" title="Like">
+                                                            <i id="btnlike-@Model.Tok?.Id" class="material-icons reactionbtn">thumb_up</i>
+                                                            <span id="lbllike-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Likes</span>
+                                                        </a>
+
+                                                        <a id="dislike-@Model.Tok?.Id" class="dislikebtn" onclick=RequireLogin('Dislike') data-toggle="tooltip" data-placement="top" title="Dislike">
+                                                            <i id="btndislike-@Model.Tok?.Id" class="material-icons reactionbtn">thumb_down</i>
+                                                            <span id="lbldislike-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Dislikes</span>
+                                                        </a>
+
+                                                        <a id="check-@Model.Tok?.Id" class="checkbtn" onclick=RequireLogin('Accurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Accurate">
+                                                            <i id="btncheck-@Model.Tok?.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                                            <span id="lblcheck-@Model.Tok?.Id" class="reactionlbl checkbtn">@Model.Tok?.Accurates</span>
+                                                        </a>
+
+                                                        <a id="x-@Model.Tok?.Id" class="xbtn" onclick=RequireLogin('Inaccurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Inaccurate">
+                                                            <i id="btnx-@Model.Tok?.Id" class="material-icons reactionbtn xbtn">close</i>
+                                                            <span id="lblx-@Model.Tok?.Id" class="reactionlbl xbtn">@Model.Tok?.Inaccurates</span>
+                                                        </a>
+
+                                                        <a id="msg-@Model.Tok?.Id" class="msgbtn" onclick=RequireLogin('Comment') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Comment">
+                                                            <i id="btncomment-@Model.Tok?.Id" class="material-icons reactionbtn">comment_outline</i>
+                                                            <span id="lblcomment-@Model.Tok?.Id" class="reactionlbl">@Model.Tok?.Comments</span>
+                                                        </a>
+                                                    }
+                                                    <div class="social-buttons d-none d-sm-block" data-rendered="0" style="position:absolute; right: 0px;">
+                                                        <div class="fb-share-button" style="vertical-align: super;" data-href="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Tok?.Id}")" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Tok?.Id}")&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+                                                        <a class="twitter-share-button"
+                                                           href="https://twitter.com/intent/tweet?text=Tokkepedia"
+                                                           data-size="large"
+                                                           data-url="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Tok?.Id}")">
+                                                            Tweet
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        *@
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="comments tokviewfeed" style="background-color: white;margin-top: 24px;">
+                            <div class="comment-wrap">
+                                <div class="photo">
+                                    <div class="avatar">
+                                        @if (User != null)
+                                        {
+                                            if (User.Identity.IsAuthenticated)
+                                            {
+                                                @if (user.IsAvatarProfilePicture ?? false)
+                                                {
+                                                    <img src="@PurchasesTool.GetProduct(user.SelectedAvatar).Image" style="border-radius: 50%" data-toggle="tooltip" title="@user.DisplayName (You)" />
+                                                }
+                                                else
+                                                {
+                                                    if (!string.IsNullOrEmpty(user.UserPhoto))
+                                                    {
+                                                        <img src="@user.UserPhoto" style="border-radius: 50%" data-toggle="tooltip" title="@user.DisplayName (You)" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/purple.svg" style="border-radius: 50%" data-toggle="tooltip" title="@user.DisplayName (You)" />
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <img src="~/images/purple.svg" style="border-radius: 50%" data-toggle="tooltip" title="Sign in to comment." />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/purple.svg" style="border-radius: 50%" data-toggle="tooltip" title="Sign in to comment." />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="comment-block row">
+                                    <form action="" class="col-12 comment-form" style="position: relative;padding: 0px; max-width: 800px">
+                                        <textarea class="form-control" name="" id="CommentText" cols="30" rows="1" placeholder="Sign in to comment..."></textarea>
+                                    </form>
+                                </div>
+                                <button type="button" class="btn btn-primary commentbtn float-right" disabled style="margin-bottom: 4px;">Comment</button>
+                            </div>
+                            <br /><hr />
+
+                            <div class="center" id="containerProgress" style="margin: 24px auto; display: none;">
+                                <div class="colorlib-load"></div>
+                            </div>
+                            <div class="commentContainer" style="margin-top: 1em !important;">
+
+                            </div>
+                            <div class="center">
+                                <button class="btn btn-primary btnLoadMoreComments">Load More Comments</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" class="txtActivityId hidden" value="" />
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/jquery.flip.js"></script>
+    <script src="~/js/AddTok.js"></script>
+    <script src="~/js/common.js"></script>
+    <script>
+        var userId = '@User.GetUserId()';
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        function ChangeToAnswer(e, div, cnt) {
+            var val = $(e).is(":checked");
+
+            $("#DetailsSection").find(".chkIsAnswer").each(function () {
+                if (e != this) {
+                    $(this).attr("checked", false);
+                    $(this).parent().find(".lblTitle").text("Detail " + $(this).attr("data-counter"));
+                    if ($(e).attr("data-isOptional")) {
+                        $(this).parent().find(".text-muted").text("(Optional)");
+                    }
+                    else {
+                        $(this).parent().find(".text-muted").text("");
+                    }
+                    $(this).parent().removeClass("answer-field");
+                    $(this).parent().css("padding", "0px");
+                    $(this).parent().css("border-radius", "0px");
+                }
+            });
+
+            $("#txtHasAnswerField").val(val);
+            if (val) {
+                $(div).find(".lblTitle").text("Answer");
+                if ($(e).attr("data-isOptional")) $(div).find(".text-muted").text("");
+                $(div).addClass("answer-field");
+                $(div).css("padding", "8px");
+                $(div).css("border-radius", "8px");
+                $("#txtAnswerFieldNumber").val(cnt - 1);
+            }
+            else {
+                $(div).find(".lblTitle").text("Detail " + cnt);
+                if ($(e).attr("data-isOptional")) $(div).find(".text-muted").text("(Optional)");
+                $(div).removeClass("answer-field");
+                $(div).css("padding", "0px");
+                $(div).css("border-radius", "0px");
+                $("#txtAnswerFieldNumber").val('');
+            }
+        }
+
+        $("#btnSelect").click(function () {
+            var stickerId = $(this).attr("data-stickerid");
+            var url = $(this).attr("data-stickerurl");
+            var selectType = $(this).attr("data-selecttype");
+            console.log(url);
+            if (stickerId != 0) {
+                $(this).attr("disabled", true);
+                var newSticker = $("<a>");
+                var newStickerImg = $("<img>");
+                newStickerImg.attr("src", url);
+                newStickerImg.css("height", "48px");
+                newSticker.addClass("btnAddSticker");
+                newSticker.attr("data-toggle", "modal");
+                newSticker.attr("data-target", "#sticker-modal");
+                newSticker.attr("data-stickerid", stickerId);
+                $("#txtSticker").val(stickerId);
+                newSticker.click(StickerClick());
+                newSticker.html(newStickerImg);
+                $("#stickerContent").show();
+                $("#stickerContent").html(newSticker);
+                $("#stickerContent_preview").show();
+                $("#stickerContent_preview").html(newStickerImg);
+                $("#stickerbtnContent").hide();
+                $("#sticker-modal").modal("hide");
+            }
+            else {
+                // No sticker selected
+            }
+        });
+
+        $("#btnPreviewTokCard").click(function () {
+            if ($("#tokCardItem").hasClass("hide")) {
+                $("#tokCardItem").removeClass("hide");
+            }
+            else {
+                $("#tokCardItem").addClass("hide");
+            }
+        });
+
+        $(".btnAddSticker").click(function () {
+            $("#sticker-modal").modal("toggle");
+            $("#btnSelect").attr("data-stickerid", $(this).attr("data-stickerid"));
+            var mode = $("#btnSelect").attr("data-mode");
+            var stickerId = $("#btnSelect").attr("data-stickerid");
+            $.ajax({
+                url: "/Tok/GetMyStickers?userId=" + userId + "&selected=" + stickerId,
+                type: "GET",
+                async: true,
+                success: function (ret) {
+                    $("#myStickersContainer").html(ret);
+                },
+                beforeSend: function () {
+                    $("#myStickersContainerProgress").show();
+                },
+                complete: function () {
+                    $("#myStickersContainerProgress").hide();
+                    if (mode == 0) {
+                        $(".txtSelectedStickerName").html("");
+                        $("#btnSelect").attr("disabled", true);
+                    }
+                    else { // Replace/Edit Mode
+                        $("#btnSelect").attr("disabled", false);
+                    }
+                }
+            });
+        });
+
+        function StickerClick() {
+            $("#sticker-modal").modal("toggle");
+            //$("#btnSelect").attr("data-tokid", $(this).attr("data-tokid"));
+            $("#btnSelect").attr("data-stickerid", $(this).attr("data-stickerid"));
+            var mode = $("#btnSelect").attr("data-mode");
+            var stickerId = $("#btnSelect").attr("data-stickerid");
+            $.ajax({
+                url: "/Tok/GetMyStickers?userId=" + userId + "&selected=" + stickerId,
+                type: "GET",
+                async: true,
+                success: function (ret) {
+                    $("#myStickersContainer").html(ret);
+                },
+                beforeSend: function () {
+                    $("#myStickersContainerProgress").show();
+                },
+                complete: function () {
+                    $("#myStickersContainerProgress").hide();
+                    if (mode == 0) {
+                        $(".txtSelectedStickerName").html("");
+                        $("#btnSelect").attr("disabled", true);
+                    }
+                    else { // Replace/Edit Mode
+                        $("#btnSelect").attr("disabled", false);
+                    }
+                }
+            });
+        }
+
+        function RemoveDetail(idx = 0) {
+            var cntr = $("#DetailsSection > div:not(.hide)").length - 1;
+            $("#divDetail" + idx).addClass("hide");
+            $("#divEnglishDetail" + idx).addClass("hide");
+            var lbl = $("#SecondaryFieldLabel").text();
+            var cnt = 1;
+            $("#DetailsSection > div:not(.hide)").each(function () {
+                $(this).find(".lblTitle").text(lbl + " " + cnt);
+                cnt += 1;
+            });
+            cnt = 1;
+            $("#EnglishDetailsSection > div:not(.hide)").each(function () {
+                $(this).find(".lblTitle").text(lbl + " " + cnt + " - English Translation");
+                cnt += 1;
+            });
+            if (cntr <= 10) $("#btnAddMoreDetail").show();
+        }
+
+        $(document).ready(function () {
+            $("#pageContainer").trigger("resize");
+            ApplyFlipCard();
+            ApplyMagnificPopup();
+            $("#tokCardItem").addClass("hide");
+
+            $(".tabMySticker").click(function () {
+                $("#btnSelect").text("Select");
+                $(".nav-item.nav-link").removeClass("active");
+                $(this).parent().addClass("active");
+            });
+
+            $("#btnAddMoreDetail").click(function () {
+                var cntr = $("#DetailsSection > div:not(.hide)").length - 1;
+                var hiddenCnt = $("#DetailsSection > div.hide").length;
+                if (cntr < 10) {
+                    if (hiddenCnt > 0) {
+                        $($("#DetailsSection > div.hide")[0]).removeClass('hide');
+                        $($("#EnglishDetailsSection > div.hide")[0]).removeClass('hide');
+                    }
+                    var lbl = $("#SecondaryFieldLabel").text();
+                    var cnt = 1;
+                    $("#DetailsSection > div:not(.hide)").each(function () {
+                        $(this).find(".lblTitle").text(lbl + " " + cnt);
+                        cnt += 1;
+                    });
+                    cnt = 1;
+                    $("#EnglishDetailsSection > div:not(.hide)").each(function () {
+                        $(this).find(".lblTitle").text(lbl + " " + cnt + " - English Translation");
+                        cnt += 1;
+                    });
+                }
+
+                if (hiddenCnt <= 1) {
+                    $(this).hide();
+                }
+            });
+
+            $(".tabStickerShop").click(function () {
+                $("#btnSelect").text("Buy and Select");
+                $(".nav-item.nav-link").removeClass("active");
+                $(this).parent().addClass("active");
+                $.ajax({
+                    url: "/Tok/GetStickersForSale",
+                    type: "GET",
+                    async: true,
+                    success: function (ret) {
+                        $("#stickerShopContainer").html(ret);
+                    },
+                    beforeSend: function () {
+                        $(".shopContainerProgress").show();
+                    },
+                    complete: function () {
+                        $(".shopContainerProgress").hide();
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,34 @@
+﻿@model ResultData<TokkepediaReaction>
+
+<div class="p-3 bg-white rounded box-shadow commentviewfeed" style="padding-left:0.2em!important;">
+    @Html.HiddenFor(model => model.Token, new { id = "Token" })
+    <div id="TokFeed" class="container-fluid commentviewfeed">
+        <input id="RenderedTokContent" type="hidden" value="" />
+        @if (Model != null)
+        {
+            foreach (TokkepediaReaction c in Model.Results)
+            {
+                @await Html.PartialAsync("CommentView", c)
+                <hr />
+            }
+        }
+    </div>
+
+    <div class="justify-content-center" style="align-content:center!important;">
+        <div id="progress" class="justify-content-center" style="display:none; height:200px; width:200px;">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // This is required to load the loading animation script
+    var animation = bodymovin.loadAnimation({
+        container: document.getElementById("progress"), // Required
+        path: window.location.origin + '/images/anim/trail_loading.json', //baseUrl + 'images/anim/trail_loading.json', // Required
+        renderer: 'svg', // Required
+        loop: true, // Optional
+        autoplay: true, // Optional
+        name: "" // Name for future reference. Optional.
+    });
+</script>  

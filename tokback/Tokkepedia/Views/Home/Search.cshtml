@@ -1,0 +1,337 @@
+﻿@model IndexViewModel
+@using System.Globalization;
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+
+    var keyword = string.Empty;
+    keyword = Context.Request.Query["text"];
+}
+
+@section Styles  {
+    <link type="text/css" rel="stylesheet" href="~/css/jquery-ui.css" />
+}
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white" id="extraSection">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md">
+                <div class="col-12 col-md header-spacing" id="pageContainer" style="padding-left: 0px; padding-right: 0px;">
+                    @*<br />
+                        <div class="row overview">
+                            <div class="col-sm-12 text-center">
+                                <h5 class="text-white">Search results for: <u>@Model.SearchText</u></h5>
+                            </div>
+                        </div>
+
+                        <div class="container">
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <!--left col-->
+
+                                    <ul class="list-group">
+                                        <li class="list-group-item text-muted">Filters <span id="togglefilterdisplay" class="badge badge-pill badge-info" style="cursor:pointer!important;">Click to collapse</span></li>
+
+                                        <li class="list-group-item text-right searchfilter">
+                                            Filter by Country<br /><br />
+                                            <div class="form-group">
+                                                @Html.DropDownListFor(model => model.Country, CountryList, "All", new { @class = "form-control", @id = "CountryFilter" })
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item text-right searchfilter">
+                                            Filter by Category<br /><br />
+                                            <div class="form-group">
+                                                <input asp-for="Category" type="text" class="form-control" id="TxtCategory" placeholder="" value="" maxlength="50" required>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item text-right searchfilter">
+                                            <a class="btn btn-primary btn-lg btn-block" href="javascript:void(0)" id="BtnApplyFilters">Apply Filters</a>
+                                        </li>
+                                    </ul>
+
+
+                                </div>
+                                <!--/col-3-->
+                                <div class="col-sm-9">
+
+                                    <ul class="nav nav-tabs" id="myTab">
+                                        <li class="nav-item nav-link active"><a href="#home" data-toggle="tab">Toks</a></li>
+                                        <li class="nav-item nav-link"><a id="categories" href="#categories" data-toggle="tab">Categories</a></li>
+                                        <li class="nav-item nav-link"><a href="#contributors" data-toggle="tab">Users</a></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="home">
+                                            <!--Sort Dropdown-->
+                                            <input id="searchorder" type="hidden" value="newest" />
+                                            <div class="bg-light" style="padding: 4px 8px; height: 48px; margin-bottom: 1em !important">
+                                                <div class="btn-group float-right" style="padding-bottom:0.1em!important;">
+                                                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Sorted by <b id="SearchOrderDisplay">Newest</b>
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a id="oldest" class="dropdown-item" href="javascript:void(0)">Oldest</a>
+                                                        <a id="newest" class="dropdown-item" href="javascript:void(0)">Newest</a>
+                                                        <a id="mostliked" class="dropdown-item" href="javascript:void(0)">Most Liked</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input id="TokTypeFilter" type="hidden" value="" />
+                                            <input id="TokTypeIdFilter" type="hidden" value="" />
+                                            <input id="UserIdFilter" type="hidden" value="" />
+                                            <input id="IsLoadMore" type="hidden" value="yes" />
+                                            <input id="LoadMoreFunction" type="hidden" value="GetSearchData" />
+                                            @Html.HiddenFor(model => model.Token, new { id = "Token" })
+                                            <input asp-for="SearchText" id="ValSearchText" type="hidden" value="@Model.SearchText" />
+
+                                            @if (Model.Tok.Count() > 0)
+                                            {
+                                                <div class="center" id="containerProgress" style="margin: 24px auto">
+                                                    <div class="colorlib-load"></div>
+                                                </div>
+                                                <div id="tokContainer" style="margin-top: 1em !important;">
+
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <p>No toks found.</p>
+                                            }
+
+                                        </div>
+                                        <!--/tab-pane-->
+                                        <div class="tab-pane" id="categories">
+
+                                        </div>
+                                        <!--/tab-pane-->
+                                        <div class="tab-pane" id="contributors">
+                                        </div>
+
+                                    </div>
+                                    <!--/tab-pane-->
+                                </div>
+                                <!--/tab-content-->
+
+                            </div>
+                            <!--/col-9-->
+                        </div>*@
+                    <!--/row-->
+                    <!-- New Content -->
+                    <div class="row" style="margin-bottom: 24px">
+                        <div class="col-md-12">
+                            <div class="row no-gutters">
+                                <div class="col">
+                                    <h2>Search results for: @keyword</h2>
+                                    @*<input type="search" id="txtSearchKeyword" value="@keyword" class="form-control-lg" placeholder="Search" aria-label="Search" style="background-color: #d9d2de; width: 100%;" />*@
+                                </div>
+                                @*<div class="text-center" style="width: auto;padding-left: 12px;">
+                                    <button type="button" id="btnSearch" class="btn btn-primary">
+                                        <span style="font-size: 22px; margin: 12px 0px;"><i class="fas fa-search"></i> Search</span>
+                                    </button>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item nav-link active"><a href="#home" data-toggle="tab">Toks</a></li>
+                                <li class="nav-item nav-link"><a href="#people" data-toggle="tab">People</a></li>
+                                <li class="nav-item nav-link"><a href="#categories" data-toggle="tab">Categories</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <!--Sort Dropdown-->
+                                    <input id="searchorder" type="hidden" value="newest" />
+                                    <div class="bg-light" style="padding: 4px 8px; height: 48px; margin-bottom: 1em !important">
+                                        <div class="btn-group float-right" style="padding-bottom:0.1em!important;">
+                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Sorted by <b id="SearchOrderDisplay">Newest</b>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a id="oldest" class="dropdown-item" href="javascript:void(0)">Oldest</a>
+                                                <a id="newest" class="dropdown-item" href="javascript:void(0)">Newest</a>
+                                                <a id="mostliked" class="dropdown-item" href="javascript:void(0)">Most Liked</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input id="TokTypeFilter" type="hidden" value="" />
+                                    <input id="TokTypeIdFilter" type="hidden" value="" />
+                                    <input id="UserIdFilter" type="hidden" value="" />
+                                    <input id="IsLoadMore" type="hidden" value="yes" />
+                                    <input id="LoadMoreFunction" type="hidden" value="GetSearchData" />
+                                    @Html.HiddenFor(model => model.Token, new { id = "Token" })
+                                    <input asp-for="SearchText" id="ValSearchText" type="hidden" value="@Model.SearchText" />
+
+                                    @if (Model.Tok.Count() > 0)
+                                    {
+                                        <div class="center" id="containerProgress" style="margin: 24px auto">
+                                            <div class="colorlib-load"></div>
+                                        </div>
+                                        <div id="tokContainer" style="margin-top: 1em !important;">
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>No toks found.</p>
+                                    }
+
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="people">
+
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="categories">
+
+                                </div>
+
+                            </div>
+                            <!--/tab-pane-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/tokkepedia.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+    <script src="~/js/common.js"></script>
+
+    <script>
+        function InitializeToks(filter = '') {
+            var opt = {};
+            opt.url = "Home/SearchToks?keyword=" + filter;
+            opt.type = "GET";
+            opt.async = true;
+            opt.success = function (htmlData) {
+                $("#tokContainer").html(htmlData);
+            };
+            opt.error = function () {
+                $("#containerProgress").hide();
+            };
+            opt.beforeSend = function () {
+                $("#containerProgress").show();
+            };
+            opt.complete = function () {
+                $("#containerProgress").hide();
+                // Facebook Renderer
+                $('.social-buttons').each(function () {
+                    var btnShare = $(this).find(".btnShare");
+                    FB.XFBML.parse(this);
+                    var obj = {
+                        method: 'feed',
+                        link: btnShare.attr("data-href"),
+                        picture: btnShare.attr("data-pic"),
+                        name: btnShare.attr("data-title"),
+                        description: btnShare.attr("data-desc")
+                    };
+                    $(".btnShare").click(function () {
+                        FB.ui(obj, function (response) { console.log(response); });
+                    });
+                });
+
+                $("#twitter-button").click(function (e) {
+                    e.preventDefault();
+                    var win = window.open(shareUrl, 'ShareOnTwitter', getWindowOptions());
+                    win.opener = null; // 2
+                });
+                // Twitter Renderer
+                $.ajax({ url: 'https://platform.twitter.com/widgets.js', dataType: 'script', cache: true });
+
+                $(".tok-tile").click(function (e) {
+                    OpenDialog(this);
+                });
+
+                $(".tok-tile a").on('click', function (ev) {
+                    ev.stopImmediatePropagation();
+                });
+
+                // Bootstrap Tooltip
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="modal"][title]').tooltip();
+                })
+
+                setTimeout(function () {
+                    $(".dropdown-menu > .social-buttons > .fb-share-button > span", ".dropdown-menu > .social-buttons > .fb-share-button > span > iframe").css("width", "73px");
+                    $(".dropdown-menu > .social-buttons > .fb-share-button > span", ".dropdown-menu > .social-buttons > .fb-share-button > span > iframe").css("height", "28px");
+                }, 1500);
+            };
+            $.ajax(opt);
+        }
+
+        function InitializeUsers(filter = '') {
+            var opt = {};
+            opt.url = "Home/GetAllUsers?keyword=" + filter;
+            opt.type = "GET";
+            opt.async = true;
+            opt.success = function (htmlData) {
+                $("#people").html(htmlData);
+            };
+            opt.error = function () {
+                $("#containerProgress").hide();
+            };
+            opt.beforeSend = function () {
+                $("#containerProgress").show();
+            };
+            opt.complete = function () {
+                $("#containerProgress").hide();
+            };
+            $.ajax(opt);
+        }
+
+        function InitializeCategories(filter = '') {
+            var categoryOptions = {};
+            categoryOptions.url = "Home/GetAllCategories?keyword=" + filter;
+            categoryOptions.type = "GET";
+            categoryOptions.async = true;
+            categoryOptions.success = function (htmlData) {
+                $("#categories").html(htmlData);
+            };
+            categoryOptions.error = function () {
+                $("#containerProgress").hide();
+            };
+            categoryOptions.beforeSend = function () {
+                $("#containerProgress").show();
+            };
+            categoryOptions.complete = function () {
+                $("#containerProgress").hide();
+            };
+            $.ajax(categoryOptions);
+        }
+
+        $(document).ready(function () {
+
+            InitializeToks('@Model.SearchText',2);
+            InitializeCategories('@Model.SearchText');
+            InitializeUsers('@Model.SearchText');
+
+            //$("#btnSearch").click(function () {
+            //    InitializeToks($("#txtSearchKeyword").val(),2);
+            //    InitializeCategories($("#txtSearchKeyword").val());
+            //    InitializeUsers($("#txtSearchKeyword").val());
+            //});
+
+            $(".nav-item.nav-link").click(function () {
+                $(".nav-item.nav-link").removeClass("active");
+                $(this).addClass("active");
+            });
+        });
+    </script>
+}

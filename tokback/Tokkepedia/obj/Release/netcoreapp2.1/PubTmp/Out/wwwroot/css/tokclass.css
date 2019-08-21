@@ -1,0 +1,264 @@
+.w3-modal{z-index:3;display:none;padding-top:100px;position:fixed;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgb(0,0,0);background-color:rgba(0,0,0,0.8)}
+.w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:30%}
+.w3-spin{animation:w3-spin 2s infinite linear}@keyframes w3-spin{0%{transform:rotate(0deg)}100%{transform:rotate(359deg)}}
+.w3-animate-fading{animation:fading 10s infinite}@keyframes fading{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+.w3-animate-opacity{animation:opac 0.8s}@keyframes opac{from{opacity:0} to{opacity:1}}
+.w3-animate-top{position:relative;animation:animatetop 0.4s}@keyframes animatetop{from{top:-300px;opacity:0} to{top:0;opacity:1}}
+.w3-animate-left{position:relative;animation:animateleft 0.4s}@keyframes animateleft{from{left:-300px;opacity:0} to{left:0;opacity:1}}
+.w3-animate-right{position:relative;animation:animateright 0.4s}@keyframes animateright{from{right:-300px;opacity:0} to{right:0;opacity:1}}
+.w3-animate-bottom{position:relative;animation:animatebottom 0.4s}@keyframes animatebottom{from{bottom:-300px;opacity:0} to{bottom:0;opacity:1}}
+.w3-animate-zoom {animation:animatezoom 0.6s}@keyframes animatezoom{from{transform:scale(0)} to{transform:scale(1)}}
+
+
+.grid-item {
+    background-image: url('../images/tokblitz/frame.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 2px;
+    font-size: 30px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+} 
+ 
+
+
+.mainLogo {
+    position: absolute;
+    top: 20px;
+    width: 36%;
+    height: 20%;
+    left: 32%
+}
+.part1Class {
+    position: absolute;
+    top: 0;
+    height: 60px;
+    width: 110px;
+}
+
+.part2Class {
+    position: absolute;
+    top: 60px;
+    width: 110px;
+    height: 20px;
+}
+
+.part3ClassAgain {
+    position:absolute;
+    top: 80px;
+    width: 110px;
+    height: 20px;
+
+}
+
+.questionidPos{position:absolute;width:100%;top:16%;text-align:center;}
+.thunderCount{position:absolute;bottom:5%;right:32%;cursor:pointer;font-size:1.2vw;color:red;background-color: #EAEDED;padding:5px;border-radius:100%;}
+
+.answerBoxPos{
+	position:absolute;top:56%;width:50%;
+}
+ .buttonMainPosition{
+ position:absolute;top:30%;left:35%;width:30%;
+	
+ }
+ .buttonMain{
+	cursor: pointer;
+	display:block;
+	margin-top:3px;
+	width:100%;
+    height:100px;
+	}
+ @media (min-width: 960px) and (max-width: 1280px) {
+ 	.w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:40%}
+    .buttonMainPosition {
+        position: absolute;
+        top: 30%;
+        left: 30%;
+        width: 40%;
+    }
+     
+     .buttonMain {
+        cursor: pointer;
+        display: block;
+        margin-top: 3px;
+        width: 100%;
+        height: 110px;
+    }
+  
+}
+ 
+
+
+@media only screen and (max-width: 950px) {
+	.w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:40%}
+    .buttonMainPosition {
+        position: absolute;
+        top: 30%;
+        left: 28%;
+        width: 44%;
+    }
+    
+    
+    .buttonMain {
+        cursor: pointer;
+        display: block;
+        margin-top: 3px;
+        width: 100%;
+        height: 100px;
+    }
+
+
+    .mainLogo {
+        position: absolute;
+        top: 20px;
+        width: 44%;
+        height: 20%;
+        left: 28%;
+      
+    }
+
+}
+@media only screen and (max-width: 800px) {
+
+.buttonMainPosition{
+ position:absolute;top:35%;left:28%;width:44%;
+	
+ 
+ }	
+ .buttonMain{
+	cursor: pointer;
+	height:14%;
+	display:block;
+	margin-top:3px;
+	width:100%;
+	}
+	.w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:70%}
+
+	}
+
+@media only screen and (max-width: 700px) {
+.buttonMainPosition{
+ position:absolute;top:35%;left:25%;width:50%;
+	
+ }	
+ .buttonMain{
+	cursor: pointer;
+	height:14%;
+	display:block;
+	margin-top:3px;
+	width:100%;
+	}
+ 	.w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:80%}
+
+    .mainLogo {
+        position: absolute;
+        top: 20px;
+        width: 50%;
+        height: 20%;
+        left: 25%;
+    }
+}
+
+
+
+
+@media only screen and (max-width: 600px) {
+	
+	.buttonMainPosition{
+ position:absolute;top:35%;left:20%;width:60%;
+	
+ }	
+ .buttonMain{
+	cursor: pointer;
+	height:15%;
+	display:block;
+	margin-top:3px;
+	width:100%;
+	}
+.w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:90%}
+
+    .mainLogo {
+        position: absolute;
+        top: 20px;
+        width: 60%;
+        height: 20%;
+        left: 20%;
+    }
+
+}
+
+@media only screen and (max-width: 500px) {
+
+    .grid-item {
+        font-size: 25px;
+    }
+
+
+.buttonMainPosition{
+ position:absolute;top:35%;left:15%;width:70%;
+
+ }	
+ .buttonMain{
+	cursor: pointer;
+	height:14%;
+	display:block;
+	margin-top:3px;
+	width:100%;
+	}
+ .w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:88%}
+.grid-containerQ {grid: 30px / auto auto auto;}
+.thunderCount{font-size:3vw;}
+
+    .mainLogo {
+        position: absolute;
+        top: 20px;
+        width: 70%;
+        height: 20%;
+        left: 15%;
+    }	
+}
+@media only screen and (max-width: 399px) {
+    .grid-item {
+        font-size: 22px;
+    }
+
+ .buttonMainPosition{
+ position:absolute;top:35%;left:15%;width:70%;
+	
+ }	
+ .buttonMain{
+	cursor: pointer;
+	height:12%;
+	display:block;
+	margin-top:3px;
+	width:100%;
+	}
+ .w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:98%}
+.grid-containerQ {grid: 28px / auto auto auto;}
+.thunderCount{font-size:3vw;}
+.questionidPos{top:20%;}
+
+.grid-Q {font-size: 12px;padding:6px;}
+
+
+}
+
+@media only screen and (max-width: 330px) {
+ .buttonMainPosition{
+ position:absolute;top:35%;left:15%;width:70%;
+	
+ }	
+ .buttonMain{cursor: pointer;height:12%;display:block;margin-top:3px;width:100%;}
+
+.w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:98%}
+.grid-containerQ {grid: 28px / auto auto auto;}
+
+.thunderCount{font-size:3vw;}
+.questionidPos{top:22%;}
+.grid-Q {font-size: 8px;padding:5px;}
+.grid-item { font-size: 22px;}
+
+}
+
+

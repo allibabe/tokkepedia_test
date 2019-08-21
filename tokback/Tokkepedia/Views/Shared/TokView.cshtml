@@ -1,0 +1,902 @@
+﻿@model Tokkepedia.Models.Tok
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<TokketUser> SignInManager
+@inject UserManager<TokketUser> UserManager
+@using Tokkepedia.Tools.Extensions;
+
+<input id="tok-@Model.Id" type="hidden" value="@JsonConvert.SerializeObject(Model)" />
+<input id="primarytext-@Model.Id" type="hidden" value="@Model.PrimaryFieldText" />
+<div id="tokviewitem-@Model.Id" class="col-md-12 tokviewitem">
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <!--Add to Set Modal -->
+        <div class="modal fade addtosetmodal" id="addtoset-@Model.Id-modal" data-tokid="@Model.Id" tabindex="-1" role="dialog" aria-labelledby="addtoset-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered addtosetdialog" role="document">
+                <div class="modal-content addtosetcontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addtoset-@Model.Id-title">Add Tok to @Model.TokType Set</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body addtosetbody">
+                        <h6>@Model.PrimaryFieldName: @Model.PrimaryFieldText</h6>
+                        <hr />
+                        Select a set:
+                        <br />
+                        @*<button type="button" id="createnewset-@Model.Id" class="btn btn-secondary addtosetcreatenewset" style="margin-bottom:10px!important;">Show English Translations</button>*@
+
+
+                        <div id="@Model.Id-setssection" class="addtosetsetssection">
+                            <div class="list-group addtosetlistgroup" id="list-tab" role="tablist">
+                                @*<button type="button" class="list-group-item list-group-item-action addtosetcreatenewset" id="createnewset-@Model.Id" style="cursor:pointer;" data-toggle="list" href="#list-home" role="tab" aria-controls="home"><b>+ Create new set</b></button>
+                                    <div id="@Model.Id-newsetsection" style="display:none;">
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Set Name:</label>
+                                            <input type="text" class="form-control setname" id="@Model.Id-setname" value="" maxlength="100" required>
+                                        </div>
+                                    </div>*@
+                                @*<a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Set 1</a>*@
+                                <input type="hidden" id="selectedset-@Model.Id" value="" />
+                                <div class="scrollsets">
+                                    @if (Model.Sets != null)
+                                    {
+                                        foreach (var set in Model.Sets)
+                                        {
+                                            @if (set.TokTypeId?.ToLower() == Model.TokTypeId?.ToLower())
+                                            {
+                                                <button type="button" class="list-group-item list-group-item-action addtoexistingset" name="setlist-@set.Id" id="setlist-@set.Id-@Model.Id" data-toggle="list" role="tab" aria-controls="h">
+                                                    @set.Name
+                                                    <span class="badge badge-success float-right">@set.CreatedTime.ToShortDateString()</span>
+                                                </button>
+                                            }
+                                        }
+                                    }
+                                </div>
+
+                                <div class="center containerProgress" style="margin: 24px auto">
+                                    <div class="progress_small" style="height:100px; width:100px;"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer addtosetbtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="addtoset-@Model.Id-button" type="button" class="btn btn-primary addtosetbtn" onclick="AddToSet($('#addtoset-@Model.Id-modal'))">Add to Set</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (SignInManager.UserManager.GetUserId(User) != Model.UserId)
+        {
+            <!--Report Modal -->
+            <div class="modal fade reportmodal" id="report-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="report-@Model.Id-title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered reportdialog" role="document">
+                    <div class="modal-content reportcontent">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="report-@Model.Id-title">Report Tok</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body reportbody">
+                            <div class="form-group reportform">
+                                @*<label for="message-text" class="col-form-label">Reason for reporting:</label>
+                                    <br />
+                                    <input type="text" class="form-control reportcategory" id="@Model.Id-reportcategory" maxlength="100" required>*@
+                                <div class="form-control">
+                                    <input type="hidden" class="form-control txtReport" id="@Model.Id-reportcategory" maxlength="100" required>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Sexual Content" onchange="ReportSelection(this, $('.txtReport'))" /> Sexual Content</label>
+                                        <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                            <option value="" selected>Choose one</option>
+                                            <option value="Graphic sexual activity">Graphic sexual activity</option>
+                                            <option value="Nudity">Nudity</option>
+                                            <option value="Suggestive, but without nudity">Suggestive, but without nudity</option>
+                                            <option value="Content involving minors">Content involving minors</option>
+                                            <option value="Abusive title or description">Abusive title or description</option>
+                                            <option value="Other sexual content">Other sexual content</option>
+                                        </select>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Violent or repulsive content" onchange="ReportSelection(this, $('.txtReport'))" /> Violent or repulsive content</label>
+                                        <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                            <option value="" selected>Choose one</option>
+                                            <option value="Adults fighting">Adults fighting</option>
+                                            <option value="Physical Attack">Physical Attack</option>
+                                            <option value="Youth violence">Youth violence</option>
+                                            <option value="Animal abuse">Animal abuse</option>
+                                        </select>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Hateful or abusive content" onchange="ReportSelection(this, $('.txtReport'))" /> Hateful or abusive content</label>
+                                        <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                            <option value="" selected>Choose one</option>
+                                            <option value="Promotes hatred or violence">Promotes hatred or violence</option>
+                                            <option value="Abusing vulnerable individuals">Abusing vulnerable individuals</option>
+                                            <option value="Bullying">Bullying</option>
+                                            <option value="Abusive title or description">Abusive title or description</option>
+                                        </select>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Harmful dangerous acts" onchange="ReportSelection(this, $('.txtReport'))" /> Harmful dangerous acts</label>
+                                        <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                            <option value="" selected>Choose one</option>
+                                            <option value="Pharmaceutical or drug abuse">Pharmaceutical or drug abuse</option>
+                                            <option value="Abuse of fire or explosives">Abuse of fire or explosives</option>
+                                            <option value="Suicide or self injury">Suicide or self injury</option>
+                                            <option value="Other dangerous acts">Other dangerous acts</option>
+                                        </select>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Child abuse" onchange="ReportSelection(this, $('.txtReport'))" /> Child abuse</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Promotes terrorism" onchange="ReportSelection(this, $('.txtReport'))" /> Promotes terrorism</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Spam or misleading" onchange="ReportSelection(this, $('.txtReport'))" /> Spam or misleading</label>
+                                        <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                            <option value="" selected>Choose one</option>
+                                            <option value="Mass advertising">Mass advertising</option>
+                                            <option value="Pharmaceutical drugs for sale">Pharmaceutical drugs for sale</option>
+                                            <option value="Misleading text">Misleading text</option>
+                                            <option value="Misleading thumbnail">Misleading image</option>
+                                            <option value="Scams / Fraud">Scams / Fraud</option>
+                                        </select>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="rdoReport" value="Infringes my rights" onchange="ReportSelection(this, $('.txtReport'))" /> Infringes my rights</label>
+                                        <select class="form-control hide txtMoreOption" onchange="SelectedOption(this, $('.txtReport'))">
+                                            <option value="" selected>Choose one</option>
+                                            <option value="Mass advertising">Infringes my copyright</option>
+                                            <option value="invades my privacy">Invades my privacy</option>
+                                            <option value="Other legal claim">Other legal claim</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer reportbtngroup">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button id="report-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary" onclick="ReportTok($('.txtReport').val())">Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <!--Accurate Modal -->
+        <div class="modal fade accuratemodal" id="accurate-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="accurate-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered accuratedialog" role="document">
+                <div class="modal-content accuratecontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="accurate-@Model.Id-title">Accurate Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body accuratebody">
+                        <div class="form-group accurateform">
+                            <label for="message-text" class="col-form-label">Why is this tok accurate? (optional)</label>
+                            <br />
+                            <textarea type="text" class="form-control accuratetext" id="@Model.Id-accuratetext" maxlength="500" required onkeypress="unsaved = true;" oninput="unsaved = true;" onkeyup="unsaved = true;"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer accuratebtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="accurate-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary accuratebtn" onclick="SendReaction($('#check-@Model.Id'), $('#@Model.Id-accuratetext').val())">Accurate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Inaccurate Modal -->
+        <div class="modal fade inaccuratemodal" id="inaccurate-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="inaccurate-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered inaccuratedialog" role="document">
+                <div class="modal-content inaccuratecontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inaccurate-@Model.Id-title">Inaccurate Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body inaccuratebody">
+                        <div class="form-group inaccurateform">
+                            <label for="message-text" class="col-form-label">Why is this tok inaccurate?</label>
+                            <br />
+                            <textarea type="text" class="form-control inaccuratetext" id="@Model.Id-inaccuratetext" maxlength="500" required onkeypress="unsaved = true;" oninput="unsaved = true;" onkeyup="unsaved = true;"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer inaccuratebtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="inaccurate-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary inaccuratebtn" onclick="SendReaction($('#x-@Model.Id'), $('#@Model.Id-inaccuratetext').val())">Inaccurate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Comment Modal -->
+        <div class="modal fade commentmodal" id="comment-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="comment-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered commentdialog" role="document">
+                <div class="modal-content commentcontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="comment-@Model.Id-title">Comment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body commentbody">
+                        <div class="form-group commentform">
+                            <label for="message-text" class="col-form-label">Add a comment...</label>
+                            <br />
+                            <textarea type="text" class="form-control commenttext" id="@Model.Id-commenttext" maxlength="500" required onkeypress="unsaved = true;" oninput="unsaved = true;" onkeyup="unsaved = true;"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer commentbtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="comment-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary commentbtn" onclick="SendReaction($('#msg-@Model.Id'), $('#@Model.Id-commenttext').val())">Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Detail Reactions -->
+        if (Model.IsDetailBased)
+        {
+            <input type="hidden" id="selecteddetail-@Model.Id" value="1" />
+            <input type="hidden" id="selecteddetailtext-@Model.Id" value="" />
+            <!--Accurate Detail Modal -->
+            <div class="modal fade accuratedetailmodal" id="accuratedetail-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="accuratedetail-@Model.Id-title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered accuratedetaildialog" role="document">
+                    <div class="modal-content accuratedetailcontent">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="accuratedetail-@Model.Id-title">Accurate Detail</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body accuratedetailbody">
+                            <div class="form-group accuratedetailform">
+                                <label for="message-text" class="col-form-label">Why is this detail accurate? (optional)</label>
+                                <br />
+                                <textarea type="text" class="form-control accuratedetailtext" id="@Model.Id-accuratedetailtext" maxlength="500" required onkeypress="unsaved = true;" oninput="unsaved = true;" onkeyup="unsaved = true;"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer accuratedetailbtngroup">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button id="accuratedetail-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary accuratedetailbtn">Accurate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Inaccurate Detail Modal -->
+            <div class="modal fade inaccuratedetailmodal" id="inaccuratedetail-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="inaccuratedetail-@Model.Id-title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered inaccuratedetaildialog" role="document">
+                    <div class="modal-content inaccuratedetailcontent">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="inaccuratedetail-@Model.Id-title">Inaccurate Detail</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body inaccuratedetailbody">
+                            <div class="form-group inaccuratedetailform">
+                                <label for="message-text" class="col-form-label">Why is this detail inaccurate?</label>
+                                <br />
+                                <textarea type="text" class="form-control inaccuratedetailtext" id="@Model.Id-inaccuratedetailtext" maxlength="500" required onkeypress="unsaved = true;" oninput="unsaved = true;" onkeyup="unsaved = true;"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer inaccuratedetailbtngroup">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button id="inaccuratedetail-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary inaccuratedetailbtn" disabled>Inaccurate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Comment Detail Modal -->
+            <div class="modal fade commentdetailmodal" id="commentdetail-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="commentdetail-@Model.Id-title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered commentdetaildialog" role="document">
+                    <div class="modal-content commentdetailcontent">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="commentdetail-@Model.Id-title">Comment</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body commentdetailbody">
+                            <div class="form-group commentdetailform">
+                                <label for="message-text" class="col-form-label">Add a comment to this detail...</label>
+                                <br />
+                                <textarea type="text" class="form-control commentdetailtext" id="@Model.Id-commentdetailtext" maxlength="500" required onkeypress="unsaved = true;" oninput="unsaved = true;" onkeyup="unsaved = true;"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer commentdetailbtngroup">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button id="commentdetail-@Model.Id-button" type="button" data-dismiss="modal" class="btn btn-primary commentdetailbtn" disabled>Comment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
+
+    @if (SignInManager.UserManager.GetUserId(User) == Model.UserId)
+    {
+
+        <!--Replicate Modal -->
+        <div class="modal fade replicatemodal" id="replicate-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="replicate-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered replicatedialog" role="document">
+                <div class="modal-content replicatecontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="replicate-@Model.Id-title">Replicate Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body replicatebody">
+                        <div class="form-group replicateform">
+                            <label for="message-text" class="col-form-label">Copy and use this tok in a different category</label>
+                            <br />
+                            <label for="message-text" class="col-form-label">Category:</label>
+                            <input type="text" class="form-control replicatecategory" id="@Model.Id-replicatecategory" maxlength="50" required onkeydown="InputValidation(this, $('#replicate-@Model.Id-button'))" onkeypress="InputValidation(this, $('#replicate-@Model.Id-button'))" onkeyup="InputValidation(this, $('#replicate-@Model.Id-button'))">
+                        </div>
+                    </div>
+                    <div class="modal-footer replicatebtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="replicate-@Model.Id-button" data-tokid="@Model.Id" type="button" data-dismiss="modal" class="btn btn-primary replicatebtn" onclick="Replicate(this)" disabled>Replicate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Edit Modal -->
+        <div class="modal fade editmodal" id="edit-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="edit-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered editdialog" role="document" id="edit-@Model.Id-modaldialog">
+                <div class="modal-content editcontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="edit-@Model.Id-title">Edit Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body editbody">
+                        <label class="col-form-label">Tok Group: @Model.TokGroup</label><br />
+                        <label class="col-form-label">Tok Type: @Model.TokType</label>
+                        <hr />
+                        <div class="form-group editform">
+                            <label class="col-form-label">Category:</label>
+                            <input type="text" class="form-control editcategory" id="@Model.Id-editcategory" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" value="@Model.Category" title="This field is required!" maxlength="50" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">@Model.PrimaryFieldName:</label>
+                            @{string primaryFieldId = Model.Id + "- edit" + Model.PrimaryFieldName;}
+
+                            <input type="text" class="form-control editprimary" id="@Model.Id-editprimary" value="@Model.PrimaryFieldText" maxlength="150" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                            <div class="invalid-feedback">
+                                Valid primary is required.
+                            </div>
+                        </div>
+
+                        @if (!Model.IsDetailBased)
+                        {
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">@Model.SecondaryFieldName:</label>
+                                @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName;}
+                                <input type="text" class="form-control editsecondary" id="@Model.Id-editsecondary" value="@Model.SecondaryFieldText" maxlength="250" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                            </div>
+
+                        }
+                        else
+                        {
+                            if (!(Model.Details == null || Model.Details.Length == 0))
+                            {
+                                for (int i = 0; i < Model.Details.Length; ++i)
+                                {
+                                    var title = Model.HasAnswerField ? (Model.AnswerFieldNumber == i ? "Answer" : Model.SecondaryFieldName + (i + 1) + ":") : Model.SecondaryFieldName + (i + 1) + ":";
+                                    <div class="form-group @(Model.HasAnswerField ? (Model.AnswerFieldNumber == i ? "answer-field" : "") : "")" style="@(Model.HasAnswerField ? (Model.AnswerFieldNumber == i ? "padding: 8px; border-radius: 8px;" : "") : "")">
+                                        <label for="message-text" class="col-form-label lblTitle">@title</label>
+                                        @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName + (i + 1);}
+
+                                        <input type="text" class="form-control editsecondary" id="@Model.Id-editdetail@(i+1)" value="@Model.Details[i]" maxlength="250" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                    </div>
+                                }
+                            }
+                        }
+
+                        <div id="edit-@Model.Id-requiredsection">
+                            <input type="hidden" id="requiredfieldcount" value="@Model.RequiredFields?.Length" />
+                            @if (!(Model.RequiredFields == null || Model.RequiredFields.Length == 0))
+                            {
+
+                                for (int i = 0; i < Model.RequiredFields.Length; ++i)
+                                {
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">@Model.RequiredFields[i]:</label>
+                                        <input type="hidden" value="@Model.RequiredFields[i]" id="@Model.Id-editrequiredname@(i+1)" />
+
+                                        @{string requiredFieldId = Model.Id + "- edit" + Model.RequiredFields[i] + (i + 1);}
+                                        <input type="text" class="form-control editsecondary" id="@Model.Id-editrequired@(i+1)" value="@Model.RequiredFieldValues[i]" maxlength="100" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+
+
+                        <input type="hidden" id="@Model.Id-editisenglish" value="@Model.IsEnglish.ToString()?.ToLower()" />
+
+
+                        @if (!Model.IsEnglish)
+                        {
+                            <button type="button" id="edit-@Model.Id-translations" class="btn btn-secondary edittranslation" style="margin-bottom:10px!important;">Show English Translations</button>
+                            <div id="edit-@Model.Id-translationsection" style="display:none!important;">
+                                <div class="form-group">
+                                    <label class="col-form-label">Language:</label>
+                                    <input type="text" class="form-control editcategory" id="@Model.Id-editlanguage" value="@Model.Language" maxlength="25" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                </div>
+
+                                <label class="col-form-label"><b>English Translations</b></label><br />
+
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">@Model.PrimaryFieldName - English Translation</label>
+                                    @{string englishPrimaryFieldId = Model.Id + "- editEnglish" + Model.PrimaryFieldName;}
+                                    <input type="text" class="form-control editprimary" id="@Model.Id-editenglishprimary" value="@Model.EnglishPrimaryFieldText" maxlength="150" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                </div>
+
+
+                                @if (!Model.IsDetailBased)
+                                {
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">@Model.SecondaryFieldName - English Translation</label>
+                                        @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName;}
+                                        <input type="text" class="form-control editsecondary" id="@Model.Id-editenglishsecondary" value="@Model.EnglishSecondaryFieldText" maxlength="250" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    if (!(Model.EnglishDetails == null || Model.EnglishDetails.Length == 0))
+                                    {
+                                        for (int i = 0; i < Model.EnglishDetails.Length; ++i)
+                                        {
+                                            <div class="form-group">
+                                                <label for="message-text" class="col-form-label">@Model.SecondaryFieldName @(i + 1) - English Translation</label>
+                                                @{string secondaryFieldId = Model.Id + "- edit" + Model.SecondaryFieldName + (i + 1);}
+                                                <input type="text" class="form-control editsecondary" id="@Model.Id-editenglishdetail@(i+1)" value="@Model.EnglishDetails[i]" maxlength=@Model.SecondaryFieldLimit onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                            </div>
+                                        }
+                                    }
+                                }
+
+
+
+
+                            </div>
+                        }
+                        <button type="button" id="edit-@Model.Id-optionals" class="btn btn-secondary editoptional" style="margin-bottom:10px!important;">Show Optional Fields</button>
+
+                        <div id="edit-@Model.Id-optionalsection" style="display:none!important;">
+                            <input type="hidden" id="optionalfieldcount" value="@Model.OptionalFields?.Length" />
+                            @if (!(Model.OptionalFields == null || Model.OptionalFields.Length == 0))
+                            {
+                                <label class="col-form-label"><b>Optional Fields</b></label><br />
+
+                                for (int i = 0; i < Model.OptionalFields.Length; ++i)
+                                {
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">@Model.OptionalFields[i] @(i + 1):</label>
+                                        <input type="hidden" value="@Model.OptionalFields[i]" id="@Model.Id-editoptionalname@(i+1)" />
+                                        @if (i < Model.OptionalFieldValues?.Length)
+                                        {
+                                            <input type="text" class="form-control editoptional" id="@Model.Id-editoptional@(i+1)" value="@Model.OptionalFieldValues[i]" maxlength="100" onkeyup="InputValidation(this, $('#edit-@Model.Id-button'))" onkeydown="InputValidation(this, $('#edit-@Model.Id-button'))" onkeypress="InputValidation(this, $('#edit-@Model.Id-button'))" required>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <input class="txtImage" id="txtImage-@Model.Id" value="@Model.Image" style="display:none;" type="hidden" />
+
+                        <p class="lead">Select a PNG or JPEG image, max size <span id="max-size">5000.00</span> KB (optional)</p>
+                        <label for="exampleInputFile">Selected image:</label>
+                        <div class="img-container" style="margin-bottom: 4px;">
+                            <img class="cropped" id="preview-img" src="@Model.Image" />
+                            <i class="fas fa-times float-right close-btn" onclick="RemoveImage($('#edit-@Model.Id-modal'))"></i>
+                        </div>
+                        <label class="btn btn-block btn-primary">
+                            Browse&hellip; <input type="file" style="display: none;" onclick="BrowseFile(this)">
+                        </label>
+                    </div>
+                    <div class="modal-footer editbtngroup">
+                        <button type="button" class="btn btn-secondary editclosebtn" data-dismiss="modal">Cancel</button>
+                        <button type="button" id="edit-@Model.Id-button" data-tokid="@Model.Id" data-dismiss="modal" class="btn btn-primary editbtn" onclick="SaveEdit(this)" disabled>Save Edit</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <!--Delete Modal -->
+        <div class="modal fade deletemodal" id="delete-@Model.Id-modal" tabindex="-1" role="dialog" aria-labelledby="delete-@Model.Id-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered deletedialog" role="document">
+                <div class="modal-content deletecontent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="delete-@Model.Id-title">Delete Tok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete?
+                        <div id="delete-@Model.Id-loader"></div>
+                    </div>
+                    <div class="modal-footer deletebtngroup">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button id="delete-@Model.Id-button" data-tokid="@Model.Id" type="button" data-dismiss="modal" class="btn btn-danger deletebtn" onclick="DeleteTok(this)">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <!--Tok Section-->
+    <div id="@Model.Id-section" class="tokviewsection">
+        <div class="row tokviewrow">
+            <div class="col-md-12 tokviewcol" style="margin-right:0px;">
+                @*class="media text-muted pt-3"*@
+                @if (Model.IsAvatarProfilePicture ?? false)
+                {
+                    <img src="@PurchasesTool.GetProduct(Model.SelectedAvatar).Image" alt="" class="mr-2 rounded" style="margin-right:0.8em!important; height:32px!important; width:32px!important;">
+                }
+                else
+                {
+                    if (!String.IsNullOrEmpty(Model.UserPhoto))
+                    {<img src="@Model.UserPhoto" alt="" class="mr-2 rounded" style="margin-right:0.8em!important; height:32px!important; width:32px!important;"> }
+                    else
+                    { <img src="~/images/purple.svg" alt="" class="mr-2 rounded" style="margin-right:0.8em!important; height:32px!important; width:32px!important;">}
+                }
+                <a asp-controller="User" asp-action="UserProfile" asp-route-id="@Model.UserId" style="font-size:small!important; color:#212529!important;"><b>@Html.DisplayFor(modelItem => Model.UserDisplayName)</b></a> - <span style="margin-right:0.8em!important;">@Model.RelativeTime</span>
+                <div class="float-right" style="display:inline">
+                    <div class="dropdown">
+                        <a class="float-left" asp-controller="Tok" asp-action="TokInfo" asp-route-id="@Model.Id" style="font-size:small; margin-right:1em!important;">More Info</a>
+                        <a class="dropdown-toggle float-left" data-toggle="dropdown" href="javascript:void(0)" style="font-size:small;">
+                            Actions
+                            @*<img id="btnOptions-@Model.Id" class="darkdroparrow float-right" title="Actions" style="vertical-align: middle;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAAr0lEQVR4Ae3QMQoCUQxF0b8Eewu3aWe6WaYI7mOcYlKnihg8B1794K5OAAAAAAAAAJf5X322Y69j19Xven5tk+Ls57ojZZz828bE6YhUxMk9BsTpi1TEyd3XD4pje3ekIk4uVpofqT/O/Ej9caZGGhBnQKRbf5yZkTLOuz/OzEj9cQZH6o8zOFJ/nMGRnv1x5kf66zgpxKmFOLUQpxZ1HKKOQ9RxiO/HAQAAAAAAAD4InAzw7Wf/twAAAABJRU5ErkJggg==">*@
+                        </a>
+
+                        <div class="dropdown-menu">
+                            @*<a class="nav-link" asp-controller="Home" asp-action="TokInfo" asp-route-id="@Model.Id">View Tok Info</a>*@
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a id="addtoset-@Model.Id" class="dropdown-item" data-toggle="modal" data-target="#addtoset-@Model.Id-modal" href="javascript:void(0)" onclick="GetSetData('@Model.TokTypeId', 1, false, $('#addtoset-@Model.Id-modal .scrollsets'), true)">Add Tok to Set</a>
+                            }
+                            @if (SignInManager.IsSignedIn(User) && SignInManager.UserManager.GetUserId(User) != Model.UserId)
+                            {
+                                //var myReportReaction = Model.OwnReactions.Comments;
+                                bool hasReported = false;
+                                <a id="report-@Model.Id" class="dropdown-item" @(hasReported ? "data-toggle='tooltip' data-placement='top' title='You already reported this.' disabled" : "data-toggle='modal' data-target='#report-@Model.Id-modal'" ) href="javascript:void(0)">Report</a>
+                            }
+
+                            @if (SignInManager.UserManager.GetUserId(User) == Model.UserId)
+                            {
+                                <div class="dropdown-divider"></div>
+                                <a id="replicate-@Model.Id" class="dropdown-item" data-toggle="modal" data-target="#replicate-@Model.Id-modal" href="javascript:void(0)">Replicate</a>
+                                <a id="edit-@Model.Id" class="dropdown-item" data-toggle="modal" data-target="#edit-@Model.Id-modal" href="javascript:void(0)">Edit</a>
+                                <a id="delete-@Model.Id" class="dropdown-item" data-toggle="modal" data-target="#delete-@Model.Id-modal" href="javascript:void(0)">Delete</a>
+                            }
+                            <div class="social-buttons dropdown-item d-block d-sm-none" style="background-color: #3b5998">
+                                @*<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Id}")&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>*@
+                                <a class="btnShare" style="color: white;" data-href="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Id}")" data-pic="@Model.Image" data-title="@Model.PrimaryFieldText" data-desc="@Model.SecondaryFieldText"><i class="fab fa-facebook-f" style="margin-right: 4px;"></i> Share</a>
+                            </div>
+                            <div class="dropdown-item d-block d-sm-none" style="background-color: #1da1f2">
+                                <a class="twitter-button" style="color: white;"
+                                   href="https://twitter.com/intent/tweet?text=Tokkepedia&url=@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Id}")">
+                                    <i class="fab fa-twitter" style="margin-right: 4px;"></i> Tweet
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <br />
+
+                @{string PrimaryName = Model.PrimaryFieldName + ":", SecondaryName = Model.SecondaryFieldName + ":"; }
+
+                @if (!String.IsNullOrEmpty(Model.PrimaryFieldText))
+                {
+                    <div style="margin-top:0.5em!important; margin-bottom:0em!important;"><strong style="font-weight:700!important; font-size:large!important;">@Model.PrimaryFieldText</strong></div>
+                }
+
+                @if (Model.IsDetailBased == false && !String.IsNullOrEmpty(Model.SecondaryFieldText))
+                {
+                    <span style="color:black; font-size:small!important; line-height:1.25;">@Html.DisplayFor(modelItem => Model.SecondaryFieldText)</span>
+                }
+                else if (Model.IsDetailBased == true)
+                {
+                    @for (int i = 0; i < 5; ++i)
+                    {
+                        string iNum = (i + 1).ToString(), baseName = "EnglishDetail" + iNum, inputName = "txt" + baseName, counterName = "lbl" + baseName + "Num";
+
+                        if (!String.IsNullOrEmpty(Model.Details[i]))
+                        {
+                            <input type="hidden" id="detailtext@(i+1)-@Model.Id" value="@Model.Details[i]" />
+                            <b>@(Model.HasAnswerField ? (Model.AnswerFieldNumber == i ? "Answer:" : "• ") : "• ")</b> <span>@Html.DisplayFor(modelItem => Model.Details[i])</span>
+                            <br />
+
+
+                            <span class="reactiondetail">
+                                @if (User != null)
+                                {
+                                    if (User.Identity.IsAuthenticated)
+                                    {
+                                        <a id="check@(i+1)-@Model.Id" name="@(i+1)" style="margin-left: 48px;" class="checkbtn" data-toggle="modal" data-target="#accuratedetail-@Model.Id-modal" href="javascript:void(0)">
+                                            <i id="btncheck@(i+1)-@Model.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                        </a>
+
+                                        <a id="x@(i+1)-@Model.Id" name="@(i+1)" class="xbtn" data-toggle="modal" data-target="#inaccuratedetail-@Model.Id-modal" href="javascript:void(0)">
+                                            <i id="btnx@(i+1)-@Model.Id" class="material-icons reactionbtn xbtn">close</i>
+                                        </a>
+
+                                        <a id="msg@(i+1)-@Model.Id" name="@(i+1)" class="msgbtn" data-toggle="modal" data-target="#commentdetail-@Model.Id-modal" href="javascript:void(0)">
+                                            <i id="btncomment@(i+1)-@Model.Id" class="material-icons reactionbtn">comment_outline</i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a id="check@(i+1)-@Model.Id" name="@(i+1)" style="margin-left: 48px;" class="checkbtn" data-toggle="modal" href="javascript:void(0)" onclick=RequireLogin('Accurate')>
+                                            <i id="btncheck@(i+1)-@Model.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                        </a>
+
+                                        <a id="x@(i+1)-@Model.Id" name="@(i+1)" class="xbtn" href="javascript:void(0)" onclick=RequireLogin('Inaccurate')>
+                                            <i id="btnx@(i+1)-@Model.Id" class="material-icons reactionbtn xbtn">close</i>
+                                        </a>
+
+                                        <a id="msg@(i+1)-@Model.Id" name="@(i+1)" class="msgbtn" href="javascript:void(0)" onclick=RequireLogin('Comment')>
+                                            <i id="btncomment@(i+1)-@Model.Id" class="material-icons reactionbtn">comment_outline</i>
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a id="check@(i+1)-@Model.Id" name="@(i+1)" style="margin-left: 48px;" class="checkbtn" data-toggle="modal" href="javascript:void(0)" onclick=RequireLogin('Accurate')>
+                                        <i id="btncheck@(i+1)-@Model.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                    </a>
+
+                                    <a id="x@(i+1)-@Model.Id" name="@(i+1)" class="xbtn" href="javascript:void(0)" onclick=RequireLogin('Inaccurate')>
+                                        <i id="btnx@(i+1)-@Model.Id" class="material-icons reactionbtn xbtn">close</i>
+                                    </a>
+
+                                    <a id="msg@(i+1)-@Model.Id" name="@(i+1)" class="msgbtn" href="javascript:void(0)" onclick=RequireLogin('Comment')>
+                                        <i id="btncomment@(i+1)-@Model.Id" class="material-icons reactionbtn">comment_outline</i>
+                                    </a>
+                                }
+
+
+                                @Html.ActionLink("View Reactions", "TokDetailReactions", new { id = Model.Id, detailNum = (i + 1)},
+                               new { style = "color:#633991!important; font-size: 12px", target = "_blank" })
+                            </span>
+
+                            <br />
+                        }
+                    }
+
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => Model.Category)
+                }
+                <br />
+
+                <!--English Translation-->
+                @if (!Model.IsEnglish)
+                {
+                    PrimaryName += " - English Translation"; SecondaryName += " - English Translation";
+
+                    @if (!String.IsNullOrEmpty(Model.EnglishPrimaryFieldText))
+                    {
+                        <div style="margin-top:0.5em!important; margin-bottom:0em!important;"><strong style="font-weight:700!important; font-size:small!important;">@Model.EnglishPrimaryFieldText</strong></div>
+                    }
+
+                    @if (Model.IsDetailBased == false && !String.IsNullOrEmpty(Model.EnglishSecondaryFieldText))
+                    {
+                        <span style="color:black; font-size:small!important; line-height:1.25;">@Html.DisplayFor(modelItem => Model.EnglishSecondaryFieldText)</span>
+                    }
+                    else if (Model.IsDetailBased == true)
+                    {
+                        @for (int i = 0; i < 5; ++i)
+                        {
+                            if (!String.IsNullOrEmpty(Model.EnglishDetails[i]))
+                            {
+                                <input type="hidden" id="englishdetailtext@(i+1)-@Model.Id" value="@Model.EnglishDetails[i]" />
+                                @Html.Raw("• ") @Html.DisplayFor(modelItem => Model.EnglishDetails[i])
+                                <br />
+                            }
+                        }
+
+                    }
+                    <br />
+                }
+
+
+                @if (Model.Image != null)
+                {
+                    if (!String.IsNullOrEmpty(Model.Image))
+                    {
+                        <div class="img-container">
+                            <a href="@Model.Image" class="image-popup-no-margins" id="img-@Model.Id">
+                                <img class="cropped" src="@Model.Image" />
+                            </a>
+                        </div>
+                    }
+                }
+
+
+                <br />
+                <div class="card reactioncard" style="border:0px;">
+                    <strong class="d-block text-gray-dark card-body" style="color:black; padding:0em;">
+                        <span class="float-left" style="display:inline-block!important;">
+                            <span class="float-right" style="font-size:xx-small; margin-right:0.8em!important;">
+                                @if (!String.IsNullOrEmpty(Model.TokType))
+                                {
+                                    <u>Tok Type</u><br />@Html.ActionLink(Model.TokType, "TokType", "Tok", new { id = Model.TokTypeId }, new { style = "color:#633991!important;" })
+                                }
+                            </span>
+                            <span class="float-right" style="font-size:xx-small; margin-right:0.8em!important;">
+                                @if (!String.IsNullOrEmpty(Model.TokGroup))
+                                {
+                                    <u>Tok Group</u><br />@Html.ActionLink(Model.TokGroup, "TokGroup", "Tok", new { name = Model.TokGroup }, new { style = "color:#633991!important;" })
+                                }
+                            </span>
+                            <span class="float-right align-content-sm-center" style="font-size:xx-small; margin-right:0.8em!important;">
+                                @if (!String.IsNullOrEmpty(Model.Category))
+                                {
+                                    <u>Category</u><br />@Html.ActionLink(Model.Category, "Category", "Home", new { id = Model.CategoryId }, new { style = "color:#633991!important;" })
+                                }
+                            </span>
+                        </span>
+                    </strong>
+                    <div class="row reactioncontainer" style="padding-top:0.5em; padding-bottom:0em; padding-left:0.75em; padding-right:0em; justify-content:flex-start!important;">
+                        @if (User != null)
+                        {
+                            if (User.Identity.IsAuthenticated)
+                            {
+                                bool ownLike = false;
+                                bool ownDislike = false;
+                                bool ownAccurate = false;
+                                bool ownInaccurate = false;
+                                bool ownComment = false;
+                                var userId = User.GetUserId();
+
+                                ownLike = (Model.OwnReactions?.Likes?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                ownDislike = (Model.OwnReactions?.Dislikes?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                ownAccurate = (Model.OwnReactions?.Accurates?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                ownInaccurate = (Model.OwnReactions?.Inaccurates?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+                                ownComment = (Model.OwnReactions?.Comments?.FirstOrDefault(x => x.UserId == userId) ?? null) != null;
+
+                                <a id="like-@Model.Id" class="likebtn @(ownLike ? "active" : "")" data-tokid="@Model.Id" data-type="like" data-activityId="@Model.ActivityId" data-itemUser="@Model.UserId" data-categoryId="@Model.CategoryId" data-tokTypeId="@Model.TokTypeId" onclick="SendReaction(this)" data-toggle="tooltip" data-placement="top" title="@(ownLike ? "Remove Like" : "Like")">
+                                    <i id="btnlike-@Model.Id" class="material-icons reactionbtn">thumb_up</i>
+                                    <span id="lbllike-@Model.Id" class="reactionlbl">@Model.Likes</span>
+                                    <div class="center loading hide">
+                                        <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                    </div>
+                                </a>
+
+                                <a id="dislike-@Model.Id" class="dislikebtn @(ownDislike ? "active" : "")" data-tokid="@Model.Id" data-type="dislike" data-activityId="@Model.ActivityId" data-itemUser="@Model.UserId" data-categoryId="@Model.CategoryId" data-tokTypeId="@Model.TokTypeId" onclick="SendReaction(this)" data-toggle="tooltip" data-placement="top" title="@(ownDislike ? "Remove Dislike" : "Dislike")">
+                                    <i id="btndislike-@Model.Id" class="material-icons reactionbtn">thumb_down</i>
+                                    <span id="lbldislike-@Model.Id" class="reactionlbl">@Model.Coins</span>
+                                    <div class="center loading hide">
+                                        <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                    </div>
+                                </a>
+
+                                <a id="check-@Model.Id" class="checkbtn @(ownAccurate ? "active" : "")" data-tokid="@Model.Id" data-type="accurate" data-activityId="@Model.ActivityId" data-itemUser="@Model.UserId" data-categoryId="@Model.CategoryId" data-tokTypeId="@Model.TokTypeId" data-toggle="modal" data-target="#accurate-@Model.Id-modal" href="javascript:void(0)" data-placement="top" title="Accurate">
+                                    <i id="btncheck-@Model.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                    <span id="lblcheck-@Model.Id" class="reactionlbl checkbtn">@Model.Accurates</span>
+                                    <div class="center loading hide">
+                                        <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                    </div>
+                                </a>
+
+                                <a id="x-@Model.Id" class="xbtn @(ownInaccurate ? "active" : "")" data-tokid="@Model.Id" data-type="inaccurate" data-activityId="@Model.ActivityId" data-itemUser="@Model.UserId" data-categoryId="@Model.CategoryId" data-tokTypeId="@Model.TokTypeId" data-toggle="modal" data-target="#inaccurate-@Model.Id-modal" href="javascript:void(0)" data-placement="top" title="Inaccurate">
+                                    <i id="btnx-@Model.Id" class="material-icons reactionbtn xbtn">close</i>
+                                    <span id="lblx-@Model.Id" class="reactionlbl xbtn">@Model.Inaccurates</span>
+                                    <div class="center loading hide">
+                                        <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                    </div>
+                                </a>
+
+                                <a id="msg-@Model.Id" class="msgbtn @(ownComment ? "active" : "")" data-tokid="@Model.Id" data-type="comment" data-activityId="@Model.ActivityId" data-itemUser="@Model.UserId" data-categoryId="@Model.CategoryId" data-tokTypeId="@Model.TokTypeId" data-toggle="modal" data-target="#comment-@Model.Id-modal" href="javascript:void(0)" data-placement="top" title="Comment">
+                                    <i id="btncomment-@Model.Id" class="material-icons reactionbtn">comment_outline</i>
+                                    <span id="lblcomment-@Model.Id" class="reactionlbl">@Model.Comments</span>
+                                    <div class="center loading hide">
+                                        <div class="colorlib-load" style="margin: auto 8px; width: 20px; height: 20px;"></div>
+                                    </div>
+                                </a>
+                            }
+                            else
+                            {
+                                <a id="like-@Model.Id" class="likebtn" data-groupid="@Model.Id" onclick=RequireLogin('Like') data-toggle="tooltip" data-placement="top" title="Like">
+                                    <i id="btnlike-@Model.Id" class="material-icons reactionbtn">thumb_up</i>
+                                    <span id="lbllike-@Model.Id" class="reactionlbl">@Model.Likes</span>
+                                </a>
+
+                                <a id="dislike-@Model.Id" class="dislikebtn" onclick=RequireLogin('Dislike') data-toggle="tooltip" data-placement="top" title="Dislike">
+                                    <i id="btndislike-@Model.Id" class="material-icons reactionbtn">thumb_down</i>
+                                    <span id="lbldislike-@Model.Id" class="reactionlbl">@Model.Coins</span>
+                                </a>
+
+                                <a id="check-@Model.Id" class="checkbtn" onclick=RequireLogin('Accurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Accurate">
+                                    <i id="btncheck-@Model.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                    <span id="lblcheck-@Model.Id" class="reactionlbl checkbtn">@Model.Accurates</span>
+                                </a>
+
+                                <a id="x-@Model.Id" class="xbtn" onclick=RequireLogin('Inaccurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Inaccurate">
+                                    <i id="btnx-@Model.Id" class="material-icons reactionbtn xbtn">close</i>
+                                    <span id="lblx-@Model.Id" class="reactionlbl xbtn">@Model.Inaccurates</span>
+                                </a>
+
+                                <a id="msg-@Model.Id" class="msgbtn" onclick=RequireLogin('Comment') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Comment">
+                                    <i id="btncomment-@Model.Id" class="material-icons reactionbtn">comment_outline</i>
+                                    <span id="lblcomment-@Model.Id" class="reactionlbl">@Model.Comments</span>
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <a id="like-@Model.Id" class="likebtn" data-groupid="@Model.Id" onclick=RequireLogin('Like') data-toggle="tooltip" data-placement="top" title="Like">
+                                <i id="btnlike-@Model.Id" class="material-icons reactionbtn">thumb_up</i>
+                                <span id="lbllike-@Model.Id" class="reactionlbl">@Model.Likes</span>
+                            </a>
+
+                            <a id="dislike-@Model.Id" class="dislikebtn" onclick=RequireLogin('Dislike') data-toggle="tooltip" data-placement="top" title="Dislike">
+                                <i id="btndislike-@Model.Id" class="material-icons reactionbtn">thumb_down</i>
+                                <span id="lbldislike-@Model.Id" class="reactionlbl">@Model.Coins</span>
+                            </a>
+
+                            <a id="check-@Model.Id" class="checkbtn" onclick=RequireLogin('Accurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Accurate">
+                                <i id="btncheck-@Model.Id" class="material-icons reactionbtn checkbtn">check</i>
+                                <span id="lblcheck-@Model.Id" class="reactionlbl checkbtn">@Model.Accurates</span>
+                            </a>
+
+                            <a id="x-@Model.Id" class="xbtn" onclick=RequireLogin('Inaccurate') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Inaccurate">
+                                <i id="btnx-@Model.Id" class="material-icons reactionbtn xbtn">close</i>
+                                <span id="lblx-@Model.Id" class="reactionlbl xbtn">@Model.Inaccurates</span>
+                            </a>
+
+                            <a id="msg-@Model.Id" class="msgbtn" onclick=RequireLogin('Comment') href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Comment">
+                                <i id="btncomment-@Model.Id" class="material-icons reactionbtn">comment_outline</i>
+                                <span id="lblcomment-@Model.Id" class="reactionlbl">@Model.Comments</span>
+                            </a>
+                        }
+                        <div class="social-buttons d-none d-sm-block" data-rendered="0" style="position:absolute; right: 0px;">
+                            <div class="fb-share-button" style="vertical-align: super;" data-href="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Id}")" data-layout="button" data-size="large" data-mobile-iframe="true"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Id}")&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+                            <a class="twitter-share-button"
+                               href="https://twitter.com/intent/tweet?text=Tokkepedia"
+                               data-size="large"
+                               data-url="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.PathBase}/tok?id={Model.Id}")">
+                                Tweet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+</div>

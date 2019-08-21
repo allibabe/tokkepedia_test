@@ -1,0 +1,147 @@
+﻿@model CountryViewModel
+
+@{
+    ViewData["Title"] = "Country";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<!-- **** BACKGROUND !Important **** -->
+<section class="tokkepedia-main clearfix">
+    <div class="tokkepdia-sub">
+    </div>
+</section>
+<!-- **** /BACKGROUND **** -->
+
+<section class="special-area bg-white" id="about">
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-12 col-md header-spacing">
+                <br />
+                <div class="row overview">
+                    <div class="col-sm-12 text-center">
+                        <h1>@Model.Country.Name</h1>
+                    </div>
+                </div>
+
+                <div class="row overview">
+                    <div class="col-md-12 user-pad text-center">
+                        <h3>TOKS</h3>
+                        <h4>@Model.Country.Toks</h4>
+                    </div>
+                </div>
+
+                <div class="container">
+
+                    <div class="row">
+                        <!--<div class="col-sm-3">
+
+                            <ul class="list-group">
+                                <li class="list-group-item text-muted">Category Stats <i class="fa fa-dashboard fa-1x"></i></li>
+                                <li class="list-group-item text-right"><span class="pull-left"><strong>Popularity</strong></span> #0</li>
+                                <li class="list-group-item text-right"><span class="pull-left"><strong>Views</strong></span> 0</li>
+                                <li class="list-group-item text-right"><span class="pull-left"><strong>Games</strong></span> 0</li>
+                                <li class="list-group-item text-right"><span class="pull-left"><strong>Shares</strong></span> 0</li>
+                            </ul>
+
+
+                        </div>-->
+                        <!--/col-3-->
+                        <div class="col-sm-12">
+
+                            <ul class="nav nav-tabs" id="myTab">
+                                <li class="nav-item nav-link"><a href="#home" data-toggle="tab">Toks</a></li>
+                                @*<li class="nav-item nav-link"><a href="#messages" data-toggle="tab">Top Contributors</a></li>
+                                    <li class="nav-item nav-link"><a href="#settings" data-toggle="tab">Kingdoms</a></li>*@
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <input id="IsLoadMore" type="hidden" value="yes" />
+                                    <input id="LoadMoreFunction" type="hidden" value="GetSearchData" />
+                                    <input id="ValSearchText" type="hidden" value="" />
+                                    <input id="TxtCategory" type="hidden" value="" />
+                                    <input id="CountryFilter" type="hidden" value="@Model.Country" />
+                                    <input id="TokTypeFilter" type="hidden" value="" />
+                                    <input id="TokTypeIdFilter" type="hidden" value="" />
+                                    <input id="UserIdFilter" type="hidden" value="" />
+                                    <input id="searchorder" type="hidden" value="newest" />
+                                    @Html.HiddenFor(model => model.Token, new { id = "Token" })
+                                    @Html.HiddenFor(model => model.IsSignedIn, new { id = "IsSignedIn" })
+
+                                    @if (Model.Tok.Count() > 0)
+                                    {
+                                        <div class="center" id="containerProgress" style="margin: 24px auto">
+                                            <div class="colorlib-load"></div>
+                                        </div>
+                                        <div id="tokContainer" style="margin-top: 1em !important;">
+                                            <div class="container">
+                                                <div id="tokTileContainer" class="row">
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="justify-content-center" style="align-content:center!important;">
+                                                            <div class="justify-content-center tokProgress" style="display:none; height:200px; width:200px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="my-lg-5 p-3 bg-white rounded box-shadow tokviewfeed" style="padding-left:0.2em!important;">
+
+                                            <div id="TokFeed" class="container-fluid tokviewfeed">
+                                                <input id="RenderedTokContent" type="hidden" value="" />
+                                                @foreach (Tokkepedia.Models.Tok tok in Model.Tok)
+                                                {
+                                                    @await Html.PartialAsync("TokView", tok)
+                                                    <hr />
+                                                }
+
+                                            </div>
+
+                                            <div class="justify-content-center" style="align-content:center!important;">
+                                                <div id="progress" class="justify-content-center" style="display:none; height:200px; width:200px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>No toks yet in this category.</p>
+                                    }
+
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="messages">
+                                </div>
+                                <!--/tab-pane-->
+                                <div class="tab-pane" id="settings">
+                                </div>
+
+                            </div>
+                            <!--/tab-pane-->
+                        </div>
+                        <!--/tab-content-->
+
+                    </div>
+                    <!--/col-9-->
+                </div>
+                <!--/row-->
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/4.13.0/bodymovin.js"></script>
+    <script src="~/js/TokFeed.js"></script>
+    <script src="~/js/common.js"></script>
+    <script>
+        $(document).ready(function () {
+            //GetInitData($("#CountryFilter").val(), 4);
+            GetInitRawData($("#CountryFilter").val(), 4);
+        });
+    </script>
+}
+
