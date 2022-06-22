@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.Extensions.Primitives" Version="2.1.1" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="PayPalCheckoutSdk" Version="1.0.0" />
     <PackageReference Include="Rotativa.NetCore" Version="1.0.4" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
